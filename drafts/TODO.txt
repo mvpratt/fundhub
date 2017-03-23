@@ -1,6 +1,10 @@
 
 
 User stories:
-Create a project that allows a contributer to add money until goal is reached.
+Payout to owner when amount raised equals goal - automatic
+
 
 Done:
+Payout to owner - called manually
+Allow contributer to request refund
+Create a project that allows a contributer to add money.

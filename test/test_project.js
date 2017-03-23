@@ -1,123 +1,91 @@
 
 
-// accounts[0] = creater/owner
-// accounts[1] = contributer 1
-// accounts[2] = contributer 2
+// accounts[0] = coinbase / admin
+// contrib1 = contributer 1
+// contrib2 = contributer 2
+// owner = owner
 
 
 contract('Project', function(accounts) {
 
+admin = accounts[0];
+contrib1 = accounts[1];
+contrib2 = accounts[2];
+owner = accounts[3];
 
-it("Owner sets ammount to be raised", function() {
-  arx = Project.deployed();
-  arx.setAmountGoal(3, {from: accounts[0]});
+it("[ADMIN] Set owner", function() {
 
-  return arx.getAmountGoal.call().then(function(id) {
-      assert.equal(id.valueOf(), 3, "error: ammount goal not 3");
+  proj = Project.deployed();
+  proj.setOwner(owner);
+
+  return proj.getOwner.call().then(function(own) {
+      assert.equal(own, owner, "error: owner not set");
+    });
+});
+
+
+it("Owner sets ammount to be raised (fundraising goal)", function() {
+
+  proj = Project.deployed();
+  proj.setAmountGoal(3, {from: owner});
+
+  return proj.getAmountGoal.call().then(function(id) {
+      assert.equal(id.valueOf(), 3, "error: fundraising goal not 3");
     });
 });
 
 
 
+// ============ First Contribute ================================================== //
 
-// ============ First Refill ================================================== //
+it("Contributer sends 1 ETH, verify received",function(){
 
-it("Contributer sends 1 ETH",function(){
-  arx = Project.deployed();
+  proj = Project.deployed();
   
-  return arx.fund({from: accounts[1]}, {value: web3.toWei(1, "ether")}).then(function(){
-    arx.getAmountRaised.call().then(function(amount) {
+  return proj.fund({from: contrib1}, {value: web3.toWei(1, "ether")}).then(function(){
+    proj.getAmountRaised.call().then(function(amount) {
       assert.equal(amount.valueOf(), web3.toWei(1, "ether"), "error: amount not 1");
     });
   });
 }); 
 
 
-/*
-it("Pharmacy changes prescription state to FILLED", function() {
-  arx = Project.deployed();
-  
-  return arx.fillRx({from: accounts[2]}).then(function(){
-    arx.getPrescriptionState.call().then(function(state) {
-      assert.equal(state, FILLED, "error: Rx state not FILLED");
+it("Contributer requests refund",function(){
+
+  proj = Project.deployed();
+
+  return proj.refund({from: contrib1}).then(function(){
+    proj.getAmountRaised.call().then(function(amount) {
+      assert.equal(amount.valueOf(), web3.toWei(0, "ether"), "error: did not refund");
     });
-  });  
+  });
 });
 
 
-it("Patient checks refills left",function(){
-  arx = Project.deployed();
+it("Contributer sends 3 ETH, verify received",function(){
+  proj = Project.deployed();
   
-  return arx.getRefillsLeft.call().then(function(refill) {
-      assert.equal(refill, 2, "error: refills left not decremented");
-  });
-}); 
-
-
-// ============ Second Refill ================================================== //
-
-it("Patient requests 2nd refill",function(){
-  arx = Project.deployed();
-  
-  return arx.reqRefillRx({from: accounts[1]}).then(function(){
-    arx.getPrescriptionState.call().then(function(state) {
-      assert.equal(state, REFILL_REQUESTED, "error: Rx state not REFILL_REQUESTED");
+  return proj.fund({from: contrib1}, {value: web3.toWei(3, "ether")}).then(function(){
+    proj.getAmountRaised.call().then(function(amount) {
+      assert.equal(amount.valueOf(), web3.toWei(3, "ether"), "error: amount not 3");
     });
   });
 }); 
 
 
-it("Pharmacy changes prescription state to FILLED", function() {
-  arx = Project.deployed();
-  
-  return arx.fillRx({from: accounts[2]}).then(function(){
-    arx.getPrescriptionState.call().then(function(state) {
-      assert.equal(state, FILLED, "error: Rx state not FILLED");
-    });
-  });  
-});
+it("[ADMIN] Send payout to owner, verify owner received",function(){
 
+  proj = Project.deployed();
+  begin_balance = web3.eth.getBalance(owner);
 
-it("Patient checks refills left",function(){
-  arx = Project.deployed();
-  
-  return arx.getRefillsLeft.call().then(function(refill) {
-      assert.equal(refill, 1, "error: refills left not decremented");
+  return proj.payout({from: accounts[0]}).then(function(){
+
+      end_balance = web3.eth.getBalance(owner);
+      assert.equal(end_balance - begin_balance, web3.toWei(3, "ether"), "error: payout not 3");
   });
+
+
 }); 
 
-
-// ============ Third Refill ================================================== //
-
-it("Patient requests 2nd refill",function(){
-  arx = Project.deployed();
-  
-  return arx.reqRefillRx({from: accounts[1]}).then(function(){
-    arx.getPrescriptionState.call().then(function(state) {
-      assert.equal(state, REFILL_REQUESTED, "error: Rx state not REFILL_REQUESTED");
-    });
-  });
-}); 
-
-
-it("Pharmacy changes prescription state to EXPIRED", function() {
-  arx = Project.deployed();
-  
-  return arx.fillRx({from: accounts[2]}).then(function(){
-    arx.getPrescriptionState.call().then(function(state) {
-      assert.equal(state, EXPIRED, "error: Rx state not EXPIRED");
-    });
-  });  
-});
-
-
-it("Patient checks refills left",function(){
-  arx = Project.deployed();
-  
-  return arx.getRefillsLeft.call().then(function(refill) {
-      assert.equal(refill, 0, "error: refills left not decremented");
-  });
-});
-*/
 
 });

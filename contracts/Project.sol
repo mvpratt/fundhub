@@ -9,30 +9,37 @@ contract Project {
 	uint constant version_minor = 1;
 
 	// Stakeholders
+	address creator;
     address owner;
     address contributer;
 
 	// Project info
     uint amount_goal;
-    uint amount_raised;
+
+    // Project Status
+    bool success;
 
 
 	// Constructor function
 	function Project() {
 
-        owner 		    = msg.sender;
+        creator		    = msg.sender;
+        owner           = 0;
         amount_goal     = 0;
-        amount_raised   = 0;
+        success         = false;
 	}
 
 
 
 // ---------- Debug only ------------------------------------------- //
 
-	function reset() {
+	//function reset() {
 
-        amount_goal     = 0;
-        amount_raised   = 0;
+    //    amount_goal     = 0;
+	//}
+	
+	function setOwner(address own) {
+		owner = own;
 	}
 
 // ----------------------------------------------------------------- //
@@ -41,9 +48,17 @@ contract Project {
 	function fund() payable {
 
 		contributer = msg.sender;
-		amount_raised += msg.value;
 	}
 
+	function refund() {
+
+		success = contributer.send(this.balance);
+	}
+
+	function payout() {
+
+		success = owner.send(this.balance);
+	}
 
 // Data 
 
@@ -56,7 +71,7 @@ contract Project {
 	}
 	
 	function getAmountRaised() returns(uint) {
-		return amount_raised;
+		return this.balance;
 	}
 	
 
