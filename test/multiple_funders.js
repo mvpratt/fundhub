@@ -1,6 +1,6 @@
 
 
-contract('Project: Multiple contributers', function(accounts) {
+contract('Project: Multiple funders', function(accounts) {
 
 // boilerplate //
 
@@ -12,7 +12,7 @@ contract('Project: Multiple contributers', function(accounts) {
   // Contract state
   const CREATED = 0;   
   const FUNDED  = 1;       
-  const EXPIRED = 2;   
+  const DEADLINE_REACHED = 2;   
   const ERROR   = 3;   
 
   console.log("accounts[0]: address: " + accounts[0] + " balance: " + web3.eth.getBalance(accounts[0]));
@@ -70,7 +70,7 @@ it("Contributer1 sends 1 ETH, verify received",function(){
 }); 
 
 
-it("Contributer1 sends 1 ETH, verify received",function(){
+it("Contributer2 sends 1 ETH, verify received",function(){
 
   proj = Project.deployed();
   
@@ -88,7 +88,7 @@ it("Contributer1 requests refund, verify received",function(){
 
   proj = Project.deployed();
   
-  return proj.refund(contrib1, {from: contrib1}).then(function(){
+  return proj.refund({from: contrib1}).then(function(){
     proj.getAmountContributed.call(contrib1).then(function(amount) {
       assert.equal(amount.valueOf(), web3.toWei(0, "ether"), "error: amount not 0 for contrib1");
     });
@@ -99,7 +99,7 @@ it("Contributer2 requests refund, verify received",function(){
 
   proj = Project.deployed();
   
-  return proj.refund(contrib2, {from: contrib2}).then(function(){
+  return proj.refund({from: contrib2}).then(function(){
     proj.getAmountContributed.call(contrib2).then(function(amount) {
       assert.equal(amount.valueOf(), web3.toWei(0, "ether"), "error: amount not 0 for contrib2");
     });

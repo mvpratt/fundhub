@@ -1,13 +1,20 @@
 
 
 User stories:
-Check for overfunding
-Add error checking
+If project is already fully funded, funds returned to contributer
+
+
+Add error checking  - i.e. weird / malformed inputs
+Add security features
+Add deadline
+Add FundingHub
+Add web interface
+
+If contribution puts over the top, extra funds returned to contributer
 
 Refactor:
 Add modifiers
-
-
+Set owner in the constructor
 
 Done:
 Run more than one test in same directory 

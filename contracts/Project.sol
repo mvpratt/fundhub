@@ -18,13 +18,17 @@ contract Project {
     // Project Status
     bool success;
 
+    // Funding deadline;
+    uint deadline;
+
     // Contract state
     uint constant CREATED          = 0;   
     uint constant FUNDED           = 1;    
-    uint constant EXPIRED          = 2;   
+    uint constant DEADLINE_REACHED = 2;   
     uint constant ERROR            = 3;     
     uint state;
 
+    // Funding contributions
     mapping(address => uint) public balances;
 
 
@@ -35,9 +39,9 @@ contract Project {
         owner       = 0;
         amount_goal = 0;
         success     = false;
+        deadline    = 0;
         state       = CREATED;
     }
-
 
 
 // ---------- Debug only ------------------------------------------- //
@@ -52,28 +56,29 @@ contract Project {
 
 // Change project state
 
-    function getState() returns(uint) {
-        return state;
-    }
-
     function fund(address contrib) payable {
 
-        balances[contrib] = msg.value;
+    	if (state == CREATED) {
+            balances[contrib] = msg.value;
 
-        if (this.balance >= amount_goal){
-	        state = FUNDED;
+            if (this.balance >= amount_goal){
+	            state = FUNDED;
+            }
+        }
+        else if (state == FUNDED || state == DEADLINE_REACHED) {
+        	success = msg.sender.send(msg.value);
         }
     }
 
-    function refund(address contrib) {
-    	if (state != FUNDED){
-            success = contrib.send(balances[contrib]);
-            balances[contrib] = 0;
+    function refund() {
+    	if (state == CREATED){
+            success = msg.sender.send(balances[msg.sender]);
+            balances[msg.sender] = 0;
         }
     }
 
     function payout() {
-    	if (msg.sender == creator && state == FUNDED){
+    	if ((msg.sender == creator || msg.sender == owner) && state == FUNDED){
             success = owner.send(this.balance);
         }
     }
@@ -87,8 +92,13 @@ contract Project {
         }
     }
 
+
 // Get Functions
 	
+	function getState() returns(uint) {
+        return state;
+    }
+
     function getAmountGoal() returns(uint) {
         return amount_goal;
     }

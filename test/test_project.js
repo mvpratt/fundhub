@@ -12,7 +12,7 @@ contract('Project: Basic fund and refund, single contributer', function(accounts
   // Contract state
   const CREATED = 0;   
   const FUNDED  = 1;       
-  const EXPIRED = 2;   
+  const DEADLINE_REACHED = 2;   
   const ERROR   = 3;   
 
   console.log("accounts[0]: address: " + accounts[0] + " balance: " + web3.eth.getBalance(accounts[0]));
@@ -76,7 +76,7 @@ it("Contributer requests refund 1 ETH",function(){
 
   proj = Project.deployed();
 
-  return proj.refund(contrib1, {from: contrib1}).then(function(){
+  return proj.refund({from: contrib1}).then(function(){
     proj.getAmountRaised.call().then(function(amount) {
       assert.equal(amount.valueOf(), web3.toWei(0, "ether"), "error: did not refund");
     });
