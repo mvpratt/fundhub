@@ -68,6 +68,7 @@ contract Project {
     function refund(address contrib) {
     	if (state != FUNDED){
             success = contrib.send(balances[contrib]);
+            balances[contrib] = 0;
         }
     }
 

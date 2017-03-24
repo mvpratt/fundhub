@@ -1,15 +1,17 @@
 
 
 User stories:
-More than one contributer can add funds and request refund
-
-
 Add access restrictions
+
 Check for overfunding
 Add error checking
 
+Refactor:
+reduce redundancy in addresses
+
 
 Done:
+More than one contributer can add funds and request refund
 Payout enabled only when funding goal reached
 Record contributer address when funds received
 Payout to owner - called manually
