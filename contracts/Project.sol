@@ -1,12 +1,7 @@
 pragma solidity ^0.4.2;
 
-import "ConvertLib.sol"; 
-
 
 contract Project {
-
-    uint constant version_major = 0;
-    uint constant version_minor = 1;
 
     // Stakeholders
     address creator;
@@ -16,10 +11,12 @@ contract Project {
     uint amount_goal;  //amount in Wei
 
     // Project Status
-    bool success;
+    bool success = false;
 
     // Funding deadline;
-    uint deadline;
+    //uint deadline;
+    //uint duration; 
+    //uint creation_time;
 
     // Contract state
     uint constant CREATED          = 0;   
@@ -31,24 +28,51 @@ contract Project {
     // Funding contributions
     mapping(address => uint) public balances;
 
+    // Events
+    event DeadlineReached ();
+    event FullyFunded ();
+
 
     // Constructor function
     function Project() {
 
         creator     = msg.sender;
-        owner       = 0;
-        amount_goal = 0;
-        success     = false;
-        deadline    = 0;
+        //owner       = 0;
+        //amount_goal = 0;
+        //duration    = 1 day;
+        //deadline    = now + duration;
+        //creation_time = now;
         state       = CREATED;
     }
 
+    // Modifiers can be used to change
+    // the body of a function.
+    // If this modifier is used, it will
+    // prepend a check that only passes
+    // if the function is called from
+    // a certain address.
+    modifier onlyBy(address _account)
+    {
+        if (msg.sender != _account)
+            throw;
+        _;
+    }
 
 // ---------- Debug only ------------------------------------------- //
 
-    function setOwner(address own) {
-    	if (msg.sender == creator)
+    function setOwner(address own) onlyBy(creator) {
             owner = own;
+    }
+
+    function DEBUG_setStateDeadlineReached() onlyBy(creator) {
+    	    state = DEADLINE_REACHED;
+    	    DeadlineReached();
+    }
+
+    function setAmountGoal(uint num) {
+    	if (msg.sender == owner && state == CREATED){
+            amount_goal = num;
+        }
     }
 
 // ----------------------------------------------------------------- //
@@ -63,6 +87,7 @@ contract Project {
 
             if (this.balance >= amount_goal){
 	            state = FUNDED;
+	            FullyFunded();
             }
         }
         else if (state == FUNDED || state == DEADLINE_REACHED) {
@@ -71,7 +96,7 @@ contract Project {
     }
 
     function refund() {
-    	if (state == CREATED){
+    	if (state == CREATED || state == DEADLINE_REACHED){
             success = msg.sender.send(balances[msg.sender]);
             balances[msg.sender] = 0;
         }
@@ -80,15 +105,6 @@ contract Project {
     function payout() {
     	if ((msg.sender == creator || msg.sender == owner) && state == FUNDED){
             success = owner.send(this.balance);
-        }
-    }
-
-
-// Set Functions
-
-    function setAmountGoal(uint num) {
-    	if (msg.sender == owner && state == CREATED){
-            amount_goal = num;
         }
     }
 

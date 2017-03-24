@@ -1,23 +1,33 @@
 
 
-User stories:
-If deadline expired, funds returned to contributer
-If deadline expired, payout disabled.
+User stories todo:
+Add web interface - Project - show balance, state, and button to add funds
+Add FundingHub:
+  Set key parameters in constructor
+  Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
+  Add web interface 
 
 
-Add error checking  - i.e. weird / malformed inputs
-Add security features
-Add FundingHub
-Add web interface
-Handle multiple contributions from same person -- allowed or not allowed?
-If contribution puts over the top, extra funds returned to contributer
+Low priority features:
+  Handle multiple contributions from same person -- allowed
+  If contribution puts over the top, extra funds returned to contributer
+  Error checking/security  - i.e. weird / malformed /invalid inputs
+    Requesting funds when balance is 0
+    Users cant get refund out of a funded project
+    Does contract need some overhead funds?  make sure doesnt run out of money
+    Change to withdrawl model
+  Refactoring:
+    Can choose order of tests?
+    Storage considerations
+    tests - use truffle "require" to get the contract ABI once at beginning
 
-
-Refactor:
-Add modifiers
-Set owner in the constructor
 
 Done:
+Add events - basic
+Add modifiers - basic
+Users can get refunds from underfunded project that reached deadline
+If deadline expired, funds returned to contributer
+If deadline expired, payout disabled.
 If project is already fully funded, funds returned to contributer
 Run more than one test in same directory 
 Add access restrictions
