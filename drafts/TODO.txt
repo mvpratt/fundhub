@@ -1,10 +1,17 @@
 
 
 User stories:
-Payout to owner when amount raised equals goal - automatic
+More than one contributer can add funds and request refund
+
+
+Add access restrictions
+Check for overfunding
+Add error checking
 
 
 Done:
+Payout enabled only when funding goal reached
+Record contributer address when funds received
 Payout to owner - called manually
 Allow contributer to request refund
 Create a project that allows a contributer to add money.

@@ -5,82 +5,108 @@ import "ConvertLib.sol";
 
 contract Project {
 
-	uint constant version_major = 0;
-	uint constant version_minor = 1;
+    uint constant version_major = 0;
+    uint constant version_minor = 1;
 
-	// Stakeholders
-	address creator;
+    // Stakeholders
+    address creator;
     address owner;
-    address contributer;
 
-	// Project info
-    uint amount_goal;
+    // Project info
+    uint amount_goal;  //amount in Wei
 
     // Project Status
     bool success;
 
+    // Contract state
+    uint constant CREATED          = 0;   
+    uint constant FUNDED           = 1;    
+    uint constant EXPIRED          = 2;   
+    uint constant ERROR            = 3;     
+    uint state;
 
-	// Constructor function
-	function Project() {
+    mapping(address => uint) public balances;
 
-        creator		    = msg.sender;
-        owner           = 0;
-        amount_goal     = 0;
-        success         = false;
-	}
+
+    // Constructor function
+    function Project() {
+
+        creator     = msg.sender;
+        owner       = 0;
+        amount_goal = 0;
+        success     = false;
+        state       = CREATED;
+    }
 
 
 
 // ---------- Debug only ------------------------------------------- //
 
-	//function reset() {
-
-    //    amount_goal     = 0;
-	//}
-	
-	function setOwner(address own) {
-		owner = own;
-	}
+    function setOwner(address own) {
+    	if (msg.sender == creator)
+            owner = own;
+    }
 
 // ----------------------------------------------------------------- //
 
 
-	function fund() payable {
+// Change project state
 
-		contributer = msg.sender;
-	}
+    function getState() returns(uint) {
+        return state;
+    }
 
-	function refund() {
+    function fund(address contrib) payable {
 
-		success = contributer.send(this.balance);
-	}
+        balances[contrib] = msg.value;
 
-	function payout() {
+        if (this.balance >= amount_goal){
+	        state = FUNDED;
+        }
+    }
 
-		success = owner.send(this.balance);
-	}
+    function refund(address contrib) {
+    	if (state != FUNDED){
+            success = contrib.send(balances[contrib]);
+        }
+    }
 
-// Data 
+    function payout() {
+    	if (msg.sender == creator && state == FUNDED){
+            success = owner.send(this.balance);
+        }
+    }
 
-	function setAmountGoal(uint num) {
-	    amount_goal = num;
-	}
+
+// Set Functions
+
+    function setAmountGoal(uint num) {
+    	if (msg.sender == owner && state == CREATED){
+            amount_goal = num;
+        }
+    }
+
+// Get Functions
 	
-	function getAmountGoal() returns(uint) {
-		return amount_goal;
-	}
+    function getAmountGoal() returns(uint) {
+        return amount_goal;
+    }
 	
-	function getAmountRaised() returns(uint) {
-		return this.balance;
-	}
+    function getAmountRaised() returns(uint) {
+        return this.balance;
+    }
 	
+	function getAmountContributed(address contrib) returns(uint) {
+        return balances[contrib];
+    }
 
-
-// Stakeholders
-
-	function getOwner() returns(address) {
-		return owner;
-	}
+    function getOwner() returns(address) {
+        return owner;
+    }
 	
+	function getCreator() returns(address) {
+        return creator;
+    }
+
 }
 
