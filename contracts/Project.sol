@@ -59,7 +59,7 @@ contract Project {
     function fund(address contrib) payable {
 
     	if (state == CREATED) {
-            balances[contrib] = msg.value;
+            balances[contrib] += msg.value;
 
             if (this.balance >= amount_goal){
 	            state = FUNDED;

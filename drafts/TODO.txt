@@ -1,22 +1,24 @@
 
 
 User stories:
-If project is already fully funded, funds returned to contributer
+If deadline expired, funds returned to contributer
+If deadline expired, payout disabled.
 
 
 Add error checking  - i.e. weird / malformed inputs
 Add security features
-Add deadline
 Add FundingHub
 Add web interface
-
+Handle multiple contributions from same person -- allowed or not allowed?
 If contribution puts over the top, extra funds returned to contributer
+
 
 Refactor:
 Add modifiers
 Set owner in the constructor
 
 Done:
+If project is already fully funded, funds returned to contributer
 Run more than one test in same directory 
 Add access restrictions
 More than one contributer can add funds and request refund

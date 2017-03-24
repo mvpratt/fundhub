@@ -1,6 +1,6 @@
 
 
-contract('Project: Multiple funders', function(accounts) {
+contract('Project: Overfunding', function(accounts) {
 
 // boilerplate //
 
@@ -56,58 +56,61 @@ it("Owner sets amount to be raised (fundraising goal)", function() {
 });
 
 
-// ============ Fund  ====================================================== //
+// ============ Overfund  ================================================== //
 
-it("Contributer1 sends 1 ETH, verify received",function(){
+it("Contributer sends 3 ETH, verify received",function(){
 
   proj = Project.deployed();
   
-  return proj.fund(contrib1, {from: contrib1}, {value: web3.toWei(1, "ether")}).then(function(){
-    proj.getAmountContributed.call(contrib1).then(function(amount) {
-      assert.equal(amount.valueOf(), web3.toWei(1, "ether"), "error: amount not 1");
+  return proj.fund(contrib1, {from: contrib1}, {value: web3.toWei(3, "ether")}).then(function(){
+    proj.getAmountRaised.call().then(function(amount) {
+      assert.equal(amount.valueOf(), web3.toWei(3, "ether"), "error: amount not 3");
+    });
+  });
+}); 
+
+it("Verify Project is fully funded",function(){
+  proj = Project.deployed();
+  
+  return proj.getState.call().then(function(state){
+      assert.equal(state, FUNDED, "error: Project state not FUNDED");
+  });
+});
+
+
+it("Contributer sends funds to already fully funded project, verify funds returned",function(){
+  proj = Project.deployed();
+
+  begin_balance_contrib = web3.eth.getBalance(contrib1).toNumber();
+  begin_balance_project = web3.eth.getBalance(proj.address).toNumber();
+
+  return proj.fund(contrib1, {from: contrib1}, {value: web3.toWei(2, "ether")}).then(function(){
+    end_balance_contrib = web3.eth.getBalance(contrib1).toNumber();
+    end_balance_project = web3.eth.getBalance(proj.address).toNumber();
+
+    proj.getAmountRaised.call().then(function(amount) {
+      assert.equal(amount.valueOf(), web3.toWei(3, "ether"), "error: amount not 3");
+      assert.equal(begin_balance_contrib, end_balance_contrib, "error: contrib balance should not change");
+      assert.equal(begin_balance_project, end_balance_project, "error: project balance should not change");      
     });
   });
 }); 
 
 
-it("Contributer2 sends 1 ETH, verify received",function(){
+// ============ Payout  ==================================================== //
+
+
+it("[ADMIN] Send payout to owner, verify owner received",function(){
 
   proj = Project.deployed();
-  
-  return proj.fund(contrib2, {from: contrib2}, {value: web3.toWei(1, "ether")}).then(function(){
-    proj.getAmountContributed.call(contrib2).then(function(amount) {
-      assert.equal(amount.valueOf(), web3.toWei(1, "ether"), "error: amount not 1");
-    });
+  begin_balance = web3.eth.getBalance(owner);
+
+  return proj.payout({from: admin}).then(function(){
+
+      end_balance = web3.eth.getBalance(owner);
+      assert.equal(end_balance - begin_balance, web3.toWei(3, "ether"), "error: payout not 3");
   });
 }); 
-
-
-// ============ Refund  ==================================================== //
-
-it("Contributer1 requests refund, verify received",function(){
-
-  proj = Project.deployed();
-  
-  return proj.refund({from: contrib1}).then(function(){
-    proj.getAmountContributed.call(contrib1).then(function(amount) {
-      assert.equal(amount.valueOf(), web3.toWei(0, "ether"), "error: amount not 0 for contrib1");
-    });
-  });
-}); 
-
-it("Contributer2 requests refund, verify received",function(){
-
-  proj = Project.deployed();
-  
-  return proj.refund({from: contrib2}).then(function(){
-    proj.getAmountContributed.call(contrib2).then(function(amount) {
-      assert.equal(amount.valueOf(), web3.toWei(0, "ether"), "error: amount not 0 for contrib2");
-    });
-  });
-}); 
-
-// ============ Closeout  ================================================== //
-
 
 
 it("Verify project funds empty",function(){
