@@ -1,6 +1,23 @@
 var accounts;
 
 
+function logEvents() {
+
+  var fundEvent = Project.deployed().Fund({_from: web3.eth.coinbase});
+
+  fundEvent.watch(function(error, result) {
+    if (!error) {
+        console.log("saw a fund() event");
+        //console.log(result);
+        return;
+    }
+    else {
+        console.error(error);
+        return;
+    }
+  });
+}
+
 function setStatus(message) {
   var status = document.getElementById("status");
   status.innerHTML = message;
@@ -9,11 +26,15 @@ function setStatus(message) {
 
 function refreshWindow() {
 
-  console.log("accounts[0]: address: " + accounts[0] + " balance (Wei): " + web3.eth.getBalance(accounts[0]));
-  console.log("accounts[1]: address: " + accounts[1] + " balance (Wei): " + web3.eth.getBalance(accounts[1]));
-  console.log("accounts[2]: address: " + accounts[2] + " balance (Wei): " + web3.eth.getBalance(accounts[2]));
-  console.log("accounts[3]: address: " + accounts[3] + " balance (Wei): " + web3.eth.getBalance(accounts[3]));
+  //console.log("accounts[0]: address: " + accounts[0] + " balance (Wei): " + web3.eth.getBalance(accounts[0]));
+  //console.log("accounts[1]: address: " + accounts[1] + " balance (Wei): " + web3.eth.getBalance(accounts[1]));
+  //console.log("accounts[2]: address: " + accounts[2] + " balance (Wei): " + web3.eth.getBalance(accounts[2]));
+  //console.log("accounts[3]: address: " + accounts[3] + " balance (Wei): " + web3.eth.getBalance(accounts[3]));
 
+  console.log("accounts[0]: balance (Wei): " + web3.eth.getBalance(accounts[0]));
+  console.log("accounts[1]: balance (Wei): " + web3.eth.getBalance(accounts[1]));
+  console.log("accounts[2]: balance (Wei): " + web3.eth.getBalance(accounts[2]));
+  console.log("accounts[3]: balance (Wei): " + web3.eth.getBalance(accounts[3]));
 
   var proj = Project.deployed();
 
@@ -95,5 +116,8 @@ window.onload = function() {
 
     accounts = accs;
   });
+
+  logEvents();
+
   //console.log("web3 default account " + web3.eth.defaultAccount);
 }

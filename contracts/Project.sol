@@ -33,6 +33,7 @@ contract Project {
     event FullyFunded ();
     event LogError ();
     event LogWarning ();
+    event Fund (address indexed _from, uint256 _value);
 
 
     // Constructor function
@@ -85,7 +86,9 @@ contract Project {
 
 // Change project state
 
-    function fund(address contrib) payable {
+    function fund(address contrib) payable returns (uint) {
+
+        Fund(msg.sender, msg.value);
 
     	if (state == CREATED) {
             balances[contrib] += msg.value;
@@ -101,6 +104,8 @@ contract Project {
         else {
             LogWarning();
         }
+        
+        return msg.value;
     }
 
     function refund() {
