@@ -31,6 +31,8 @@ contract Project {
     // Events
     event DeadlineReached ();
     event FullyFunded ();
+    event LogError ();
+    event LogWarning ();
 
 
     // Constructor function
@@ -61,17 +63,20 @@ contract Project {
 // ---------- Debug only ------------------------------------------- //
 
     function setOwner(address own) onlyBy(creator) {
-            owner = own;
+        owner = own;
     }
 
     function DEBUG_setStateDeadlineReached() onlyBy(creator) {
-    	    state = DEADLINE_REACHED;
-    	    DeadlineReached();
+    	state = DEADLINE_REACHED;
+    	DeadlineReached();
     }
 
     function setAmountGoal(uint num) {
     	if (msg.sender == owner && state == CREATED){
             amount_goal = num;
+        }
+        else {
+            LogWarning();
         }
     }
 
@@ -93,6 +98,9 @@ contract Project {
         else if (state == FUNDED || state == DEADLINE_REACHED) {
         	success = msg.sender.send(msg.value);
         }
+        else {
+            LogWarning();
+        }
     }
 
     function refund() {
@@ -100,11 +108,17 @@ contract Project {
             success = msg.sender.send(balances[msg.sender]);
             balances[msg.sender] = 0;
         }
+        else {
+            LogWarning();
+        }
     }
 
     function payout() {
     	if ((msg.sender == creator || msg.sender == owner) && state == FUNDED){
             success = owner.send(this.balance);
+        }
+        else {
+            LogWarning();
         }
     }
 

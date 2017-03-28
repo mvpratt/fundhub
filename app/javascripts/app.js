@@ -8,67 +8,75 @@ function setStatus(message) {
 
 
 function refreshWindow() {
-  var arx = ARX_Prescription.deployed();
 
-  arx.getRefillsLeft.call({from: accounts[0]}).then(function(value) {
-    var refill_element = document.getElementById("refills");
+  console.log("accounts[0]: address: " + accounts[0] + " balance (Wei): " + web3.eth.getBalance(accounts[0]));
+  console.log("accounts[1]: address: " + accounts[1] + " balance (Wei): " + web3.eth.getBalance(accounts[1]));
+  console.log("accounts[2]: address: " + accounts[2] + " balance (Wei): " + web3.eth.getBalance(accounts[2]));
+  console.log("accounts[3]: address: " + accounts[3] + " balance (Wei): " + web3.eth.getBalance(accounts[3]));
+
+
+  var proj = Project.deployed();
+
+  proj.getAmountRaised.call({from: accounts[0]}).then(function(value) {
+    var refill_element = document.getElementById("amount_raised");
     refill_element.innerHTML = value.valueOf();
   }).catch(function(e) {
     console.log(e);
-    setStatus("Error getting state; see log.");
+    setStatus("Error getting amount raised; see log.");
   });
 
-  arx.getPrescriptionState.call({from: accounts[0]}).then(function(value) {
+  proj.getAmountGoal.call({from: accounts[0]}).then(function(value) {
+    var refill_element = document.getElementById("amount_goal");
+    refill_element.innerHTML = value.valueOf();
+  }).catch(function(e) {
+    console.log(e);
+    setStatus("Error getting amount goal; see log.");
+  });
 
-    var rxstate_element = document.getElementById("rxstate");
-    rxstate_element.innerHTML = value.valueOf();
+  proj.getState.call({from: accounts[0]}).then(function(value) {
+
+    var state_element = document.getElementById("state");
+    state_element.innerHTML = value.valueOf();
   }).catch(function(e) {
     console.log(e);
     setStatus("Error getting state; see log.");
   });
 };
 
-function resetRx(){
-  var arx = ARX_Prescription.deployed();
-
-  arx.reset({from: accounts[0]});
-}
 
 function init(){
-  var arx = ARX_Prescription.deployed();
+  var proj = Project.deployed();
 
-  arx.setMedicationID(42, {from: accounts[0]}).then(function(){
-    arx.setPatient(accounts[1], {from: accounts[0]}).then(function(){
-      arx.signRx({from: accounts[0]}).then(function(){
-        arx.setPharmacy(accounts[2], {from: accounts[1]}).then(function(){
-          arx.submitRx({from: accounts[1]});
-        });
-      });
-    });
+   return proj.setOwner(accounts[3], {from: accounts[0]}).then(function(){
+    return proj.setAmountGoal(web3.toWei(3, "ether"), {from: accounts[3]}).then(function(){
+      setStatus("Initializing contract.  Fundrasing goal: 3 ETH");
+    }).catch(function(e) {
+    console.log(e);
+    setStatus("Error initializing project; see log.");
+  });
   });
 }
 
 
-function requestRefill() {
-  var arx = ARX_Prescription.deployed();
-
-  arx.reqRefillRx({from: accounts[1]}).then(function(){
-    setStatus("Refill requested!");
+function fund() {
+  var proj = Project.deployed();
+  proj.fund(accounts[0], {from: accounts[0], value: web3.toWei(1, "ether")}).then(function(){
+    setStatus("Contributed 1 ETH!");
   }).catch(function(e) {
     console.log(e);
-    setStatus("Error requesting refill; see log.");
+    setStatus("Error sending ETH to project; see log.");
   });
 }
 
 
-function fillRx() {
-  var arx = ARX_Prescription.deployed();
+function DEBUG_setStateDeadlineReached() {
+  var proj = Project.deployed();
 
-  arx.fillRx({from: accounts[2]}).then(function(){
-    setStatus("Filled Rx!");
+  proj.DEBUG_setStateDeadlineReached({from: accounts[0]}).then(function(){
+    setStatus("Set state to DEADLINE_REACHED (2)");
   }).catch(function(e) {
     console.log(e);
-    setStatus("Error filling Rx; see log.");
+    setStatus("Error setting contract state; see log.");
   });
 }
 
@@ -87,4 +95,5 @@ window.onload = function() {
 
     accounts = accs;
   });
+  //console.log("web3 default account " + web3.eth.defaultAccount);
 }

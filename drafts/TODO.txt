@@ -1,12 +1,19 @@
 
+In progress:
+Current issue: able to overfund project.  make sure to prevent overfunding
+
 
 User stories todo:
-Add web interface - Project - show balance, state, and button to add funds
+Add basic error messages (for debug)
+  When sending funds fails
+  When transaction fails for another reason
+
 Add FundingHub:
   Set key parameters in constructor
   Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
   Add web interface 
 
+Owner cant fund own contract!
 
 Low priority features:
   Handle multiple contributions from same person -- allowed
@@ -21,8 +28,11 @@ Low priority features:
     Storage considerations
     tests - use truffle "require" to get the contract ABI once at beginning
 
+Testing:
+  Run with geth local blockchain
 
 Done:
+Add web interface - Project - show balance, state, and button to add funds
 Add events - basic
 Add modifiers - basic
 Users can get refunds from underfunded project that reached deadline
