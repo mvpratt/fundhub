@@ -6,9 +6,7 @@ import "Project.sol";
 contract FundingHub {
 
   // List of projects created
-  //address [] projects;
   address projectDeployed;
-  bool success;
 
   uint version = 1;
 
@@ -20,21 +18,15 @@ contract FundingHub {
 
 	}
 
+    function createProject(address owner, uint funding_goal) {
 
-    function createProject(address owner, uint funding_goal/*, uint deadline*/) returns(address) {
-
-        address projectDeployed = new Project(owner, funding_goal/*, deadline*/);
+        projectDeployed = new Project(owner, funding_goal);
         OnDeployed(projectDeployed);
-
-        return projectDeployed;
     }
 
-
-
-    function contribute(address project, uint amount){
-
-
-    }
+    //function contribute(address project, uint amount){
+//
+//    }
 
     function getProjectAddress() returns(address) {
         return projectDeployed;
@@ -43,5 +35,4 @@ contract FundingHub {
     function getVersion() returns (uint) {
         return version;
     }
-
 }

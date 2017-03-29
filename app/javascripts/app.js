@@ -1,10 +1,12 @@
 var accounts;
 
-var  admin; // contract creator / debug interface
-var  contrib1;
-var  contrib2;
-var  owner;
+var  admin;    // contract creator / debug interface
+var  contrib1; // Contributer 1
+var  contrib2; // Contributer 2
+var  owner;    // Project owner
 
+var proj;      // Test project
+var fundhub;   // Main contract
 
 
 function setStatus(message) {
@@ -15,13 +17,12 @@ function setStatus(message) {
 
 function refreshWindow() {
 
+/*
   console.log("accounts[0]: balance (Wei): " + web3.eth.getBalance(accounts[0]));
   console.log("accounts[1]: balance (Wei): " + web3.eth.getBalance(accounts[1]));
   console.log("accounts[2]: balance (Wei): " + web3.eth.getBalance(accounts[2]));
   console.log("accounts[3]: balance (Wei): " + web3.eth.getBalance(accounts[3]));
-
-
-  var proj = Project.deployed();
+*/
 
   proj.getAmountRaised.call({from: accounts[0]}).then(function(value) {
     var refill_element = document.getElementById("amount_raised");
@@ -47,42 +48,51 @@ function refreshWindow() {
     setStatus("Error getting state; see log.");
   });
 
-  var fundhub = FundingHub.deployed();
-
-  fundhub.getVersion.call().then(function(value) {
-    console.log("version: " + value);
-  });
-
 };
 
 
 function init(){
-  var proj = Project.deployed();
 
-   return proj.setOwner(accounts[3], {from: accounts[0]}).then(function(){
-    return proj.setAmountGoal(web3.toWei(3, "ether"), {from: accounts[3]}).then(function(){
-      setStatus("Initializing contract.  Fundrasing goal: 3 ETH");
+  fundhub = FundingHub.deployed();
+  
+  fundhub.getVersion.call().then(function(value) {
+    console.log("FundingHub version: " + value);
+  });
+
+/*
+  fundhub.createProject(accounts[3], web3.toWei(4, "ether"), {from: accounts[0]}).then(function(){
+    setStatus("Creating new project.");
     }).catch(function(e) {
-    console.log(e);
-    setStatus("Error initializing project; see log.");
+      console.log(e);
+      setStatus("Error creating project; see log.");
   });
+    */
+
+  fundhub.getProjectAddress.call().then(function(addr) {
+    console.log("Project address: " + addr);
+    proj = Project.at(addr);
+  }).then(function(){
+      refreshWindow();
   });
+
+
 }
 
 
 function fund() {
-  var proj = Project.deployed();
+
   proj.fund(accounts[1], {from: accounts[1], value: web3.toWei(1, "ether")}).then(function(){
     setStatus("Contributed 1 ETH!");
   }).catch(function(e) {
     console.log(e);
     setStatus("Error sending ETH to project; see log.");
+  }).then(function(){
+      refreshWindow();
   });
 }
 
-
+/*
 function DEBUG_setStateDeadlineReached() {
-  var proj = Project.deployed();
 
   proj.DEBUG_setStateDeadlineReached({from: accounts[0]}).then(function(){
     setStatus("Set state to DEADLINE_REACHED (2)");
@@ -91,7 +101,7 @@ function DEBUG_setStateDeadlineReached() {
     setStatus("Error setting contract state; see log.");
   });
 }
-
+*/
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -185,3 +195,21 @@ function logErrorEvents() {
     }
   });
 }
+
+/*
+function logCreateProject() {
+
+  var createProjectEvent = FundingHub.deployed().OnDeployed();
+
+  createProjectEvent.watch(function(error, result) {
+    if (!error) {
+        console.log("FundingHub.OnDeployed() event");
+        return;
+    }
+    else {
+        console.error(error);
+        return;
+    }
+  });
+}
+*/
