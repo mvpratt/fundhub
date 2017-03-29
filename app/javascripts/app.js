@@ -1,22 +1,11 @@
 var accounts;
 
+var  admin; // contract creator / debug interface
+var  contrib1;
+var  contrib2;
+var  owner;
 
-function logEvents() {
 
-  var fundEvent = Project.deployed().Fund({_from: web3.eth.coinbase});
-
-  fundEvent.watch(function(error, result) {
-    if (!error) {
-        console.log("saw a fund() event");
-        //console.log(result);
-        return;
-    }
-    else {
-        console.error(error);
-        return;
-    }
-  });
-}
 
 function setStatus(message) {
   var status = document.getElementById("status");
@@ -26,15 +15,11 @@ function setStatus(message) {
 
 function refreshWindow() {
 
-  //console.log("accounts[0]: address: " + accounts[0] + " balance (Wei): " + web3.eth.getBalance(accounts[0]));
-  //console.log("accounts[1]: address: " + accounts[1] + " balance (Wei): " + web3.eth.getBalance(accounts[1]));
-  //console.log("accounts[2]: address: " + accounts[2] + " balance (Wei): " + web3.eth.getBalance(accounts[2]));
-  //console.log("accounts[3]: address: " + accounts[3] + " balance (Wei): " + web3.eth.getBalance(accounts[3]));
-
   console.log("accounts[0]: balance (Wei): " + web3.eth.getBalance(accounts[0]));
   console.log("accounts[1]: balance (Wei): " + web3.eth.getBalance(accounts[1]));
   console.log("accounts[2]: balance (Wei): " + web3.eth.getBalance(accounts[2]));
   console.log("accounts[3]: balance (Wei): " + web3.eth.getBalance(accounts[3]));
+
 
   var proj = Project.deployed();
 
@@ -55,13 +40,19 @@ function refreshWindow() {
   });
 
   proj.getState.call({from: accounts[0]}).then(function(value) {
-
     var state_element = document.getElementById("state");
     state_element.innerHTML = value.valueOf();
   }).catch(function(e) {
     console.log(e);
     setStatus("Error getting state; see log.");
   });
+
+  var fundhub = FundingHub.deployed();
+
+  fundhub.getVersion.call().then(function(value) {
+    console.log("version: " + value);
+  });
+
 };
 
 
@@ -81,7 +72,7 @@ function init(){
 
 function fund() {
   var proj = Project.deployed();
-  proj.fund(accounts[0], {from: accounts[0], value: web3.toWei(1, "ether")}).then(function(){
+  proj.fund(accounts[1], {from: accounts[1], value: web3.toWei(1, "ether")}).then(function(){
     setStatus("Contributed 1 ETH!");
   }).catch(function(e) {
     console.log(e);
@@ -115,9 +106,82 @@ window.onload = function() {
     }
 
     accounts = accs;
+
+    admin    = accounts[0]; // contract creator / debug interface
+    contrib1 = accounts[1];
+    contrib2 = accounts[2];
+    owner    = accounts[3];
+
   });
 
-  logEvents();
+  logFullyFundedEvents();
+  logDeadlineReachedEvents();
+  logWarningEvents();
+  logErrorEvents();
 
-  //console.log("web3 default account " + web3.eth.defaultAccount);
+}
+
+
+function logFullyFundedEvents() {
+
+  var fullyFundedEvent = Project.deployed().FullyFunded();
+
+  fullyFundedEvent.watch(function(error, result) {
+    if (!error) {
+        console.log("FullyFunded() event");
+        return;
+    }
+    else {
+        console.error(error);
+        return;
+    }
+  });
+}
+
+function logDeadlineReachedEvents() {
+
+  var deadlineReachedEvent = Project.deployed().DeadlineReached();
+
+  deadlineReachedEvent.watch(function(error, result) {
+    if (!error) {
+        console.log("DeadlineReached() event");
+        return;
+    }
+    else {
+        console.error(error);
+        return;
+    }
+  });
+}
+
+function logWarningEvents() {
+
+  var warningEvent = Project.deployed().LogWarning();
+
+  warningEvent.watch(function(error, result) {
+    if (!error) {
+        console.log("LogWarning() event");
+        return;
+    }
+    else {
+        console.error(error);
+        return;
+    }
+  });
+}
+
+function logErrorEvents() {
+
+  var errorEvent = Project.deployed().LogError();
+
+  errorEvent.watch(function(error, result) {
+    if (!error) {
+        console.log("LogError() event");
+        return;
+    }
+    else {
+        console.error(error);
+        return;
+    }
+  });
 }

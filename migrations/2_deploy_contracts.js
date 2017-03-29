@@ -1,3 +1,5 @@
 module.exports = function(deployer) {
-  deployer.deploy(Project);
+
+  deployer.deploy(FundingHub);
+  
 };

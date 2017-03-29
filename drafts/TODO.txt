@@ -5,6 +5,11 @@ Add basic error messages (for debug)
   When sending funds fails
   When transaction fails for another reason
 
+Web UI:
+Request Refund
+Request Payout
+
+
 Add FundingHub:
   Set key parameters in constructor
   Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)

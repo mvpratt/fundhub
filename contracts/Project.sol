@@ -33,15 +33,13 @@ contract Project {
     event FullyFunded ();
     event LogError ();
     event LogWarning ();
-    event Fund (address indexed _from, uint256 _value);
-
 
     // Constructor function
-    function Project() {
+    function Project(address own, uint amt) {
 
         creator     = msg.sender;
-        //owner       = 0;
-        //amount_goal = 0;
+        owner       = own;
+        amount_goal = amt;
         //duration    = 1 day;
         //deadline    = now + duration;
         //creation_time = now;
@@ -88,8 +86,6 @@ contract Project {
 
     function fund(address contrib) payable returns (uint) {
 
-        Fund(msg.sender, msg.value);
-
     	if (state == CREATED) {
             balances[contrib] += msg.value;
 
@@ -104,8 +100,6 @@ contract Project {
         else {
             LogWarning();
         }
-        
-        return msg.value;
     }
 
     function refund() {
