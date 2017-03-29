@@ -3,6 +3,7 @@
 TODO - User stories:
 Issue - Having an issue getting FundingHub to deploy a project from the browser (VM error: out of gas)
 Tests broken, need to get address from FundingHub
+Check requester received funds, more precisely (minus gas cost)
 
 FundingHub:
   Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
