@@ -1,27 +1,31 @@
 
 
-TODO - User stories:
-Issue - Having an issue getting FundingHub to deploy a project from the browser (VM error: out of gas)
-Tests broken, need to get address from FundingHub
-Check requester received funds, more precisely (minus gas cost)
+TODO:
+  Issue - Trouble getting FundingHub to deploy a project from the browser (VM error: out of gas)
+
 
 FundingHub:
   Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
+  Tests - Check that requester received funds, more precisely (minus gas cost)
+  Tests - Cleanup debug / admin function calls
+
 
 Web UI:
-  Refresh automatically
   Request Refund
   Request Payout
-  Show balances
+  Show contributed balances
 
+Testing:
+  Run with geth local blockchain
+  Improve display of balance
 
-Add basic error messages (for debug)
-  When sending funds fails
-  When transaction fails for another reason
+Feature:
+  Add deadline support
+  Test broken - deadline.js
 
+===============================================
 
-
-Low priority features:
+Low priority:
   If contribution puts over the top, extra funds returned to contributer
   Error checking/security  - i.e. weird / malformed /invalid inputs
     Requesting funds when balance is 0
@@ -33,13 +37,14 @@ Low priority features:
     Can choose order of tests?
     Storage considerations
     tests - use truffle "require" to get the contract ABI once at beginning
+  Add basic error messages (for debug)
+    When sending funds fails
+    When transaction fails for another reason
 
+=============================================
 
-Testing:
-  Run with geth local blockchain
-  Improve display of balance
-
-Done:
+DONE:
+Web UI - Refresh automatically
 Allow multiple contributions from same person
 FundingHub can deploy a contract
 Add web interface - Project - show balance, state, and button to add funds

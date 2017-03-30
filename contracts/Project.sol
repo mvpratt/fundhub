@@ -61,13 +61,13 @@ contract Project {
 
 // ---------- Debug only ------------------------------------------- //
 
-    function setOwner(address own) onlyBy(creator) {
+    function setOwner(address own) /*onlyBy(creator) */{
         owner = own;
     }
 
-    function DEBUG_setStateDeadlineReached() onlyBy(creator) {
+    function DEBUG_setStateDeadlineReached() /*onlyBy(creator) */{
     	state = DEADLINE_REACHED;
-    	DeadlineReached();
+    	//DeadlineReached();
     }
 
     function setAmountGoal(uint num) {

@@ -18,18 +18,17 @@ contract('Project: Basic fund and refund, single contributer', function(accounts
   const DEADLINE_REACHED = 2;   
   const ERROR   = 3;   
 
-  console.log("accounts[0]: address: " + accounts[0] + " balance: " + web3.eth.getBalance(accounts[0]));
-  console.log("accounts[1]: address: " + accounts[1] + " balance: " + web3.eth.getBalance(accounts[1]));
-  console.log("accounts[2]: address: " + accounts[2] + " balance: " + web3.eth.getBalance(accounts[2]));
-  console.log("accounts[3]: address: " + accounts[3] + " balance: " + web3.eth.getBalance(accounts[3]));
+  //console.log("accounts[0]: address: " + accounts[0] + " balance: " + web3.eth.getBalance(accounts[0]));
+  //console.log("accounts[1]: address: " + accounts[1] + " balance: " + web3.eth.getBalance(accounts[1]));
+  //console.log("accounts[2]: address: " + accounts[2] + " balance: " + web3.eth.getBalance(accounts[2]));
+  //console.log("accounts[3]: address: " + accounts[3] + " balance: " + web3.eth.getBalance(accounts[3]));
 
 // boilerplate //
 
  
 // ============ Setup ====================================================== //
 
-// TODO - hack
-it("[ADMIN] Get Project address", function() {
+it("Get Project address", function() {
 
   fundhub = FundingHub.deployed();
 
@@ -43,7 +42,7 @@ it("[ADMIN] Get Project address", function() {
 });
 
 
-it("[ADMIN] Check owner", function() {
+it("Check owner", function() {
 
   return proj.getOwner.call().then(function(own) {
       assert.equal(own, owner, "error: owner not set");
@@ -51,7 +50,7 @@ it("[ADMIN] Check owner", function() {
 });
 
 
-it("Owner sets amount to be raised (fundraising goal)", function() {
+it(" Check fundraising goal", function() {
 
   return proj.getAmountGoal.call().then(function(id) {
       assert.equal(id.valueOf(), web3.toWei(3, "ether"), "error: fundraising goal not 3 ETH");
@@ -101,7 +100,7 @@ it("Verify Project is fully funded",function(){
 });
 
 // TODO - how to check requester received funds, more precisely? (minus gas price)
-it("[ADMIN] Send payout to owner, verify owner received",function(){
+it("Owner request payout, verify owner received",function(){
 
   begin_balance = web3.eth.getBalance(owner);
 
