@@ -3,17 +3,15 @@
 TODO:
   Issue - Trouble getting FundingHub to deploy a project from the browser (VM error: out of gas)
 
-
 FundingHub:
   Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
   Tests - Check that requester received funds, more precisely (minus gas cost)
   Tests - Cleanup debug / admin function calls
 
+Add state PAID_OUT
 
 Web UI:
-  Request Refund
-  Request Payout
-  Show contributed balances
+  Show contributed balances from each contributer
 
 Testing:
   Run with geth local blockchain
@@ -44,6 +42,8 @@ Low priority:
 =============================================
 
 DONE:
+Web UI - Request Refund
+Web UI - Request Payout
 Web UI - Refresh automatically
 Allow multiple contributions from same person
 FundingHub can deploy a contract

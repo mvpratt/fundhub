@@ -18,21 +18,25 @@ contract Project {
     //uint duration; 
     //uint creation_time;
 
+
     // Contract state
     uint constant CREATED          = 0;   
     uint constant FUNDED           = 1;    
     uint constant DEADLINE_REACHED = 2;   
-    uint constant ERROR            = 3;     
+    //uint constant ERROR            = 3;     
     uint state;
+
 
     // Funding contributions
     mapping(address => uint) public balances;
+
 
     // Events
     event DeadlineReached ();
     event FullyFunded ();
     event LogError ();
     event LogWarning ();
+
 
     // Constructor function
     function Project(address own, uint amt) {
@@ -46,12 +50,7 @@ contract Project {
         state       = CREATED;
     }
 
-    // Modifiers can be used to change
-    // the body of a function.
-    // If this modifier is used, it will
-    // prepend a check that only passes
-    // if the function is called from
-    // a certain address.
+
     modifier onlyBy(address _account)
     {
         if (msg.sender != _account)
@@ -67,7 +66,7 @@ contract Project {
 
     function DEBUG_setStateDeadlineReached() /*onlyBy(creator) */{
     	state = DEADLINE_REACHED;
-    	//DeadlineReached();
+    	DeadlineReached();
     }
 
     function setAmountGoal(uint num) {

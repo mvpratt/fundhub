@@ -14,17 +14,18 @@ function setStatus(message) {
   status.innerHTML = message;
 };
 
+function showDebugInfo() {
 
-function refreshWindow() {
-
-/*
   console.log("accounts[0]: balance (Wei): " + web3.eth.getBalance(accounts[0]));
   console.log("accounts[1]: balance (Wei): " + web3.eth.getBalance(accounts[1]));
   console.log("accounts[2]: balance (Wei): " + web3.eth.getBalance(accounts[2]));
   console.log("accounts[3]: balance (Wei): " + web3.eth.getBalance(accounts[3]));
-*/
+};
 
-  proj.getAmountRaised.call({from: accounts[0]}).then(function(value) {
+
+function refreshWindow() {
+
+  proj.getAmountRaised.call({from: admin}).then(function(value) {
     var refill_element = document.getElementById("amount_raised");
     refill_element.innerHTML = value.valueOf();
   }).catch(function(e) {
@@ -32,7 +33,7 @@ function refreshWindow() {
     setStatus("Error getting amount raised; see log.");
   });
 
-  proj.getAmountGoal.call({from: accounts[0]}).then(function(value) {
+  proj.getAmountGoal.call({from: admin}).then(function(value) {
     var refill_element = document.getElementById("amount_goal");
     refill_element.innerHTML = value.valueOf();
   }).catch(function(e) {
@@ -40,14 +41,14 @@ function refreshWindow() {
     setStatus("Error getting amount goal; see log.");
   });
 
-  proj.getState.call({from: accounts[0]}).then(function(value) {
+  proj.getState.call({from: admin}).then(function(value) {
     var state_element = document.getElementById("state");
     state_element.innerHTML = value.valueOf();
   }).catch(function(e) {
     console.log(e);
     setStatus("Error getting state; see log.");
   });
-
+  return true;
 };
 
 
@@ -60,7 +61,7 @@ function init(){
   });
 
 /*
-  fundhub.createProject(accounts[3], web3.toWei(4, "ether"), {from: accounts[0]}).then(function(){
+  fundhub.createProject(owner, web3.toWei(4, "ether"), {from: admin}).then(function(){
     setStatus("Creating new project.");
     }).catch(function(e) {
       console.log(e);
@@ -72,36 +73,49 @@ function init(){
     console.log("Project address: " + addr);
     proj = Project.at(addr);
   }).then(function(){
-      refreshWindow();
+      return refreshWindow();
   });
-
 
 }
 
 
 function fund() {
 
-  proj.fund(accounts[1], {from: accounts[1], value: web3.toWei(1, "ether")}).then(function(){
+  proj.fund(contrib1, {from: contrib1, value: web3.toWei(1, "ether")}).then(function(){
     setStatus("Contributed 1 ETH!");
   }).catch(function(e) {
     console.log(e);
-    setStatus("Error sending ETH to project; see log.");
+    setStatus("Error funding project; see log.");
   }).then(function(){
-      refreshWindow();
+      return refreshWindow();
   });
 }
 
-/*
-function DEBUG_setStateDeadlineReached() {
+function requestPayout() {
 
-  proj.DEBUG_setStateDeadlineReached({from: accounts[0]}).then(function(){
-    setStatus("Set state to DEADLINE_REACHED (2)");
+  proj.payout({from: owner}).then(function(){
+    setStatus("Requested payout!");
   }).catch(function(e) {
     console.log(e);
-    setStatus("Error setting contract state; see log.");
+    setStatus("Error getting payout; see log.");
+  }).then(function(){
+      return refreshWindow();
   });
 }
-*/
+
+
+function requestRefund() {
+
+  proj.refund({from: contrib1}).then(function(){
+    setStatus("Requested refund");
+  }).catch(function(e) {
+    console.log(e);
+    setStatus("Error getting refund; see log.");
+  }).then(function(){
+      return refreshWindow();
+  });
+}
+
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -122,13 +136,15 @@ window.onload = function() {
     contrib2 = accounts[2];
     owner    = accounts[3];
 
+    showDebugInfo();
   });
+
+
 
   logFullyFundedEvents();
   logDeadlineReachedEvents();
   logWarningEvents();
   logErrorEvents();
-
 }
 
 
