@@ -11,7 +11,7 @@ contract FundingHub {
   uint version = 1;
 
     // Define events
-    event OnDeployed(address deployed);
+    //event OnDeployed(address deployed);
 
 	// Constructor function
 	function FundingHub() {
@@ -21,7 +21,7 @@ contract FundingHub {
     function createProject(address owner, uint funding_goal) {
 
         projectDeployed = new Project(owner, funding_goal);
-        OnDeployed(projectDeployed);
+        //OnDeployed(projectDeployed);
     }
 
     //function contribute(address project, uint amount){

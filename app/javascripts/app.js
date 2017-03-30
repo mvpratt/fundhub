@@ -6,6 +6,7 @@ var  contrib2; // Contributer 2
 var  owner;    // Project owner
 
 var proj;      // Test project
+
 var fundhub;   // Main contract
 
 
@@ -52,30 +53,22 @@ function refreshWindow() {
 };
 
 
-function init(){
 
-  fundhub = FundingHub.deployed();
-  
-  fundhub.getVersion.call().then(function(value) {
-    console.log("FundingHub version: " + value);
-  });
+function createProject () {
 
-/*
-  fundhub.createProject(owner, web3.toWei(4, "ether"), {from: admin}).then(function(){
+  fundhub.createProject(owner, web3.toWei(4, "ether"), {from: admin, gas: 4500000}).then(function(){
     setStatus("Creating new project.");
     }).catch(function(e) {
       console.log(e);
       setStatus("Error creating project; see log.");
-  });
-    */
-
-  fundhub.getProjectAddress.call().then(function(addr) {
-    console.log("Project address: " + addr);
-    proj = Project.at(addr);
   }).then(function(){
-      return refreshWindow();
-  });
-
+    fundhub.getProjectAddress.call().then(function(addr) {
+      console.log("Project address: " + addr);
+      return proj = Project.at(addr);
+    }).then(function(){
+        return refreshWindow();
+    });     
+  });    
 }
 
 
@@ -137,14 +130,20 @@ window.onload = function() {
     owner    = accounts[3];
 
     showDebugInfo();
+
+    fundhub = FundingHub.deployed();
+  
+    fundhub.getVersion.call().then(function(value) {
+      console.log("FundingHub version: " + value);
+    }).catch(function(e) {
+      console.log(e);
+      setStatus("Error getting version; see log.");
+    });
   });
 
+  //logFullyFundedEvents();
+  //logWarningEvents();
 
-
-  logFullyFundedEvents();
-  logDeadlineReachedEvents();
-  logWarningEvents();
-  logErrorEvents();
 }
 
 
@@ -164,21 +163,6 @@ function logFullyFundedEvents() {
   });
 }
 
-function logDeadlineReachedEvents() {
-
-  var deadlineReachedEvent = Project.deployed().DeadlineReached();
-
-  deadlineReachedEvent.watch(function(error, result) {
-    if (!error) {
-        console.log("DeadlineReached() event");
-        return;
-    }
-    else {
-        console.error(error);
-        return;
-    }
-  });
-}
 
 function logWarningEvents() {
 
@@ -196,36 +180,4 @@ function logWarningEvents() {
   });
 }
 
-function logErrorEvents() {
 
-  var errorEvent = Project.deployed().LogError();
-
-  errorEvent.watch(function(error, result) {
-    if (!error) {
-        console.log("LogError() event");
-        return;
-    }
-    else {
-        console.error(error);
-        return;
-    }
-  });
-}
-
-/*
-function logCreateProject() {
-
-  var createProjectEvent = FundingHub.deployed().OnDeployed();
-
-  createProjectEvent.watch(function(error, result) {
-    if (!error) {
-        console.log("FundingHub.OnDeployed() event");
-        return;
-    }
-    else {
-        console.error(error);
-        return;
-    }
-  });
-}
-*/

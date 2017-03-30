@@ -32,9 +32,9 @@ contract Project {
 
 
     // Events
-    event DeadlineReached ();
+    //event DeadlineReached ();
     event FullyFunded ();
-    event LogError ();
+    //event LogError ();
     event LogWarning ();
 
 
@@ -66,7 +66,7 @@ contract Project {
 
     function DEBUG_setStateDeadlineReached() /*onlyBy(creator) */{
     	state = DEADLINE_REACHED;
-    	DeadlineReached();
+    	//DeadlineReached();
     }
 
     function setAmountGoal(uint num) {

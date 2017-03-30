@@ -1,64 +1,73 @@
 
+Last updated: 3/29/2017 <mvpratt>
 
-TODO:
-  Issue - Trouble getting FundingHub to deploy a project from the browser (VM error: out of gas)
-
-FundingHub:
-  Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
-  Tests - Check that requester received funds, more precisely (minus gas cost)
-  Tests - Cleanup debug / admin function calls
-
-Add state PAID_OUT
+Features:
+Tests may need some updating
+Add project state PAID_OUT
 
 Web UI:
+  Multiple projects
   Show contributed balances from each contributer
+
 
 Testing:
   Run with geth local blockchain
-  Improve display of balance
+  Improve display of balance (units of ETH?)
 
 Feature:
   Add deadline support
   Test broken - deadline.js
 
+
+
 ===============================================
 
 Low priority:
   If contribution puts over the top, extra funds returned to contributer
+
   Error checking/security  - i.e. weird / malformed /invalid inputs
     Requesting funds when balance is 0
     Users cant get refund out of a funded project
     Does contract need some overhead funds?  make sure doesnt run out of money
     Change to withdrawl model
     Owner cant fund own contract!
+
   Refactoring:
     Can choose order of tests?
     Storage considerations
     tests - use truffle "require" to get the contract ABI once at beginning
+
   Add basic error messages (for debug)
     When sending funds fails
     When transaction fails for another reason
 
+  Automated tests:
+    Test - Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
+    Test - Check that requester received funds, more precisely (minus gas cost)
+    Test - Cleanup debug / admin function calls
+
 =============================================
 
+
 DONE:
-Web UI - Request Refund
-Web UI - Request Payout
-Web UI - Refresh automatically
-Allow multiple contributions from same person
-FundingHub can deploy a contract
-Add web interface - Project - show balance, state, and button to add funds
-Add events - basic
-Add modifiers - basic
-Users can get refunds from underfunded project that reached deadline
-If deadline expired, funds returned to contributer
-If deadline expired, payout disabled.
-If project is already fully funded, funds returned to contributer
-Run more than one test in same directory 
-Add access restrictions
-More than one contributer can add funds and request refund
-Payout enabled only when funding goal reached
-Record contributer address when funds received
-Payout to owner - called manually
-Allow contributer to request refund
-Create a project that allows a contributer to add money.
+    Web UI - Create a new project from the Web Interface
+    Web UI - Request Refund
+    Web UI - Request Payout
+    Web UI - Refresh automatically
+    Allow multiple contributions from same person
+    FundingHub can deploy a contract
+    Add web interface - Project - show balance, state, and button to add funds
+    Add events - basic
+    Add modifiers - basic
+    Users can get refunds from underfunded project that reached deadline
+    If deadline expired, funds returned to contributer
+    If deadline expired, payout disabled.
+    If project is already fully funded, funds returned to contributer
+    Run more than one test in same directory 
+    Add access restrictions
+    More than one contributer can add funds and request refund
+    Payout enabled only when funding goal reached
+    Record contributer address when funds received
+    Payout to owner - called manually
+    Allow contributer to request refund
+    Create a project that allows a contributer to add money.

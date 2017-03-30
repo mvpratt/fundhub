@@ -30,14 +30,15 @@ h1, h2 {
 
 h2 {
   color: #AAA;
-  font-size: 32px;
+  font-size: 28px;
 }
 
 h3 {
   font-weight: normal;
-  color: #AAA;
-  font-size: 24px;
+  color: black;
+  font-size: 16px;
 }
+
 
 .black {
   color: black;
