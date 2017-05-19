@@ -18,27 +18,22 @@ contract('Project: Basic fund and refund, single contributer', function(accounts
   const DEADLINE_REACHED = 2;   
   const ERROR   = 3;   
 
-  //console.log("accounts[0]: address: " + accounts[0] + " balance: " + web3.eth.getBalance(accounts[0]));
-  //console.log("accounts[1]: address: " + accounts[1] + " balance: " + web3.eth.getBalance(accounts[1]));
-  //console.log("accounts[2]: address: " + accounts[2] + " balance: " + web3.eth.getBalance(accounts[2]));
-  //console.log("accounts[3]: address: " + accounts[3] + " balance: " + web3.eth.getBalance(accounts[3]));
-
 // boilerplate //
 
  
 // ============ Setup ====================================================== //
 
-it("Get Project address", function() {
 
-  fundhub = FundingHub.deployed();
+//  fundhub = FundingHub.deployed();
+//  fundhub.createProject(owner, web3.toWei(3, "ether"), {from: admin, gas: 4500000});
+//  proj_addr = fundhub.getProjectAddress.call();
 
-  return fundhub.getProjectAddress.call().then(function(addr) {
-    proj = Project.at(addr);
-  }).then(function() {
-      proj.getCreator.call().then(function(addr) {
-      assert.equal(addr, addr, "error: creator not set"); // not really testing anything.  creator unknown (truffle?)
-  });
- });
+/*
+it("Check owner", function() {
+
+  return proj.getOwner.call().then(function(own) {
+      assert.equal(own, owner, "error: owner not set");
+    });
 });
 
 
@@ -56,12 +51,41 @@ it(" Check fundraising goal", function() {
       assert.equal(id.valueOf(), web3.toWei(3, "ether"), "error: fundraising goal not 3 ETH");
     });
 });
+*/
+
+// TODO - hack
+it("[ADMIN] Get Project address", function() {
+  //fundhub = FundingHub.deployed();
+  proj = Project.deployed();
+
+  return proj.setOwner.call().then(function(addr) {
+    proj = Project.at(addr);
+  }).then(function() {
+      proj.getCreator.call().then(function(addr) {
+      assert.equal(addr, addr, "error: creator not set"); // not really testing anything.  creator unknown (truffle?)
+  });
+ });
+});
+
+it("[ADMIN] Check owner", function() {
+  return proj.getOwner.call().then(function(own) {
+      assert.equal(own, owner, "error: owner not set");
+    });
+});
+
+it("Owner sets amount to be raised (fundraising goal)", function() {
+  return proj.getAmountGoal.call().then(function(id) {
+      assert.equal(id.valueOf(), web3.toWei(3, "ether"), "error: fundraising goal not 3 ETH");
+    });
+});
 
 
 // ============ Fund & Refund ============================================== //
 
 it("Contributer sends 1 ETH, verify received",function(){
+
   
+
   return proj.fund(contrib1, {from: contrib1}, {value: web3.toWei(1, "ether")}).then(function(){
     proj.getAmountRaised.call().then(function(amount) {
       assert.equal(amount.valueOf(), web3.toWei(1, "ether"), "error: amount not 1");
@@ -71,6 +95,8 @@ it("Contributer sends 1 ETH, verify received",function(){
 
 
 it("Contributer requests refund 1 ETH",function(){
+
+  
 
   return proj.refund({from: contrib1}).then(function(){
     proj.getAmountRaised.call().then(function(amount) {
@@ -83,7 +109,9 @@ it("Contributer requests refund 1 ETH",function(){
 // ============ Payout  ==================================================== //
 
 it("Contributer sends 3 ETH, verify received",function(){
+ 
   
+   
   return proj.fund(contrib1, {from: contrib1}, {value: web3.toWei(3, "ether")}).then(function(){
     proj.getAmountRaised.call().then(function(amount) {
       assert.equal(amount.valueOf(), web3.toWei(3, "ether"), "error: amount not 3");
@@ -93,7 +121,9 @@ it("Contributer sends 3 ETH, verify received",function(){
 
 
 it("Verify Project is fully funded",function(){
+
   
+    
   return proj.getState.call().then(function(state){
       assert.equal(state, FUNDED, "error: Project state not FUNDED");
   });
@@ -102,6 +132,8 @@ it("Verify Project is fully funded",function(){
 // TODO - how to check requester received funds, more precisely? (minus gas price)
 it("Owner request payout, verify owner received",function(){
 
+  
+  
   begin_balance = web3.eth.getBalance(owner);
 
   return proj.payout({from: owner}).then(function(){
@@ -114,6 +146,8 @@ it("Owner request payout, verify owner received",function(){
 
 it("Verify project funds empty",function(){
 
+  
+  
   return proj.getAmountRaised.call().then(function(amount){
       assert.equal(amount, web3.toWei(0, "ether"), "error: contract not empty");
   });

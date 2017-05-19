@@ -4,11 +4,11 @@ pragma solidity ^0.4.2;
 contract Project {
 
     // Stakeholders
-    address creator;
-    address owner;
+    address public creator;
+    address public owner;
 
     // Project info
-    uint amount_goal;  //amount in Wei
+    uint public amount_goal;  //amount in Wei
 
     // Project Status
     bool success = false;
@@ -24,7 +24,7 @@ contract Project {
     uint constant FUNDED           = 1;    
     uint constant DEADLINE_REACHED = 2;   
     //uint constant ERROR            = 3;     
-    uint state;
+    uint public state;
 
 
     // Funding contributions
@@ -32,9 +32,9 @@ contract Project {
 
 
     // Events
+    event Fund();
     //event DeadlineReached ();
     event FullyFunded ();
-    //event LogError ();
     event LogWarning ();
 
 
@@ -83,7 +83,7 @@ contract Project {
 
 // Change project state
 
-    function fund(address contrib) payable returns (uint) {
+    function fund(address contrib) payable {
 
     	if (state == CREATED) {
             balances[contrib] += msg.value;
@@ -99,6 +99,7 @@ contract Project {
         else {
             LogWarning();
         }
+        Fund();
     }
 
     function refund() {

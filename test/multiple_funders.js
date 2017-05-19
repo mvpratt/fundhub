@@ -18,11 +18,6 @@ contract('Project: Multiple funders', function(accounts) {
   const DEADLINE_REACHED = 2;   
   const ERROR   = 3;   
 
-  //console.log("accounts[0]: address: " + accounts[0] + " balance: " + web3.eth.getBalance(accounts[0]));
-  //console.log("accounts[1]: address: " + accounts[1] + " balance: " + web3.eth.getBalance(accounts[1]));
-  //console.log("accounts[2]: address: " + accounts[2] + " balance: " + web3.eth.getBalance(accounts[2]));
-  //console.log("accounts[3]: address: " + accounts[3] + " balance: " + web3.eth.getBalance(accounts[3]));
-
 // boilerplate //
 
 // ============ Setup ====================================================== //

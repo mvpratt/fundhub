@@ -1,4 +1,3 @@
-var accounts;
 
 var  admin;    // contract creator / debug interface
 var  contrib1; // Contributer 1
@@ -6,107 +5,168 @@ var  contrib2; // Contributer 2
 var  owner;    // Project owner
 
 var proj;      // Test project
-
 var fundhub;   // Main contract
 
 
 function setStatus(message) {
   var status = document.getElementById("status");
   status.innerHTML = message;
-};
+}
 
 function showDebugInfo() {
 
-  console.log("accounts[0]: balance (Wei): " + web3.eth.getBalance(accounts[0]));
-  console.log("accounts[1]: balance (Wei): " + web3.eth.getBalance(accounts[1]));
-  console.log("accounts[2]: balance (Wei): " + web3.eth.getBalance(accounts[2]));
-  console.log("accounts[3]: balance (Wei): " + web3.eth.getBalance(accounts[3]));
-};
+  console.log("admin: balance (Wei): "    + web3.eth.getBalance(admin));
+  console.log("contrib1: balance (Wei): " + web3.eth.getBalance(contrib1));
+  console.log("conrib2: balance (Wei): "  + web3.eth.getBalance(contrib2));
+  console.log("owner: balance (Wei): "    + web3.eth.getBalance(owner));
+}
+
 
 
 function refreshWindow() {
 
-  proj.getAmountRaised.call({from: admin}).then(function(value) {
+  getAmountRaised();
+  getAmountGoal();
+  getState();
+
+}
+
+
+/*
+function createProject () {
+
+  fundhub.createProject(owner, web3.toWei(4, "ether"), {from: admin, gas: 4500000})
+    .then(function () {
+      setStatus("Creating new project.");
+    })
+    .catch(function printError(e) {
+      console.log(e);
+      setStatus("Error creating project; see log.");
+    })
+    .then(function getIndex() {
+      fundhub.getIndexLastDeployedProject.call();
+    })
+    .then(function printIndex(index) {
+      console.log("Project index: " + index);
+      fundhub.getProjectAddress(index);
+    })
+    .then(function printAddress(addr) {
+      console.log("Project address: " + addr);
+      //return proj = Project.at(addr);
+    });    
+    //.then(function(){
+    //  return refreshWindow();
+    //});     
+}
+*/
+
+function printError () {
+
+  console.log("error");
+}
+
+function printSuccess () {
+
+  console.log("success!");
+}
+
+
+
+function getAmountRaised () {
+
+  proj.getAmountRaised.call({from: admin})
+  .then(function(value) {
     var refill_element = document.getElementById("amount_raised");
     refill_element.innerHTML = value.valueOf();
-  }).catch(function(e) {
+  })
+  .catch(function(e) {
     console.log(e);
     setStatus("Error getting amount raised; see log.");
   });
+}
 
-  proj.getAmountGoal.call({from: admin}).then(function(value) {
+
+function getAmountGoal () {
+
+  proj.getAmountGoal.call({from: admin})
+  .then(function(value) {
     var refill_element = document.getElementById("amount_goal");
     refill_element.innerHTML = value.valueOf();
-  }).catch(function(e) {
+  })
+  .catch(function(e) {
     console.log(e);
     setStatus("Error getting amount goal; see log.");
   });
+}
 
-  proj.getState.call({from: admin}).then(function(value) {
+function getState () {
+
+  proj.getState.call({from: admin})
+  .then(function(value) {
     var state_element = document.getElementById("state");
     state_element.innerHTML = value.valueOf();
-  }).catch(function(e) {
+  })
+  .catch(function(e) {
     console.log(e);
     setStatus("Error getting state; see log.");
   });
-  return true;
-};
-
-
+}
 
 function createProject () {
 
-  fundhub.createProject(owner, web3.toWei(4, "ether"), {from: admin, gas: 4500000}).then(function(){
-    setStatus("Creating new project.");
-    }).catch(function(e) {
-      console.log(e);
-      setStatus("Error creating project; see log.");
-  }).then(function(){
-    fundhub.getProjectAddress.call().then(function(addr) {
+  fundhub = FundingHub.deployed();  /////TODO - this is a local pointer to fundhub!!!!
+
+  fundhub.getProjectAddress.call(1)
+  .then(function(addr){
       console.log("Project address: " + addr);
-      return proj = Project.at(addr);
-    }).then(function(){
-        return refreshWindow();
-    });     
-  });    
+      proj = Project.at(addr);
+  //    return proj.state.call();
+  //})
+  //.then(function(value){
+  //  var state_element = document.getElementById("state");
+  //  state_element.innerHTML = value.valueOf();     
+  });
 }
 
 
 function fund() {
 
-  proj.fund(contrib1, {from: contrib1, value: web3.toWei(1, "ether")}).then(function(){
+  proj.fund(contrib1, {from: contrib1, value: web3.toWei(1, "ether")})
+  .then(function(){
     setStatus("Contributed 1 ETH!");
-  }).catch(function(e) {
+  })
+  .catch(function(e) {
     console.log(e);
     setStatus("Error funding project; see log.");
-  }).then(function(){
-      return refreshWindow();
   });
+  //refreshWindow();
 }
 
 function requestPayout() {
 
-  proj.payout({from: owner}).then(function(){
+  proj.payout({from: owner})
+  .then(function(){
     setStatus("Requested payout!");
-  }).catch(function(e) {
+  })
+  .catch(function(e) {
     console.log(e);
     setStatus("Error getting payout; see log.");
-  }).then(function(){
-      return refreshWindow();
   });
+  //refreshWindow();
 }
 
 
 function requestRefund() {
 
-  proj.refund({from: contrib1}).then(function(){
+  proj.refund({from: contrib1})
+  .then(function(){
     setStatus("Requested refund");
-  }).catch(function(e) {
+  })
+  .catch(function(e) {
     console.log(e);
     setStatus("Error getting refund; see log.");
-  }).then(function(){
-      return refreshWindow();
   });
+  //refreshWindow();
 }
 
 
@@ -122,31 +182,31 @@ window.onload = function() {
       return;
     }
 
-    accounts = accs;
-
-    admin    = accounts[0]; // contract creator / debug interface
-    contrib1 = accounts[1];
-    contrib2 = accounts[2];
-    owner    = accounts[3];
+    admin    = accs[0]; // contract creator / debug interface
+    contrib1 = accs[1];
+    contrib2 = accs[2];
+    owner    = accs[3];
 
     showDebugInfo();
 
     fundhub = FundingHub.deployed();
   
-    fundhub.getVersion.call().then(function(value) {
+    fundhub.getVersion.call()
+    .then(function(value) {
       console.log("FundingHub version: " + value);
-    }).catch(function(e) {
+    })
+    .catch(function(e) {
       console.log(e);
       setStatus("Error getting version; see log.");
     });
+
   });
 
   //logFullyFundedEvents();
   //logWarningEvents();
-
 }
 
-
+/*
 function logFullyFundedEvents() {
 
   var fullyFundedEvent = Project.deployed().FullyFunded();
@@ -179,5 +239,5 @@ function logWarningEvents() {
     }
   });
 }
-
+*/
 
