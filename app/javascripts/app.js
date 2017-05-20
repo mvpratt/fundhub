@@ -79,12 +79,25 @@ function getState () {
   });
 }
 
+function getDeadline () {
+
+  proj.getDeadline.call({from: admin})
+  .then(function(value) {
+    var state_element = document.getElementById("deadline");
+    state_element.innerHTML = value.valueOf();
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error getting deadline; see log.");
+  });
+}
+
 
 function createProject () {
 
-  fundhub.createProject(owner, web3.toWei(3, "ether"), {from: admin, gas: 4500000})
+  fundhub.createProject(owner, web3.toWei(3, "ether"), 3, {from: admin, gas: 4500000})
   .then(function(){
-     return fundhub.getAddressLastDeployedProject.call();   
+     return fundhub.getAddressLastDeployedProject.call({from: admin});   
   })
   .then(function(addr){
       console.log("Project address: " + addr);

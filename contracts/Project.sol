@@ -6,18 +6,16 @@ contract Project {
     struct Info {
       address owner; 
       uint amount_goal;  // in units of Wei
+      uint duration;
+      uint deadline;     // in units of blocks
     }
 
     Info info;
 
     mapping(address => uint) public balances;      // Funding contributions
     address public creator;
-    bool success = false;      // Get status success/fail when send money
 
-    // Funding deadline;
-    //uint deadline;
-    //uint duration; 
-    //uint creation_time;
+    bool success = false;      // Get status success/fail when send money
 
     // Contract state
     uint constant CREATED          = 0;   
@@ -25,6 +23,7 @@ contract Project {
     uint constant DEADLINE_REACHED = 2;
     uint constant PAID_OUT         = 3;   
     uint public state;
+
 
     // Events to help with debugging
     //event OnFund(address sender, uint amount);
@@ -34,14 +33,11 @@ contract Project {
 
 
     // Constructor function, run when the project is deployed
-    function Project(address own, uint amt) {
+    function Project(address own, uint amt, uint dur) {
 
         creator     = msg.sender;
-        info        = Info(own, amt);
         state       = CREATED;
-        //duration    = 1 day;
-        //deadline    = now + duration;
-        //creation_time = now;
+        info        = Info(own, amt, dur, (now+dur));
     }
 
 /*
@@ -131,6 +127,10 @@ contract Project {
 	
 	function getCreator() returns(address) {
         return creator;
+    }
+
+    function getDeadline() returns(uint) {
+        return info.deadline;
     }
 }
 

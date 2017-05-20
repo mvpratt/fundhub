@@ -25,9 +25,9 @@ contract FundingHub {
 	}
 
 
-    function createProject(address owner, uint funding_goal) {
+    function createProject(address owner, uint funding_goal, uint duration) {
 
-        projectDeployed = new Project(owner, funding_goal);
+        projectDeployed = new Project(owner, funding_goal, duration);
         num_projects = num_projects + 1;
         myProjects[num_projects] = projectDeployed;
     }
