@@ -1,20 +1,20 @@
 
-Last updated: 4/4/2017 <mvpratt>
+Last updated: 5/19/2017 <mvpratt>
 
 Questions for B9lab:
   Add support for many users  (do we need some sort of login?)
 
 
 Issue:
+Bug - truffle not migrating every time?
+Bug - doesnt change to paid out after payout 
 Bug - refreshWindow() only works the first time its run.
-Fix errors and warnings
-Try this: In migration script, deploy a project from FundingHub.  Use this project in project tests.
-Use promises to address order dependencies in tests
 Create new test cases in which additional projects are deployed from FundingHub
 In web GUI, be sure to get the index of the most recent deployed project
 
 
 Features:
+
   Add project state PAID_OUT
   Web UI - refresh
   Web UI - Multiple projects
@@ -24,6 +24,7 @@ Features:
   Test broken - deadline.js
   get list of all projects
   Improve display of balance (units of ETH?)
+  Reset contract
 
 Testing:
   Run with geth local blockchain

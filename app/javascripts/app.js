@@ -21,8 +21,7 @@ function showDebugInfo() {
   console.log("owner: balance (Wei): "    + web3.eth.getBalance(owner));
 }
 
-
-
+/*
 function refreshWindow() {
 
   getAmountRaised();
@@ -30,7 +29,7 @@ function refreshWindow() {
   getState();
 
 }
-
+*/
 
 /*
 function createProject () {
@@ -169,6 +168,9 @@ function requestRefund() {
   //refreshWindow();
 }
 
+//function logEvents() {
+//  LogFund();
+//}
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -202,9 +204,18 @@ window.onload = function() {
 
   });
 
-  //logFullyFundedEvents();
-  //logWarningEvents();
 }
+
+
+/*function LogFund() {  
+  proj.OnFund()
+    .watch(function(e, value) {
+      if (e)
+        console.error(e);
+      else
+        console.log(web3.fromWei(value.args.amount, "ether") + " ethers sent from " + WhoFromAddr(value.args.sender));
+    });
+}*/
 
 /*
 function logFullyFundedEvents() {

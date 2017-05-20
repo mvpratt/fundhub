@@ -7,11 +7,8 @@ contract FundingHub {
 
   // List of projects created
   address projectDeployed; 
-
   address[3] myProjects;
-
   uint8 num_projects = 0;
-
   uint8 version = 1;
 
     // Define events
