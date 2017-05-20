@@ -91,6 +91,33 @@ function createProject () {
   });
 }
 
+function contribute() {
+
+  fundhub.contribute(1, contrib1, {from: contrib1, value: web3.toWei(1, "ether")})
+  .then(function(){
+    setStatus("Contributed 1 ETH!");
+    return proj.getAmountRaised.call({from: admin});
+  })
+  .then(function(value) {
+    var refill_element = document.getElementById("amount_raised");
+    refill_element.innerHTML = value.valueOf();
+    return proj.getState.call({from: admin});
+  })
+  .then(function(value) {
+    var state_element = document.getElementById("state");
+    state_element.innerHTML = value.valueOf();
+    return proj.getAmountGoal.call({from: admin});
+  })
+  .then(function(value) {
+    var refill_element = document.getElementById("amount_goal");
+    refill_element.innerHTML = value.valueOf();
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error funding project; see log.");
+  });
+}
+
 
 function fund() {
 
