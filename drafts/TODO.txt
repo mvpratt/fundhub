@@ -30,6 +30,7 @@ Test via script
 
 
 DONE:
+    Moved key project data to a struct
     Web UI - create new project from fundhub 
     Fund project from FundingHub (flow through)
     Create README.md

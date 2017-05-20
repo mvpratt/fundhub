@@ -3,26 +3,21 @@ pragma solidity ^0.4.2;
 
 contract Project {
 
-  struct Info {
-    //address public owner; 
-    uint amount_goal;  // amount in Wei
-  }
+    struct Info {
+      address owner; 
+      uint amount_goal;  // in units of Wei
+    }
 
-   Info info;
+    Info info;
 
-    // Funding contributions
-    mapping(address => uint) public balances;
-
+    mapping(address => uint) public balances;      // Funding contributions
     address public creator;
-    address public owner;
-
     bool success = false;      // Get status success/fail when send money
 
     // Funding deadline;
     //uint deadline;
     //uint duration; 
     //uint creation_time;
-
 
     // Contract state
     uint constant CREATED          = 0;   
@@ -42,8 +37,7 @@ contract Project {
     function Project(address own, uint amt) {
 
         creator     = msg.sender;
-        owner       = own;
-        info        = Info(amt);
+        info        = Info(own, amt);
         state       = CREATED;
         //duration    = 1 day;
         //deadline    = now + duration;
@@ -106,9 +100,9 @@ contract Project {
     }
 
     function payout() public {
-    	if ((msg.sender == creator || msg.sender == owner) && state == FUNDED){
+    	if ((msg.sender == creator || msg.sender == info.owner) && state == FUNDED){
             state = PAID_OUT;
-            success = owner.send(this.balance);
+            success = info.owner.send(this.balance);
         }
     }
 
@@ -132,7 +126,7 @@ contract Project {
     }
 
     function getOwner() returns(address) {
-        return owner;
+        return info.owner;
     }
 	
 	function getCreator() returns(address) {
