@@ -7,7 +7,8 @@ n/a
 
 IN PROGRESS:
   Test deadline
-
+  Testing: Run with geth local blockchain
+  
 TODO:
   Update to truffle 3.2.1?  -- required for play_time example.
   Web UI - Multiple projects
@@ -15,7 +16,7 @@ TODO:
   Max 3 contribs per project
   Test via script
   Browse projects
-  Testing: Run with geth local blockchain
+
   Use a struct to store info in Project
   Question for B9lab: Add support for many users  (do we need some sort of login?)
   Web UI - Multiple contributers, Show contributed balances from each contributer
