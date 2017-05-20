@@ -5,6 +5,12 @@ import "Project.sol";
 
 contract FundingHub {
 
+
+// How to track a bunch of projects:
+//  And array (address -> index), store array size, project name?
+//  A mapping (address -> owner)
+
+
   address public projectDeployed; 
   address[3] public myProjects;       // Array of projects created
   
