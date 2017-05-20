@@ -7,15 +7,13 @@ Questions for B9lab:
 
 Issue:
 Bug - truffle not migrating every time?
-Bug - doesnt change to paid out after payout 
-Bug - refreshWindow() only works the first time its run.
+
 Create new test cases in which additional projects are deployed from FundingHub
 In web GUI, be sure to get the index of the most recent deployed project
 
 
 Features:
 
-  Add project state PAID_OUT
   Web UI - refresh
   Web UI - Multiple projects
   Web UI - Multiple contributers, Show contributed balances from each contributer
@@ -25,6 +23,7 @@ Features:
   get list of all projects
   Improve display of balance (units of ETH?)
   Reset contract
+  Bug - refreshWindow() only works the first time its run.
 
 Testing:
   Run with geth local blockchain
