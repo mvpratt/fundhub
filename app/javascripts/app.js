@@ -82,12 +82,17 @@ function getState () {
 
 function createProject () {
 
-  fundhub = FundingHub.deployed();
-
-  fundhub.getProjectAddress.call(1)
+  fundhub.createProject(owner, web3.toWei(3, "ether"), {from: admin, gas: 4500000})
+  .then(function(){
+     return fundhub.getAddressLastDeployedProject.call();   
+  })
   .then(function(addr){
       console.log("Project address: " + addr);
       proj = Project.at(addr);    
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error creating project; see log.");
   });
 }
 

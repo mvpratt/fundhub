@@ -5,11 +5,11 @@ import "Project.sol";
 
 contract FundingHub {
 
-
 // How to track a bunch of projects:
 //  And array (address -> index), store array size, project name?
 //  A mapping (address -> owner)
 
+//address.func.value(amount)(arg1, arg2, arg3)
 
   address public projectDeployed; 
   address[3] public myProjects;       // Array of projects created
@@ -34,7 +34,7 @@ contract FundingHub {
 
 
     function contribute(uint index, address contrib) payable {
-      //address.func.value(amount)(arg1, arg2, arg3)
+
       proj = Project(myProjects[index]);
       proj.fund.value(msg.value)(contrib);
     }

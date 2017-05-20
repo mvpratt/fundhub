@@ -3,15 +3,20 @@ pragma solidity ^0.4.2;
 
 contract Project {
 
-    // Stakeholders
+  struct Info {
+    //address public owner; 
+    uint amount_goal;  // amount in Wei
+  }
+
+   Info info;
+
+    // Funding contributions
+    mapping(address => uint) public balances;
+
     address public creator;
     address public owner;
 
-    // Project info
-    uint public amount_goal;  // amount in Wei
-
-    // Get status sucess/fail when send money
-    bool success = false;
+    bool success = false;      // Get status success/fail when send money
 
     // Funding deadline;
     //uint deadline;
@@ -24,13 +29,7 @@ contract Project {
     uint constant FUNDED           = 1;    
     uint constant DEADLINE_REACHED = 2;
     uint constant PAID_OUT         = 3;   
-    //uint constant ERROR            = 4;     
     uint public state;
-
-
-    // Funding contributions
-    mapping(address => uint) public balances;
-
 
     // Events to help with debugging
     //event OnFund(address sender, uint amount);
@@ -44,7 +43,7 @@ contract Project {
 
         creator     = msg.sender;
         owner       = own;
-        amount_goal = amt;
+        info        = Info(amt);
         state       = CREATED;
         //duration    = 1 day;
         //deadline    = now + duration;
@@ -90,7 +89,7 @@ contract Project {
     	if (state == CREATED) {
             balances[contrib] += msg.value;
 
-            if (this.balance >= amount_goal){
+            if (this.balance >= info.amount_goal){
 	            state = FUNDED;
             }
         }
@@ -121,7 +120,7 @@ contract Project {
     }
 
     function getAmountGoal() returns(uint) {
-        return amount_goal;
+        return info.amount_goal;
     }
 	
     function getAmountRaised() returns(uint) {
