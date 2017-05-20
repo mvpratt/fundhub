@@ -6,8 +6,7 @@ BUGS:
 n/a
 
 IN PROGRESS:
-  Add deadline support
-  Test broken - deadline.js
+  Test deadline
 
 TODO:
   Update to truffle 3.2.1?  -- required for play_time example.
@@ -27,6 +26,7 @@ TODO:
 
 
 DONE:
+   Add deadline to project
     Moved key project data to a struct
     Web UI - create new project from fundhub 
     Fund project from FundingHub (flow through)
@@ -57,6 +57,8 @@ DONE:
 
 
 BACKLOG:
+
+  Fix or remove broken tests  (only refund test required for b9lab)
 
   Debug - Reset FundingHub/Projects
   Create new test cases in which additional projects are deployed from FundingHub
