@@ -4,17 +4,22 @@ Last updated: 5/19/2017 <mvpratt>
 Questions for B9lab:
   Add support for many users  (do we need some sort of login?)
 
+0xea738e1eb1e9c780f0b4d60a5a8925a40f8793f3
+0xda95511fe1ff57e3a145b239493660397cc40403
+0xb8ab592e243a3a1e2a45d7dbd454c6bad13e2b98
+0x6874f98437f7736397a4b2691a203e621a6be518
+0x7bfe244946bd86947deacbc79082ee47312973c4
+0x0d63be325fef0a67be4d3aa1134595fa970052bd
+0x583797f2c711624d03f9a93b4dfb9f3ef2182db9
 
 Issue:
 Bug - truffle not migrating every time?
 
+
+Features:
 Create new test cases in which additional projects are deployed from FundingHub
 In web GUI, be sure to get the index of the most recent deployed project
 
-
-Features:
-
-  Web UI - refresh
   Web UI - Multiple projects
   Web UI - Multiple contributers, Show contributed balances from each contributer
   Use a struct to store info in Project
@@ -23,15 +28,14 @@ Features:
   get list of all projects
   Improve display of balance (units of ETH?)
   Reset contract
-  Bug - refreshWindow() only works the first time its run.
-
-Testing:
-  Run with geth local blockchain
-
 
 How to track a bunch of projects:
   And array (address -> index), store array size, project name?
   A mapping (address -> owner)
+
+Testing:
+  Run with geth local blockchain
+
 
 
 ===============================================

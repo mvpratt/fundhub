@@ -85,43 +85,32 @@ contract Project {
 
 // Change project state
 
-    function fund(address contrib) payable {
+    function fund(address contrib) payable public {
 
     	if (state == CREATED) {
             balances[contrib] += msg.value;
 
             if (this.balance >= amount_goal){
 	            state = FUNDED;
-	    //        FullyFunded();
             }
         }
         else if (state == FUNDED || state == DEADLINE_REACHED) {
         	success = msg.sender.send(msg.value);
         }
-        //else {
-        //    LogWarning();
-        //}
-        //OnFund(msg.sender, msg.value);
     }
 
-    function refund() {
+    function refund() public {
     	if (state == CREATED || state == DEADLINE_REACHED){
             success = msg.sender.send(balances[msg.sender]);
             balances[msg.sender] = 0;
         }
-//        else {
-//            LogWarning();
-//        }
     }
 
-    function payout() {
+    function payout() public {
     	if ((msg.sender == creator || msg.sender == owner) && state == FUNDED){
             state = PAID_OUT;
             success = owner.send(this.balance);
         }
-//        else {
-//            LogWarning();
-//        }
     }
 
 
@@ -150,6 +139,5 @@ contract Project {
 	function getCreator() returns(address) {
         return creator;
     }
-
 }
 

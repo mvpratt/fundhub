@@ -23,9 +23,15 @@ function showDebugInfo() {
 }
 
 
+function reset() {
+
+}
+
+
 function printError () {
   console.log("error");
 }
+
 
 function printSuccess () {
   console.log("success!");
@@ -76,7 +82,7 @@ function getState () {
 
 function createProject () {
 
-  fundhub = FundingHub.deployed();  /////TODO - this is a local pointer to fundhub!!!!
+  fundhub = FundingHub.deployed();
 
   fundhub.getProjectAddress.call(1)
   .then(function(addr){
