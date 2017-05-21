@@ -1,14 +1,14 @@
 
-Last updated: 5/19/2017 <mvpratt>
+Last updated: 5/21/2017 <mvpratt>
 
 
 BUGS:
-n/a
+  New contract deployments on geth not accessible from app.js
 
 IN PROGRESS:
   Test deadline
-  Testing: Run with geth local blockchain
-  
+
+
 TODO:
   Update to truffle 3.2.1?  -- required for play_time example.
   Web UI - Multiple projects
@@ -27,7 +27,8 @@ TODO:
 
 
 DONE:
-   Add deadline to project
+    Basic testing with geth local chain
+    Add deadline to project
     Moved key project data to a struct
     Web UI - create new project from fundhub 
     Fund project from FundingHub (flow through)
