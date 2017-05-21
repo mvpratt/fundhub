@@ -15,11 +15,10 @@ module.exports = {
   },
   networks: {
     "staging": {
-      network_id: 42 // custom private network
-      // use default rpc settings
+      network_id: 42 // custom private network (geth)
     },
     "development": {
-      network_id: "default"
+      network_id: "default" // testrpc
     }
   }
 };

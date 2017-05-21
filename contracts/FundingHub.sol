@@ -5,19 +5,21 @@ import "Project.sol";
 
 contract FundingHub {
 
-// How to track a bunch of projects:
+// HOW TO: track a bunch of projects
 //  And array (address -> index), store array size, project name?
 //  A mapping (address -> owner)
 
+// HOW TO: Call a function and send it ETH
 //address.func.value(amount)(arg1, arg2, arg3)
 
-  address public projectDeployed; 
-  address[3] public myProjects;       // Array of projects created
-  
+
+  address[3] public myProjects;       // Array of projects 
+  address    public projectDeployed;     // Last project deployed
+
   Project proj;
 
-  uint8 public num_projects = 0;
-  uint8 public version      = 1;
+  uint8 public num_projects     = 0;
+  uint8 constant public version = 1;
 
 
 	// Constructor function
@@ -36,7 +38,7 @@ contract FundingHub {
     function contribute(uint index, address contrib) payable {
 
       proj = Project(myProjects[index]);
-      proj.fund.value(msg.value)(contrib);
+      proj.fund.value(msg.value)(contrib); 
     }
 
 
