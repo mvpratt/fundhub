@@ -7,12 +7,12 @@ contract Project {
       address owner; 
       uint amount_goal;  // in units of Wei
       uint duration;
-      uint deadline;     // in units of blocks
+      uint deadline;     // in units of seconds
     }
 
     Info info;
 
-    mapping(address => uint) public balances;      // Funding contributions
+    mapping(address => uint) public balances;    // Funding contributions
     address public creator;
 
     bool success = false;      // Get status success/fail when send money
@@ -25,13 +25,6 @@ contract Project {
     uint public state;
 
 
-    // Events to help with debugging
-    //event OnFund(address sender, uint amount);
-    //event DeadlineReached ();
-    //event FullyFunded ();
-    //event LogWarning ();
-
-
     // Constructor function, run when the project is deployed
     function Project(address own, uint amt, uint dur) {
 
@@ -39,37 +32,6 @@ contract Project {
         state       = CREATED;
         info        = Info(own, amt, dur, (now+dur));
     }
-
-/*
-    modifier onlyBy(address _account)
-    {
-        if (msg.sender != _account)
-            throw;
-        _;
-    }
-*/
-
-// ---------- Debug only ------------------------------------------- //
-/*
-    function setOwner(address own) onlyBy(creator) {
-        owner = own;
-    }
-
-    function DEBUG_setStateDeadlineReached() onlyBy(creator) {
-    	state = DEADLINE_REACHED;
-    	//DeadlineReached();
-    }
-
-    function setAmountGoal(uint num) {
-    	if (msg.sender == owner && state == CREATED){
-            amount_goal = num;
-        }
-        else {
-            LogWarning();
-        }
-    }
-*/
-// ----------------------------------------------------------------- //
 
 
 // Change project state
@@ -84,14 +46,14 @@ contract Project {
             }
         }
         else if (state == FUNDED || state == DEADLINE_REACHED) {
-        	success = msg.sender.send(msg.value);
+        	success = contrib.send(msg.value);
         }
     }
 
     function refund() public {
     	if (state == CREATED || state == DEADLINE_REACHED){
-            success = msg.sender.send(balances[msg.sender]);
             balances[msg.sender] = 0;
+            success = msg.sender.send(balances[msg.sender]);
         }
     }
 
@@ -133,4 +95,44 @@ contract Project {
         return info.deadline;
     }
 }
+
+
+    // Events to help with debugging
+    //event OnFund(address sender, uint amount);
+    //event DeadlineReached ();
+    //event FullyFunded ();
+    //event LogWarning ();
+
+/*
+    modifier onlyBy(address _account)
+    {
+        if (msg.sender != _account)
+            throw;
+        _;
+    }
+*/
+
+// ---------- Debug only ------------------------------------------- //
+/*
+    function setOwner(address own) onlyBy(creator) {
+        owner = own;
+    }
+
+    function DEBUG_setStateDeadlineReached() onlyBy(creator) {
+        state = DEADLINE_REACHED;
+        //DeadlineReached();
+    }
+
+    function setAmountGoal(uint num) {
+        if (msg.sender == owner && state == CREATED){
+            amount_goal = num;
+        }
+        else {
+            LogWarning();
+        }
+    }
+*/
+// ----------------------------------------------------------------- //
+
+
 

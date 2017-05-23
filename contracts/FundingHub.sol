@@ -14,7 +14,7 @@ contract FundingHub {
 
 
   address[3] public myProjects;       // Array of projects 
-  address    public projectDeployed;     // Last project deployed
+  address    public projectDeployed;  // Last project deployed
 
   Project proj;
 
@@ -65,4 +65,10 @@ contract FundingHub {
     function getVersion() returns (uint8) {
         return version;
     }
+
+    //function destroy() {
+    //    if (msg.sender == owner) { // without this funds could be locked in the contract forever!
+    //        suicide(owner);
+    //    }
+    //}
 }
