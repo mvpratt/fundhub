@@ -10,7 +10,7 @@ var fundhub;   // Main contract
 
 var AMOUNT_GOAL;
 var DURATION; // seconds
-var AMOUNT_CONTRIBUTE;   
+var amount_contribute;   
 
 
 function setStatus(message) {
@@ -90,6 +90,8 @@ function createProject () {
   })
   .then(function(addr){
       console.log("Project address: " + addr);
+      var state_element = document.getElementById("project_address");
+      state_element.innerHTML = addr;      
       proj = Project.at(addr);    
   })
   .catch(function(e) {
@@ -100,9 +102,11 @@ function createProject () {
 
 function contribute() {
 
-  fundhub.contribute(proj_index, contrib1, {from: contrib1, value: AMOUNT_CONTRIBUTE})
+  amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
+
+  fundhub.contribute(proj_index, contrib1, {from: contrib1, value: amount_contribute})
   .then(function(){
-    setStatus("Contributed " + web3.fromWei(AMOUNT_CONTRIBUTE, "ether") + " ETH!");
+    setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH!");
     return proj.getAmountRaised.call();
   })
   .then(function(value) {
@@ -118,6 +122,11 @@ function contribute() {
   .then(function(value) {
     var refill_element = document.getElementById("amount_goal");
     refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+    return proj.getDeadline.call();
+  })
+  .then(function(value) {
+    var state_element = document.getElementById("deadline");
+    state_element.innerHTML = value.valueOf();
   })
   .catch(function(e) {
     console.log(e);
@@ -189,7 +198,7 @@ window.onload = function() {
 
     AMOUNT_GOAL       = web3.toBigNumber(web3.toWei(3,"ether")).toNumber();
     DURATION          = 200;                   // seconds
-    AMOUNT_CONTRIBUTE = web3.toBigNumber(web3.toWei(1,"ether")).toNumber();  
+    amount_contribute = web3.toBigNumber(web3.toWei(1,"ether")).toNumber();  
 
     admin    = accs[0]; // contract creator / debug interface
     contrib1 = accs[1];

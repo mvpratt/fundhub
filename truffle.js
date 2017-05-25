@@ -4,9 +4,12 @@ module.exports = {
     "app.js": [
       "javascripts/app.js"
     ],
-    "app.css": [
-      "stylesheets/app.css"
+    "skeleton.css": [
+      "stylesheets/skeleton.css"
     ],
+    "normalize.css": [
+      "stylesheets/normalize.css"
+    ],    
     "images/": "images/"
   },
   rpc: {

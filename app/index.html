@@ -3,41 +3,107 @@
 <head>
   <title>FundHub</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-  <link href="./app.css" rel='stylesheet' type='text/css'>
+
+  <link href="./skeleton.css" rel='stylesheet' type='text/css'>
+  <link href="./normalize.css" rel='stylesheet' type='text/css'>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="./app.js"></script>
 </head>
 <body>
 
-  <br><br>
-  <h1>Project 1 </h1>
-  <h3>Project State: <span class="black"><span id="state"></h3>
-  <h3>Amount raised  (ETH) : <span class="black"><span id="amount_raised"></h3>
-  <h3>Fundraise goal (ETH) : <span class="black"><span id="amount_goal"></h3>
-  <h3>Deadline (in seconds): <span class="black"><span id="deadline"></h3>
+  <h2>Funding Hub </h2>
+  <h3>Projects </h3>
+<table class="u-full-width">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Goal</th>
+      <th>Address</th>
+      <th>Balance</th>
+      <th>Deadline</th>
+      <th>State</th>      
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Project 1</td>
+      <td><span class="black"><span id="amount_goal"></td>
+      <td><span class="black"><span id="project_address"></td>
+      <td><span class="black"><span id="amount_raised"></td>
+      <td><span class="black"><span id="deadline"></td>
+      <td><span class="black"><span id="state"></td>
+    </tr>
+    <tr>
+      <td>Project 2</td>
+      <td>Goal</td>
+      <td>0x2222</td>
+      <td>0 ETH</td>
+      <td>Today</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <td>Project 3</td>
+      <td>Goal</td>      
+      <td>0x3333</td>
+      <td>0 ETH</td>
+      <td>Today</td>
+      <td>42</td>
+    </tr>    
+  </tbody>
+</table>
+
+ 
   <br><button id="send" onclick="createProject()">Create project</button>
   <br><button id="send" onclick="requestPayout()">Request payout</button>
 
-  <br><br>
-  <h3>Contributer options:</h3>
-  <br><button id="send" onclick="contribute()">Contribute funds (1 ETH)</button>
-  <br><button id="send" onclick="requestRefund()">Request refund</button>
-  
-  <!--
-  <br><br>
-  <br><br>
-  <h1>Project 2 </h1>
-  <h3>Project State: <span class="black"><span id="proj2_state"></h3>
-  <h3>Amount raised (in Wei): <span class="black"><span id="proj2_amount_raised"></h3>
-  <h3>Fundraise goal (in Wei): <span class="black"><span id="proj2_amount_goal"></h3>
+  <br><h5>Contributer options:</h5>
 
-  
-  <br><button id="send" onclick="reset()">Reset - not yet functional"</button>
-  -->
+<form>
+  <div class="row">
+    <div class="six columns">
+      <label for="contrib_amount">Contribution Amount (ETH)</label>
+      <input class="u-full-width" type="email" placeholder="1 (ETH)" id="contrib_amount">
+    </div>
+    <div class="six columns">
+      <label for="project_num">Select Project</label>
+      <select class="u-full-width" id="project_num">
+        <option value="Option 1">Project 1</option>
+        <option value="Option 2">Project 2</option>
+        <option value="Option 3">Project 3</option>
+      </select>
+    </div>
+  </div>
 
+  <!--<input class="button-primary" type="submit" value="Submit"> -->
+
+</form>
+
+  <br><button id="send" onclick="contribute()">Submit</button>
+  <br><button id="send" onclick="requestRefund()">Request Refund</button>
+  
   <br><br>
-  <h1>Admin Interface</h1>
-  <br><br>
+  <h5>Status:</h5>
   <span id="status"></span>
+
+
+
+<!-- Standard Headings 
+<h1>Heading</h1>
+<h2>Heading</h2>
+<h3>Heading</h3>
+<h4>Heading</h4>
+<h5>Heading</h5>
+<h6>Heading</h6>
+
+ Base type size 
+<p>The base type is 15px over 1.6 line height (24px)</p>
+
+Other styled text tags 
+<strong>Bolded</strong>
+<em>Italicized</em>
+<a>Colored</a>
+<u>Underlined</u>
+-->
+
 </body>
 </html>

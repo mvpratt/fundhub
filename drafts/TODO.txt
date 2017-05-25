@@ -1,29 +1,31 @@
 
-Last updated: 5/21/2017 <mvpratt>
+AUTHOR: <mvpratt>
 
 
 BUGS:
 
 
 IN PROGRESS:
-  Test deadline
+  Multiple contributers (max 3)
+  Web UI - Multiple contributers, Show contributed balances from each contributer
 
 
 TODO:
   If contribution puts over the top, extra funds returned to contributer
-  Multiple contributers (max 3)
-  Web UI - Multiple contributers, Show contributed balances from each contributer
   Multiple projects support (max 3)
   Browse projects (Web UI)
-  Improve display of balance (units of ETH?)
-  Add security best practices (fallback function, withdrawl design pattern (dao))
-
+  Get geth working again
+  Test deadline
+  User wallet??
+  Mist/Metamask/
+  Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
 
 =============================================
 
 
 DONE:
-  Use a struct to store info in Project
+    Improve display of balance (units of ETH)
+    Use a struct to store info in Project
     Basic testing with geth local chain
     Add deadline to project
     Moved key project data to a struct
