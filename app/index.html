@@ -52,7 +52,28 @@
   </tbody>
 </table>
 
+  <h3>Create a Project</h3>
  
+<form>
+  <div class="row">
+    <div class="six columns">
+      <label for="project_name">Project Name</label>
+      <input class="u-full-width" type="email" placeholder="My Project" id="project_name">
+    </div>
+
+    <div class="six columns">
+      <label for="i_amount_goal">Fundraise Goal (ETH)</label>
+      <input class="u-full-width" type="email" placeholder="10 (ETH)" id="i_amount_goal">
+    </div>
+ 
+    <div class="six columns">
+      <label for="i_duration">Duration</label>
+      <input class="u-full-width" type="email" placeholder="200 (seconds)" id="i_duration">
+    </div>    
+  </div>
+  <!--<input class="button-primary" type="submit" value="Submit"> -->
+</form>
+
   <br><button id="send" onclick="createProject()">Create project</button>
   <br><button id="send" onclick="requestPayout()">Request payout</button>
 
@@ -73,9 +94,7 @@
       </select>
     </div>
   </div>
-
   <!--<input class="button-primary" type="submit" value="Submit"> -->
-
 </form>
 
   <br><button id="send" onclick="contribute()">Submit</button>
