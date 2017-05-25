@@ -1,13 +1,10 @@
 
-var  admin;    // contract creator / debug interface
-var  contrib1; // Contributer 1
-var  owner;    // Project owner
-
+var admin;    // contract creator / debug interface
+var contrib1; // Contributer 1
+var owner;    // Project owner
 var proj;      // Test project
 var proj_index;
-
 var fundhub;   // Main contract
-
 var amount_goal;
 var duration; // seconds
 var amount_contribute;   
@@ -27,61 +24,6 @@ function showDebugInfo() {
 }
 
 
-function getAmountRaised () {
-
-  proj.getAmountRaised.call()
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_raised");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting amount raised; see log.");
-  });
-}
-
-
-function getAmountGoal () {
-
-  proj.getAmountGoal.call()
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_goal");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting amount goal; see log.");
-  });
-}
-
-
-function getState () {
-
-  proj.getState.call()
-  .then(function(value) {
-    var state_element = document.getElementById("state");
-    state_element.innerHTML = value.valueOf();
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting state; see log.");
-  });
-}
-
-function getDeadline () {
-
-  proj.getDeadline.call()
-  .then(function(value) {
-    var state_element = document.getElementById("deadline");
-    state_element.innerHTML = value.valueOf();
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting deadline; see log.");
-  });
-}
-
-
 function createProject () {
 
   amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
@@ -89,35 +31,52 @@ function createProject () {
 
   fundhub.createProject(owner, amount_goal, duration, {from: admin, gas: 4500000})
   .then(function(){
-     return fundhub.getAddressLastDeployedProject.call();   
+    return fundhub.getNumProjects.call();
   })
+  .then(function(num){
+    console.log("Num projects: " + num);
+    return refreshProjectTable(num);    
+  })
+  .then(function(){
+    console.log("Refreshed Project Table");
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error creating project; see log.");
+  });
+}
+
+function refreshProjectTable(index){
+
+  fundhub.getProjectAddress.call(index)
   .then(function(addr){
-      console.log("Project address: " + addr);
-      var state_element = document.getElementById("project_address");
-      state_element.innerHTML = addr;  
-      return Project.at(addr);
+    console.log("Project index: " + index);
+    console.log("Project address: " + addr);   
+    var state_element = document.getElementById("project_address_"+index);
+    state_element.innerHTML = addr;
+    return Project.at(addr);
   })
   .then(function(instance){
-      proj = instance;
-      return proj.getState.call();      
-  })  
+    proj = instance;  
+    return proj.getState.call();
+  })    
   .then(function(value) {
-    var state_element = document.getElementById("state");
+    var state_element = document.getElementById("state_"+index);
     state_element.innerHTML = value.valueOf();
     return proj.getAmountGoal.call();
   })
   .then(function(value) {
-    var refill_element = document.getElementById("amount_goal");
+    var refill_element = document.getElementById("amount_goal_"+index);
     refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
     return proj.getDeadline.call();
   })
   .then(function(value) {
-    var state_element = document.getElementById("deadline");
+    var state_element = document.getElementById("deadline_"+index);
     state_element.innerHTML = value.valueOf();
     return proj.getAmountRaised.call();
   })  
   .then(function(value) {
-    var refill_element = document.getElementById("amount_raised");
+    var refill_element = document.getElementById("amount_raised_"+index);
     refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
   })
   .catch(function(e) {
@@ -145,15 +104,6 @@ function contribute() {
     state_element.innerHTML = value.valueOf();
     return proj.getAmountGoal.call();
   })
-  //.then(function(value) {
-  //  var refill_element = document.getElementById("amount_goal");
-  //  refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-  //  return proj.getDeadline.call();
-  //})
-  //.then(function(value) {
-  //  var state_element = document.getElementById("deadline");
-  //  state_element.innerHTML = value.valueOf();
-  //})
   .catch(function(e) {
     console.log(e);
     setStatus("Error funding project; see log.");
@@ -248,7 +198,61 @@ window.onload = function() {
 }
 
 
+/*
+function getAmountRaised () {
 
+  proj.getAmountRaised.call()
+  .then(function(value) {
+    var refill_element = document.getElementById("amount_raised");
+    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error getting amount raised; see log.");
+  });
+}
+
+
+function getAmountGoal () {
+
+  proj.getAmountGoal.call()
+  .then(function(value) {
+    var refill_element = document.getElementById("amount_goal");
+    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error getting amount goal; see log.");
+  });
+}
+
+
+function getState () {
+
+  proj.getState.call()
+  .then(function(value) {
+    var state_element = document.getElementById("state");
+    state_element.innerHTML = value.valueOf();
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error getting state; see log.");
+  });
+}
+
+function getDeadline () {
+
+  proj.getDeadline.call()
+  .then(function(value) {
+    var state_element = document.getElementById("deadline");
+    state_element.innerHTML = value.valueOf();
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error getting deadline; see log.");
+  });
+}
+*/
 
 
 /*function LogFund() {  
