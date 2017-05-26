@@ -13,7 +13,7 @@ contract FundingHub {
 //address.func.value(amount)(arg1, arg2, arg3)
 
 
-  address[3] public myProjects;       // Array of projects 
+  address[4] public myProjects;       // Array of projects 
   address    public projectDeployed;  // Last project deployed
 
   Project proj;
