@@ -1,6 +1,7 @@
 
 var admin;    // contract creator / debug interface
 var contrib1; // Contributer 1
+var contrib2;
 var owner;    // Project owner
 var proj;      // Test project
 var proj_index;
@@ -20,6 +21,7 @@ function showDebugInfo() {
 
   console.log("admin: balance    : " + web3.fromWei(web3.eth.getBalance(admin), "ether") + " ETH");
   console.log("contrib1: balance : " + web3.fromWei(web3.eth.getBalance(contrib1), "ether") + " ETH");
+  console.log("contrib2: balance : " + web3.fromWei(web3.eth.getBalance(contrib2), "ether") + " ETH");
   console.log("owner: balance    : " + web3.fromWei(web3.eth.getBalance(owner), "ether") + " ETH");
 }
 
@@ -47,6 +49,8 @@ function createProject () {
 }
 
 function refreshProjectTable(index){
+
+  return new Promise(function(resolve,reject){
 
   fundhub.getProjectAddress.call(index)
   .then(function(addr){
@@ -83,26 +87,20 @@ function refreshProjectTable(index){
     console.log(e);
     setStatus("Error creating project; see log.");
   });
+
+  })
 }
+
 
 function contribute() {
 
   amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
+  var proj_index = Number(document.getElementById("i_project_num").value);
 
   fundhub.contribute(proj_index, contrib1, {from: contrib1, value: amount_contribute})
   .then(function(){
     setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH!");
-    return proj.getAmountRaised.call();
-  })
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_raised");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-    return proj.getState.call();
-  })
-  .then(function(value) {
-    var state_element = document.getElementById("state");
-    state_element.innerHTML = value.valueOf();
-    return proj.getAmountGoal.call();
+    return refreshProjectTable(proj_index);    
   })
   .catch(function(e) {
     console.log(e);
@@ -111,22 +109,23 @@ function contribute() {
 }
 
 
-
 function requestPayout() {
 
-  proj.payout({from: owner})
+  var proj_index = Number(document.getElementById("i_project_num").value);
+
+  fundhub.getProjectAddress.call(proj_index)
+  .then(function(addr){
+    return Project.at(addr);
+  })
+  .then(function(instance){
+    proj = instance;  
+    return proj.payout({from: owner})
+  })
   .then(function(){
-    setStatus("Requested payout!");
-    return proj.getAmountRaised.call();
+    return refreshProjectTable(proj_index); 
   })
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_raised");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-    return proj.getState.call();
-  })
-  .then(function(value) {
-    var state_element = document.getElementById("state");
-    state_element.innerHTML = value.valueOf();
+  .then(function() {
+    setStatus("Payout sent!");
   })
   .catch(function(e) {
     console.log(e);
@@ -137,19 +136,21 @@ function requestPayout() {
 
 function requestRefund() {
 
-  proj.refund({from: contrib1})
+  var proj_index = Number(document.getElementById("i_project_num").value);
+
+  fundhub.getProjectAddress.call(proj_index)
+  .then(function(addr){
+    return Project.at(addr);
+  })
+  .then(function(instance){
+    proj = instance;  
+    return proj.refund({from: contrib1})
+  })
   .then(function(){
-    setStatus("Requested refund");
-    return proj.getAmountRaised.call();
+    return refreshProjectTable(proj_index); 
   })
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_raised");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-    return proj.getState.call();
-  })
-  .then(function(value) {
-    var state_element = document.getElementById("state");
-    state_element.innerHTML = value.valueOf();
+  .then(function() {
+    setStatus("Refund sent!");
   })
   .catch(function(e) {
     console.log(e);
