@@ -59,7 +59,7 @@ contract Project {
     	if (state == CREATED || state == DEADLINE_REACHED){
             bal = balances[msg.sender];
             balances[msg.sender] = 0;
-            success = tx.origin.send(bal);
+            success = msg.sender.send(bal);
         }
     }
 

@@ -1,15 +1,14 @@
 
+var accounts;  // array of all accounts
+
 var admin;    // contract creator / debug interface
 var contrib1; // Contributer 1
 var contrib2;
 var owner;    // Project owner
-var proj;      // Test project
-//var proj_index;
-var fundhub;   // Main contract
-var amount_goal;
-var duration; // seconds
-var amount_contribute;   
 
+var proj;      // Test project
+var fundhub;   // Main contract
+ 
 
 function setStatus(message) {
   var status = document.getElementById("status");
@@ -17,7 +16,7 @@ function setStatus(message) {
 }
 
 
-function showDebugInfo() {
+function showUserBalances() {
 
   console.log("admin: balance    : " + web3.fromWei(web3.eth.getBalance(admin), "ether") + " ETH");
   console.log("contrib1: balance : " + web3.fromWei(web3.eth.getBalance(contrib1), "ether") + " ETH");
@@ -28,8 +27,8 @@ function showDebugInfo() {
 
 function createProject () {
 
-  amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
-  duration = document.getElementById("i_duration").value;
+  var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
+  var duration = document.getElementById("i_duration").value;
 
   fundhub.createProject(owner, amount_goal, duration, {from: admin, gas: 4500000})
   .then(function(){
@@ -40,7 +39,7 @@ function createProject () {
     return refreshProjectTable(num);    
   })
   .then(function(){
-    console.log("Refreshed Project Table");
+    setStatus("Finished creating project");
   })
   .catch(function(e) {
     console.log(e);
@@ -82,26 +81,49 @@ function refreshProjectTable(index){
   .then(function(value) {
     var refill_element = document.getElementById("amount_raised_"+index);
     refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+    return;
   })
   .catch(function(e) {
     console.log(e);
     setStatus("Error creating project; see log.");
   });
 
-  })
+  resolve(true);
+
+  });
 }
 
 
+function refreshUserTable(index){
+
+  return new Promise(function(resolve,reject){
+
+    var refill_element = document.getElementById("user_address_"+index);
+    refill_element.innerHTML = accounts[index];
+
+    var refill_element = document.getElementById("user_balance_"+index);
+    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(accounts[index]), "ether");
+
+    resolve(true);
+
+  })
+}
+
 function contribute() {
 
-  amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
+  var amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
   var proj_index = Number(document.getElementById("i_project_num").value);
+  var user_index = Number(document.getElementById("i_user").value);
+  var user_addr = accounts[user_index];
 
-  fundhub.contribute(proj_index, contrib1, {from: contrib1, value: amount_contribute})
+  fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute})
   .then(function(){
-    setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH!");
+    setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
     return refreshProjectTable(proj_index);    
   })
+  .then(function(){
+    return refreshUserTable(user_index);    
+  })  
   .catch(function(e) {
     console.log(e);
     setStatus("Error funding project; see log.");
@@ -165,20 +187,16 @@ window.onload = function() {
     if (accs.length == 0) {
       alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
       return;
-    }
-
-    //proj_index = 1;
-
-    amount_goal       = web3.toBigNumber(web3.toWei(3,"ether")).toNumber();
-    duration          = 200;                   // seconds
-    amount_contribute = web3.toBigNumber(web3.toWei(1,"ether")).toNumber();  
+    } 
 
     admin    = accs[0]; // contract creator / debug interface
     contrib1 = accs[1];
     contrib2 = accs[2];
     owner    = accs[3];
 
-    showDebugInfo();
+    accounts = accs;
+
+    showUserBalances();
 
     fundhub = FundingHub.deployed();
   

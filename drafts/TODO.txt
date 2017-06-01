@@ -4,27 +4,25 @@ AUTHOR: <mvpratt>
 
 BUGS:
 
+
 IN PROGRESS:
-Refactor, cleanup
+  Test refunds from multiple contributers
+  Test payouts to multiple contributers
+  Show owner in project table
 
 TODO:
-
-Add constant functions
+  Add constant functions
   If contribution puts over the top, extra funds returned to contributer
-  Multiple contributers (max 3)
-  Web UI - Multiple contributers, Show contributed balances from each contributer
   Get geth working again
   Test deadline
-  User wallet??
-  Mist/Metamask/
   Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
-- Loads really slow in Safari, console won't open
+  Loads really slow in Safari, console won't open
 =============================================
 
 
 DONE:
-Fixed Bug:
-
+    Multiple contributers (max 3)
+    Web UI - Multiple contributers, Show contributed balances from each contributer
     Select projec to fund
     Added support for 3 projects
     Improve display of balance (units of ETH)
@@ -61,6 +59,9 @@ Fixed Bug:
 
 
 BACKLOG:
+
+  User wallet??
+  Mist/Metamask/
 
   Update to truffle 3.2.1?  -- required for play_time example.
 
