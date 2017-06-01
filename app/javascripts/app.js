@@ -1,11 +1,6 @@
 
 var accounts;  // array of all accounts
 
-var admin;    // contract creator / debug interface
-var contrib1; // Contributer 1
-var contrib2;
-var owner;    // Project owner
-
 var proj;      // Test project
 var fundhub;   // Main contract
  
@@ -18,10 +13,10 @@ function setStatus(message) {
 
 function showUserBalances() {
 
-  console.log("admin: balance    : " + web3.fromWei(web3.eth.getBalance(admin), "ether") + " ETH");
-  console.log("contrib1: balance : " + web3.fromWei(web3.eth.getBalance(contrib1), "ether") + " ETH");
-  console.log("contrib2: balance : " + web3.fromWei(web3.eth.getBalance(contrib2), "ether") + " ETH");
-  console.log("owner: balance    : " + web3.fromWei(web3.eth.getBalance(owner), "ether") + " ETH");
+  console.log("Alice (coinbase): balance : " + web3.fromWei(web3.eth.getBalance(accounts[0]), "ether") + " ETH");
+  console.log("Bob             : balance : " + web3.fromWei(web3.eth.getBalance(accounts[1]), "ether") + " ETH");
+  console.log("Carol           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[2]), "ether") + " ETH");
+  //console.log("Dave           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[3]), "ether") + " ETH");
 }
 
 
@@ -29,8 +24,10 @@ function createProject () {
 
   var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
   var duration = document.getElementById("i_duration").value;
+  var user_index = Number(document.getElementById("i_user").value);
+  var user_addr = accounts[user_index];
 
-  fundhub.createProject(owner, amount_goal, duration, {from: admin, gas: 4500000})
+  fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000})
   .then(function(){
     return fundhub.getNumProjects.call();
   })
@@ -38,6 +35,9 @@ function createProject () {
     console.log("Num projects: " + num);
     return refreshProjectTable(num);    
   })
+  .then(function(){
+    return refreshUserTable(user_index);    
+  }) 
   .then(function(){
     setStatus("Finished creating project");
   })
@@ -53,8 +53,8 @@ function refreshProjectTable(index){
 
   fundhub.getProjectAddress.call(index)
   .then(function(addr){
-    console.log("Project index: " + index);
-    console.log("Project address: " + addr);   
+    //console.log("Project index: " + index);
+    //console.log("Project address: " + addr);   
     var state_element = document.getElementById("project_address_"+index);
     state_element.innerHTML = addr;
     return Project.at(addr);
@@ -62,7 +62,7 @@ function refreshProjectTable(index){
   .then(function(instance){
     proj = instance;  
     return proj.getState.call();
-  })    
+  }) 
   .then(function(value) {
     var state_element = document.getElementById("state_"+index);
     state_element.innerHTML = value.valueOf();
@@ -71,10 +71,10 @@ function refreshProjectTable(index){
   .then(function(value) {
     var refill_element = document.getElementById("amount_goal_"+index);
     refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-    return proj.getDeadline.call();
+    return proj.getDuration.call();
   })
   .then(function(value) {
-    var state_element = document.getElementById("deadline_"+index);
+    var state_element = document.getElementById("duration_"+index);
     state_element.innerHTML = value.valueOf();
     return proj.getAmountRaised.call();
   })  
@@ -134,6 +134,8 @@ function contribute() {
 function requestPayout() {
 
   var proj_index = Number(document.getElementById("i_project_num").value);
+  var user_index = Number(document.getElementById("i_user").value);
+  var user_addr = accounts[user_index];
 
   fundhub.getProjectAddress.call(proj_index)
   .then(function(addr){
@@ -141,12 +143,15 @@ function requestPayout() {
   })
   .then(function(instance){
     proj = instance;  
-    return proj.payout({from: owner})
+    return proj.payout({from: user_addr})
   })
   .then(function(){
     setStatus("Payout sent!");
     return refreshProjectTable(proj_index); 
   })
+  .then(function(){
+    return refreshUserTable(user_index);    
+  })     
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting payout; see log.");
@@ -157,6 +162,8 @@ function requestPayout() {
 function requestRefund() {
 
   var proj_index = Number(document.getElementById("i_project_num").value);
+  var user_index = Number(document.getElementById("i_user").value);
+  var user_addr = accounts[user_index];
 
   fundhub.getProjectAddress.call(proj_index)
   .then(function(addr){
@@ -164,12 +171,15 @@ function requestRefund() {
   })
   .then(function(instance){
     proj = instance;  
-    return proj.refund({from: contrib1, gas: 4500000})
+    return proj.refund({from: user_addr})
   })
   .then(function(){
     setStatus("Refund sent!");
     return refreshProjectTable(proj_index); 
   })
+  .then(function(){
+    return refreshUserTable(user_index);    
+  })    
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting refund; see log.");
@@ -188,11 +198,6 @@ window.onload = function() {
       alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
       return;
     } 
-
-    admin    = accs[0]; // contract creator / debug interface
-    contrib1 = accs[1];
-    contrib2 = accs[2];
-    owner    = accs[3];
 
     accounts = accs;
 

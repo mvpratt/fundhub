@@ -42,27 +42,27 @@ contract FundingHub {
     }
 
 
-    function getProjectAddress(uint8 index) returns(address) {
+    function getProjectAddress(uint8 index) constant returns(address) {
         return myProjects[index];
     }
 
 
-    function getNumProjects() returns(uint8) {
+    function getNumProjects() constant returns(uint8) {
         return num_projects;
     }
 
 
-    function getIndexLastDeployedProject() returns(uint8) {
+    function getIndexLastDeployedProject() constant returns(uint8) {
         return num_projects;
     }
 
 
-    function getAddressLastDeployedProject() returns(address) {
+    function getAddressLastDeployedProject() constant returns(address) {
         return myProjects[num_projects];
     }
 
 
-    function getVersion() returns (uint8) {
+    function getVersion() constant returns (uint8) {
         return version;
     }
 

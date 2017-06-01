@@ -12,10 +12,10 @@ Tool versions:
 
  * Tuffle 2.1.1
  * Node.js 6.9.5
- * Solidity 0.4.2
+ * Solidity 0.4.2   (0.4.9??)
  * TestRPC 3.0.3
  * geth 1.5.8-stable-f58fb322
-
+ * Google chrome
 
 ### Application Usage
 

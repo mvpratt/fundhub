@@ -73,35 +73,39 @@ contract Project {
 
 // Get Functions
 	
-	function getState() returns(uint) {
+	function getState() constant returns(uint) {
         return state;
     }
 
-    function getAmountGoal() returns(uint) {
+    function getAmountGoal() constant returns(uint) {
         return info.amount_goal;
     }
 	
-    function getAmountRaised() returns(uint) {
+    function getAmountRaised() constant returns(uint) {
         return this.balance;
     }
 	
-	function getAmountContributed(address contrib) returns(uint) {
+	function getAmountContributed(address contrib) constant returns(uint) {
         return balances[contrib];
     }
 
-    function getOwner() returns(address) {
+    function getOwner() constant returns(address) {
         return info.owner;
     }
 	
-	function getCreator() returns(address) {
+	function getCreator() constant returns(address) {
         return creator;
     }
 
-    function getDeadline() returns(uint) {
+    function getDeadline() constant returns(uint) {
         return info.deadline;
     }
 
-    function getVersion() returns(uint) {
+    function getDuration() constant returns(uint) {
+        return info.duration;
+    }
+
+    function getVersion() constant returns(uint) {
         return version;
     }
 }
