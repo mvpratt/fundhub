@@ -10,12 +10,14 @@ contract Project {
       uint deadline;     // in units of seconds
     }
 
+    uint8 constant public version = 1;
+
     Info info;
 
     mapping(address => uint) public balances;    // Funding contributions
     address public creator;
 
-    bool success = false;      // Get status success/fail when send money
+    bool public success;      // Get status success/fail when send money
 
     // Contract state
     uint constant CREATED          = 0;   
@@ -24,10 +26,13 @@ contract Project {
     uint constant PAID_OUT         = 3;   
     uint public state;
 
+    uint public bal;
 
     // Constructor function, run when the project is deployed
     function Project(address own, uint amt, uint dur) {
 
+        success     = false;
+        bal         = 0;
         creator     = msg.sender;
         state       = CREATED;
         info        = Info(own, amt, dur, (now+dur));
@@ -52,8 +57,9 @@ contract Project {
 
     function refund() public {
     	if (state == CREATED || state == DEADLINE_REACHED){
+            bal = balances[msg.sender];
             balances[msg.sender] = 0;
-            success = msg.sender.send(balances[msg.sender]);
+            success = tx.origin.send(bal);
         }
     }
 
@@ -93,6 +99,10 @@ contract Project {
 
     function getDeadline() returns(uint) {
         return info.deadline;
+    }
+
+    function getVersion() returns(uint) {
+        return version;
     }
 }
 

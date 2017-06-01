@@ -3,14 +3,13 @@ AUTHOR: <mvpratt>
 
 
 BUGS:
-1 - Web app is always using the -last- deployed FundingHub, not the current one.  Make sure to migrate several times.
-3 - Loads really slow in Safari, console won't open
-4 - Request refund not working
 
 IN PROGRESS:
-
+Refactor, cleanup
 
 TODO:
+
+Add constant functions
   If contribution puts over the top, extra funds returned to contributer
   Multiple contributers (max 3)
   Web UI - Multiple contributers, Show contributed balances from each contributer
@@ -19,21 +18,12 @@ TODO:
   User wallet??
   Mist/Metamask/
   Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
-
+- Loads really slow in Safari, console won't open
 =============================================
 
 
 DONE:
 Fixed Bug:
-2 - Create project causes page to reload
-Error: Invalid JSON RPC response: ""
-    at Object.InvalidResponse (http://127.0.0.1:8000/app.js:5318:28111)
-    at XMLHttpRequest.n.onreadystatechange (http://127.0.0.1:8000/app.js:5319:8173)
-From previous event:
-    at Contract.createProject (http://127.0.0.1:8000/app.js:5418:16)
-    at createProject (http://127.0.0.1:8000/app.js:44779:11)
-    at HTMLButtonElement.onclick (http://127.0.0.1:8000/?:124:54)
-
 
     Select projec to fund
     Added support for 3 projects

@@ -4,7 +4,7 @@ var contrib1; // Contributer 1
 var contrib2;
 var owner;    // Project owner
 var proj;      // Test project
-var proj_index;
+//var proj_index;
 var fundhub;   // Main contract
 var amount_goal;
 var duration; // seconds
@@ -122,11 +122,9 @@ function requestPayout() {
     return proj.payout({from: owner})
   })
   .then(function(){
+    setStatus("Payout sent!");
     return refreshProjectTable(proj_index); 
   })
-  //.then(function() {
-  //  setStatus("Payout sent!");
-  //})
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting payout; see log.");
@@ -144,14 +142,12 @@ function requestRefund() {
   })
   .then(function(instance){
     proj = instance;  
-    return proj.refund({from: contrib1})
+    return proj.refund({from: contrib1, gas: 4500000})
   })
   .then(function(){
+    setStatus("Refund sent!");
     return refreshProjectTable(proj_index); 
   })
-  //.then(function() {
-  //  setStatus("Refund sent!");
-  //})
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting refund; see log.");
@@ -171,7 +167,7 @@ window.onload = function() {
       return;
     }
 
-    proj_index = 1;
+    //proj_index = 1;
 
     amount_goal       = web3.toBigNumber(web3.toWei(3,"ether")).toNumber();
     duration          = 200;                   // seconds
