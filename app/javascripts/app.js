@@ -124,9 +124,9 @@ function requestPayout() {
   .then(function(){
     return refreshProjectTable(proj_index); 
   })
-  .then(function() {
-    setStatus("Payout sent!");
-  })
+  //.then(function() {
+  //  setStatus("Payout sent!");
+  //})
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting payout; see log.");
@@ -149,9 +149,9 @@ function requestRefund() {
   .then(function(){
     return refreshProjectTable(proj_index); 
   })
-  .then(function() {
-    setStatus("Refund sent!");
-  })
+  //.then(function() {
+  //  setStatus("Refund sent!");
+  //})
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting refund; see log.");
