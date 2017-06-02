@@ -115,7 +115,7 @@ request refund - allowed
       .then(function(proj_index){
         return fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
       })
-      .then(function(proj_index){
+      .then(function(){
         return proj.refund({from: user_addr})
       })
       .then(function(){
@@ -128,11 +128,14 @@ request refund - allowed
       .catch(done);
   });
 
-/*
+
   it("Project refund should be allowed after deadline reached and project not fully funded", function(done) {
 
+  var owner = alice;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
+  var amount_goal = web3.toWei(10, "ether");
+  var duration = 1;  // TODO - make longer
   var proj;
   var fundhub; 
   var instance; 
@@ -142,7 +145,7 @@ request refund - allowed
       .then(function(instance){
         fundhub = instance;
         LogContribute(fundhub);
-        return createProject(fundhub);
+        return createProject(fundhub, owner, amount_goal, duration);
       })
       .then(function(instance){
         proj = instance;
@@ -152,26 +155,34 @@ request refund - allowed
       .then(function(proj_index){
         return fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
       })
-      .then(function(proj_index){
+      .then(function(){
+        return proj.getDeadline.call();
+      }) 
+      .then(function(value){      
+      /// TODO - ADVANCE TIME
+      console.log("deadline: " + value);
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      })
+
+      /// TODO - DEADLINE REACHED
+
+      .then(function(){
         return proj.refund({from: user_addr})
       })
       .then(function(){
         return proj.getAmountRaised.call();
       })  
       .then(function(amount){
-          assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
+          assert.equal(amount.valueOf(), 0, "Refund didnt work!"); 
           done();
       })
       .catch(done);
   });
-*/
+
 
 
 function createProject(fundhub, owner, amount_goal, duration){
 
-  //var user_addr = alice;
-  //var amount_goal = web3.toWei(10, "ether");
-  //var duration = 50;
   var proj;  
 
   return new Promise(function(resolve,reject){
