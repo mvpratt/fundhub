@@ -11,7 +11,7 @@ function setStatus(message) {
 }
 
 function logTimestamp(message) {
-    console.log("Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
+    console.log("Log Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
 }
 
 function showUserBalances() {
@@ -213,7 +213,7 @@ function LogContribute() {
       if (e)
         console.error(e);
       else
-        console.log(web3.fromWei(value.args.amount, "ether") + " ether sent from " + value.args.contrib);
+        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
     });
 }    
 
@@ -248,97 +248,4 @@ window.onload = function() {
   });
 }
 
-
-/*
-function getAmountRaised () {
-
-  proj.getAmountRaised.call()
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_raised");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting amount raised; see log.");
-  });
-}
-
-
-function getAmountGoal () {
-
-  proj.getAmountGoal.call()
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_goal");
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting amount goal; see log.");
-  });
-}
-
-
-function getState () {
-
-  proj.getState.call()
-  .then(function(value) {
-    var state_element = document.getElementById("state");
-    state_element.innerHTML = value.valueOf();
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting state; see log.");
-  });
-}
-
-function getDeadline () {
-
-  proj.getDeadline.call()
-  .then(function(value) {
-    var state_element = document.getElementById("deadline");
-    state_element.innerHTML = value.valueOf();
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting deadline; see log.");
-  });
-}
-*/
-
-
-
-/*
-function logFullyFundedEvents() {
-
-  var fullyFundedEvent = Project.deployed().FullyFunded();
-
-  fullyFundedEvent.watch(function(error, result) {
-    if (!error) {
-        console.log("FullyFunded() event");
-        return;
-    }
-    else {
-        console.error(error);
-        return;
-    }
-  });
-}
-
-
-function logWarningEvents() {
-
-  var warningEvent = Project.deployed().LogWarning();
-
-  warningEvent.watch(function(error, result) {
-    if (!error) {
-        console.log("LogWarning() event");
-        return;
-    }
-    else {
-        console.error(error);
-        return;
-    }
-  });
-}
-*/
 
