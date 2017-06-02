@@ -10,7 +10,7 @@ TODO:
   Move to geth again
   Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
   Cleanup logging
-  Cleanup broken tests
+  Cleanup/remove broken tests
   Update Readme
   BUG - When contribution puts over, the balance isn't capped.
 

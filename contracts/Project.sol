@@ -36,6 +36,9 @@ contract Project {
     }
 */
 
+    event OnFund(uint timestamp, address contrib, uint amount);
+
+
     // Constructor function, run when the project is deployed
     function Project(address own, uint amt, uint dur) {
 
@@ -66,7 +69,7 @@ contract Project {
         else {                                 // project is either fully funded or deadline reached
             success = contrib.send(msg.value); // return all funds
         }
-
+        OnFund(now, contrib, msg.value);
     }
 
     function refund() public {
