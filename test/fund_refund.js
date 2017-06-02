@@ -38,49 +38,76 @@ request refund - allowed
 
   it("Project version should match", function(done) {
 
-  createProject()
-        .then(function(myproj){
-          return myproj.getVersion.call();
-        })
-        .then(function(version){
+    FundingHub.new({from: coinbase})
+      .then(function(fundhub){
+        return createProject(fundhub);
+      })
+      .then(function(proj){
+        return proj.getVersion.call();
+      })
+      .then(function(version){
           assert.equal(version.valueOf(), 2, "Version doesn't match!"); 
           done();
-        })
-        .catch(done);
+      })
+      .catch(done);
+  });
+
+
+  it("Project contribution should match", function(done) {
+
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var proj;
+  var fundhub; 
+  var instance; 
+
+
+    FundingHub.new({from: coinbase})
+      .then(function(instance){
+        fundhub = instance;
+        return createProject(fundhub);
+      })
+      .then(function(instance){
+        proj = instance;
+        return fundhub.getNumProjects.call();
+      })
+      .then(function(proj_index){
+        return fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      })
+      .then(function(){
+        return proj.getAmountRaised.call();
+      })  
+      .then(function(amount){
+          assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
+          done();
+      })
+      .catch(done);
   });
 
 
 
-function createProject(){
+function createProject(fundhub){
 
   var user_addr = alice;
-  var amount_contribute = web3.toWei(1, "ether");
   var amount_goal = web3.toWei(10, "ether");
   var duration = 50;
-  var proj;
-  var fundhub;    
+  var proj;  
 
   return new Promise(function(resolve,reject){
 
-    FundingHub.new({from: coinbase})
-        .then(function(instance) {
-          fundhub = instance;
-          fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000});
-        })  
+      fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000})
         .then(function(){
           return fundhub.getNumProjects.call();
         })
         .then(function(num){
-          //console.log("num projects " + num);
           return fundhub.getProjectAddress.call(num);
         })
         .then(function(addr){
-          //console.log("address: "+addr);
           return Project.at(addr);
         })
         .then(function(proj){
           resolve(proj);
-          })
+        })
         .catch(function(e) {
           console.log(e);
         });
