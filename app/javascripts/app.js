@@ -26,7 +26,6 @@ function createProject () {
 
   var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
   var duration = document.getElementById("i_duration").value;
-  var duration = document.getElementById("i_duration").value;
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
