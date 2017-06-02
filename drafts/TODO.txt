@@ -7,18 +7,17 @@ IN PROGRESS:
 
 
 TODO:
-  Move to geth again
-  Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
-  Cleanup logging
-  Cleanup/remove broken tests
   Update Readme
+  Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
+  Move to geth again
   BUG - When contribution puts over, the balance isn't capped.
 
 =============================================
 
 
 DONE:
-  Write automated test for refund()
+    Move broken tests to drafts (not in repo)
+    Write automated test for refund()
     Tested - Refunds not allowed unless deadline is reached and project isn't fully funded.
     Test payouts to multiple owners (user specified)
     Test refunds from multiple contributers
@@ -61,6 +60,7 @@ DONE:
 
 
 BACKLOG:
+  Cleanup javascript console logging
   Loads really slow in Safari, console won't open
   Show owner in project table
 
