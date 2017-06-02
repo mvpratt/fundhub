@@ -22,6 +22,8 @@ contract FundingHub {
   uint8 constant public version = 1;
 
 
+    event OnContribute(address contrib, uint amount);
+
 	// Constructor function
 	function FundingHub() {
 	}
@@ -39,6 +41,7 @@ contract FundingHub {
 
       proj = Project(myProjects[index]);
       proj.fund.value(msg.value)(contrib); 
+      OnContribute(contrib, msg.value);
     }
 
 

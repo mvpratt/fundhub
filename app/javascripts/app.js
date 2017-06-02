@@ -10,19 +10,22 @@ function setStatus(message) {
   status.innerHTML = message;
 }
 
+function logTimestamp(message) {
+    console.log("Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
+}
 
 function showUserBalances() {
 
-  console.log("Alice (coinbase): balance : " + web3.fromWei(web3.eth.getBalance(accounts[0]), "ether") + " ETH");
-  console.log("Bob             : balance : " + web3.fromWei(web3.eth.getBalance(accounts[1]), "ether") + " ETH");
-  console.log("Carol           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[2]), "ether") + " ETH");
-  //console.log("Dave           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[3]), "ether") + " ETH");
+  console.log("Alice (coinbase): balance : " + web3.fromWei(web3.eth.getBalance(accounts[1]), "ether") + " ETH");
+  console.log("Bob             : balance : " + web3.fromWei(web3.eth.getBalance(accounts[2]), "ether") + " ETH");
+  console.log("Carol           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[3]), "ether") + " ETH");
 }
 
 
 function createProject () {
 
   var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
+  var duration = document.getElementById("i_duration").value;
   var duration = document.getElementById("i_duration").value;
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
@@ -32,7 +35,6 @@ function createProject () {
     return fundhub.getNumProjects.call();
   })
   .then(function(num){
-    console.log("Num projects: " + num);
     return refreshProjectTable(num);    
   })
   .then(function(){
@@ -40,6 +42,7 @@ function createProject () {
   }) 
   .then(function(){
     setStatus("Finished creating project");
+    logTimestamp("Project creation finished");
   })
   .catch(function(e) {
     console.log(e);
@@ -53,8 +56,8 @@ function refreshProjectTable(index){
 
   fundhub.getProjectAddress.call(index)
   .then(function(addr){
-    //console.log("Project index: " + index);
-    //console.log("Project address: " + addr);   
+    console.log("Project index: " + index);
+    console.log("Project address: " + addr);
     var state_element = document.getElementById("project_address_"+index);
     state_element.innerHTML = addr;
     return Project.at(addr);
@@ -71,9 +74,16 @@ function refreshProjectTable(index){
   .then(function(value) {
     var refill_element = document.getElementById("amount_goal_"+index);
     refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+    return proj.getDeadline.call();
+  })
+  .then(function(value) {
+    console.log("Project deadline: " + value);
+    var refill_element = document.getElementById("deadline_"+index);
+    refill_element.innerHTML = value.valueOf();
     return proj.getDuration.call();
   })
   .then(function(value) {
+    console.log("Project duration: " + value);    
     var state_element = document.getElementById("duration_"+index);
     state_element.innerHTML = value.valueOf();
     return proj.getAmountRaised.call();
@@ -116,13 +126,16 @@ function contribute() {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute})
+  fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
   .then(function(){
     setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
     return refreshProjectTable(proj_index);    
   })
   .then(function(){
     return refreshUserTable(user_index);    
+  })
+  .then(function(){
+    logTimestamp("Contribution finished");
   })  
   .catch(function(e) {
     console.log(e);
@@ -151,7 +164,10 @@ function requestPayout() {
   })
   .then(function(){
     return refreshUserTable(user_index);    
-  })     
+  })
+  .then(function(){
+    logTimestamp("Payout request finished");
+  })       
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting payout; see log.");
@@ -179,13 +195,27 @@ function requestRefund() {
   })
   .then(function(){
     return refreshUserTable(user_index);    
-  })    
+  })
+  .then(function(){
+    logTimestamp("Request refund finished");
+  })     
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting refund; see log.");
   });
 }
 
+
+
+function LogContribute() {  
+  fundhub.OnContribute()
+    .watch(function(e, value) {
+      if (e)
+        console.error(e);
+      else
+        console.log(web3.fromWei(value.args.amount, "ether") + " ether sent from " + value.args.contrib);
+    });
+}    
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -209,6 +239,7 @@ window.onload = function() {
     .then(function(value) {
       console.log("FundingHub version: " + value);
       console.log("FundingHub address: " + fundhub.address);
+      LogContribute();
     })
     .catch(function(e) {
       console.log(e);
@@ -275,15 +306,6 @@ function getDeadline () {
 */
 
 
-/*function LogFund() {  
-  proj.OnFund()
-    .watch(function(e, value) {
-      if (e)
-        console.error(e);
-      else
-        console.log(web3.fromWei(value.args.amount, "ether") + " ethers sent from " + WhoFromAddr(value.args.sender));
-    });
-}*/
 
 /*
 function logFullyFundedEvents() {

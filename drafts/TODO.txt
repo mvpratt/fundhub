@@ -3,16 +3,21 @@ AUTHOR: <mvpratt>
 
 
 BUGS:
+  BUG - REfunds are allowed before deadline is reached.
+  BUG - When contribution puts over, the balance isn't capped.
+
 
 IN PROGRESS:
-  If contribution puts over the top, extra funds returned to contributer
-  Loads really slow in Safari, console won't open
+  Test deadline
+
 
 TODO:
-  Get geth working again
-  Test deadline
+  Move to geth again
+    Write automated test for refund()
   Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
 
+  Cleanup broken tests
+  Update Readme
 
 =============================================
 
@@ -59,6 +64,7 @@ DONE:
 
 
 BACKLOG:
+  Loads really slow in Safari, console won't open
   Show owner in project table
 
   User wallet??

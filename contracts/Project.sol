@@ -10,7 +10,7 @@ contract Project {
       uint deadline;     // in units of seconds
     }
 
-    uint8 constant public version = 1;
+    uint8 constant public version = 2;
 
     Info info;
 
@@ -18,21 +18,27 @@ contract Project {
     address public creator;
 
     bool public success;      // Get status success/fail when send money
+    uint public bal;          // temp balance variable
 
     // Contract state
     uint constant CREATED          = 0;   
-    uint constant FUNDED           = 1;    
-    uint constant DEADLINE_REACHED = 2;
-    uint constant PAID_OUT         = 3;   
+    uint constant FULLY_FUNDED     = 1;    
+    uint constant PAID_OUT         = 2;   
     uint public state;
 
-    uint public bal;
+
+/*
+    modifier onlyBy(address _account)
+    {
+        if (msg.sender != _account)
+            throw;
+        _;
+    }
+*/
 
     // Constructor function, run when the project is deployed
     function Project(address own, uint amt, uint dur) {
 
-        success     = false;
-        bal         = 0;
         creator     = msg.sender;
         state       = CREATED;
         info        = Info(own, amt, dur, (now+dur));
@@ -43,20 +49,28 @@ contract Project {
 
     function fund(address contrib) payable public {
 
-    	if (state == CREATED) {
-            balances[contrib] += msg.value;
+        //bal = this.balance - info.amount_goal;
 
-            if (this.balance >= info.amount_goal){
-	            state = FUNDED;
-            }
+        if (state == CREATED && this.balance < info.amount_goal && now < info.deadline) {    // not reached goal yet
+            balances[contrib] += msg.value;
         }
-        else if (state == FUNDED || state == DEADLINE_REACHED) {
-        	success = contrib.send(msg.value);
+        else if (state == CREATED && this.balance == info.amount_goal && now < info.deadline) { // reached goal
+            balances[contrib] += msg.value;            
+            state = FULLY_FUNDED;
         }
+        //else if (state == CREATED && this.balance > info.amount_goal) { // over goal, return partial funds
+        //    balances[contrib] += (msg.value - bal);
+        //    state = FULLY_FUNDED;
+        //    success = contrib.send(bal);
+       // }
+        else {                                 // project is either fully funded or deadline reached
+            success = contrib.send(msg.value); // return all funds
+        }
+
     }
 
     function refund() public {
-    	if (state == CREATED || state == DEADLINE_REACHED){
+    	if (state == CREATED && now >= info.deadline){ // only refund if deadline reached before fully funded
             bal = balances[msg.sender];
             balances[msg.sender] = 0;
             success = msg.sender.send(bal);
@@ -64,7 +78,7 @@ contract Project {
     }
 
     function payout() public {
-    	if ((msg.sender == creator || msg.sender == info.owner) && state == FUNDED){
+    	if (msg.sender == info.owner && state == FULLY_FUNDED){  
             state = PAID_OUT;
             success = info.owner.send(this.balance);
         }
@@ -109,44 +123,3 @@ contract Project {
         return version;
     }
 }
-
-
-    // Events to help with debugging
-    //event OnFund(address sender, uint amount);
-    //event DeadlineReached ();
-    //event FullyFunded ();
-    //event LogWarning ();
-
-/*
-    modifier onlyBy(address _account)
-    {
-        if (msg.sender != _account)
-            throw;
-        _;
-    }
-*/
-
-// ---------- Debug only ------------------------------------------- //
-/*
-    function setOwner(address own) onlyBy(creator) {
-        owner = own;
-    }
-
-    function DEBUG_setStateDeadlineReached() onlyBy(creator) {
-        state = DEADLINE_REACHED;
-        //DeadlineReached();
-    }
-
-    function setAmountGoal(uint num) {
-        if (msg.sender == owner && state == CREATED){
-            amount_goal = num;
-        }
-        else {
-            LogWarning();
-        }
-    }
-*/
-// ----------------------------------------------------------------- //
-
-
-
