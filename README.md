@@ -7,11 +7,9 @@ FundingHub is a crowdfunding platform that allows users to browse, create and co
 
 FundingHub is the registry of all Projects to be funded. FundingHub should have a constructor and the following functions:
 
-createProject([parameters]) - This function should allow a user to add a new project to the FundingHub. The function should deploy a new Project contract and keep track of its address. The createProject() function should accept all constructor values that the Project contract requires.
+`createProject()` - This function should allow a user to add a new project to the FundingHub. The function should deploy a new Project contract and keep track of its address. The `createProject()` function should accept all constructor values that the Project contract requires.
 
-contribute([parameters]) - This function allows users to contribute to a Project identified by its address. contribute calls the fund() function in the individual Project contract and passes on all Ether value attached to the function call.
-
-In Truffle, create a migration script that calls the createProject function after FundingHub has been deployed.
+`contribute()` - This function allows users to contribute to a Project identified by its address. contribute calls the `fund()` function in the individual Project contract and passes on all Ether value attached to the function call.
 
 
 ## PROJECT
@@ -23,12 +21,11 @@ Project is the contract that stores all the data of each project. Project should
 * the deadline, i.e. the time before which the amount has to be raised
 * Please also implement the following functions:
 
-`fund([parameters])` - This is the function called when the FundingHub receives a contribution. The function must keep track of each contributor and the individual amounts contributed. If the contribution was sent after the deadline of the project passed, or the full amount has been reached, the function must return the value to the originator of the transaction and, left to your own decision, call none or one of the two other functions. If the full funding amount has been reached, the function must either call 
-payout() or make it possible to do so. If the deadline has passed without the funding goal being reached, the function must either call refund() or make it possible to do so.
+`fund()` - This is the function called when the FundingHub receives a contribution. The function must keep track of each contributor and the individual amounts contributed. If the contribution was sent after the deadline of the project passed, or the full amount has been reached, the function must return the value to the originator of the transaction and, left to your own decision, call none or one of the two other functions. If the full funding amount has been reached, the function must either call `payout()` or make it possible to do so. If the deadline has passed without the funding goal being reached, the function must either call `refund()` or make it possible to do so.
 
-`payout([parameters])` - This is the function that sends all funds received in the contract to the owner of the project.
+`payout()` - This is the function that sends all funds received in the contract to the owner of the project.
 
-`refund([parameters])` - This function sends part or all individual contributions back to the respective contributors, or lets all contributors retrieve their contributions.
+`refund()` - This function sends part or all individual contributions back to the respective contributors, or lets all contributors retrieve their contributions.
 
 
 ## INTERFACE
