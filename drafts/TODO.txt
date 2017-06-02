@@ -2,21 +2,17 @@
 AUTHOR: <mvpratt>
 
 
-BUGS:
-  BUG - When contribution puts over, the balance isn't capped.
-
-
 IN PROGRESS:
-
+  Write automated test for refund()
 
 
 TODO:
   Move to geth again
-  Write automated test for refund()
   Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
   Cleanup logging
   Cleanup broken tests
   Update Readme
+  BUG - When contribution puts over, the balance isn't capped.
 
 =============================================
 

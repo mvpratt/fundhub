@@ -12,7 +12,7 @@ contract Project {
 
     uint8 constant public version = 2;
 
-    Info info;
+    Info public info;
 
     mapping(address => uint) public balances;    // Funding contributions
     address public creator;

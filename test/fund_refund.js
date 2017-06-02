@@ -1,71 +1,96 @@
 
 
 contract('Project: Basic fund and refund, single contributer', function(accounts) {
-
-// boilerplate //
   
-  var proj;
-  var fundhub;
 
-  admin    = accounts[0]; // contract creator / debug interface
-  contrib1 = accounts[1];
-  contrib2 = accounts[2];
-  owner    = accounts[3];
+  coinbase  = accounts[0]; 
+  alice     = accounts[1];
+  bob       = accounts[2];
+  carol     = accounts[3];
 
   // Contract state
-  const CREATED = 0;   
-  const FUNDED  = 1;       
-  const DEADLINE_REACHED = 2;   
-  const ERROR   = 3;   
-
-// boilerplate //
-
+  //const CREATED = 0;   
+  //const FULLY_FUNDED  = 1;       
+  //const PAID_OUT = 2;   
  
-// ============ Setup ====================================================== //
-
-
-//  fundhub = FundingHub.deployed();
-//  fundhub.createProject(owner, web3.toWei(3, "ether"), {from: admin, gas: 4500000});
-//  proj_addr = fundhub.getProjectAddress.call();
-
 /*
-it("Check owner", function() {
+Tests:
+get reference to project instance
+contribute 1 ETH
+request refund - rejected
+deadline reached 
+request refund - allowed
+*/
+ 
+  it("FundingHub version should match", function(done) {
+    
+    FundingHub.new({from: coinbase}).then(
+      function(fundhub) {
+        fundhub.getVersion.call().then(
+          function(version) { 
+            assert.equal(version, 1, "Version doesn't match!"); 
+            done();
+        })
+        .catch(done);
+    }).catch(done);
+  });
 
-  return proj.getOwner.call().then(function(own) {
-      assert.equal(own, owner, "error: owner not set");
-    });
-});
+
+  it("Project version should match", function(done) {
+
+  var proj_index = 1;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var amount_goal = web3.toWei(10, "ether");
+  var duration = 50;    
+
+    FundingHub.new({from: coinbase}).then(
+      function(fundhub) {
+        fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000})
+        .then(function(){
+          return fundhub.getNumProjects.call();
+        })
+        .then(function(num){
+          console.log("num projects " + num);
+          return fundhub.getProjectAddress.call(proj_index);
+        })
+          .then(function(addr){
+            return Project.at(addr);
+          })
+          .then(function(instance){
+            proj = instance;  
+            return proj.getVersion.call();
+          })
+          .then(function(version){
+            assert.equal(version, 2, "Version doesn't match!"); 
+            done();
+        })
+        .catch(done);
+    }).catch(done);
+  });
 
 
-it("Check owner", function() {
+//Note: Alice is the creator and owner of the project contract
+/*
+it("Contribute and request Refund", function() {
 
-  return proj.getOwner.call().then(function(own) {
-      assert.equal(own, owner, "error: owner not set");
-    });
-});
+  var fundhub = FundingHub.deployed();
+  var proj = Project.deployed();
+  var proj_index = 1;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
 
-
-it(" Check fundraising goal", function() {
-
-  return proj.getAmountGoal.call().then(function(id) {
-      assert.equal(id.valueOf(), web3.toWei(3, "ether"), "error: fundraising goal not 3 ETH");
-    });
+  fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+  .then(function(){
+    return proj.getAmountRaised.call();
+  })
+  .then(function(value) {
+      assert.equal(value, amount_contribute, "error: contribution amount failed"); 
+  });
 });
 */
 
-// TODO - hack
-it("[ADMIN] Get Project address", function() {
-  //fundhub = FundingHub.deployed();
-  proj = Project.deployed();
-
-  return proj.setOwner.call().then(function(addr) {
-    proj = Project.at(addr);
-  }).then(function() {
-      proj.getCreator.call().then(function(addr) {
-      assert.equal(addr, addr, "error: creator not set"); // not really testing anything.  creator unknown (truffle?)
-  });
- });
-});
+/*
 
 it("[ADMIN] Check owner", function() {
   return proj.getOwner.call().then(function(own) {
@@ -152,5 +177,6 @@ it("Verify project funds empty",function(){
       assert.equal(amount, web3.toWei(0, "ether"), "error: contract not empty");
   });
 }); 
+*/
 
 });
