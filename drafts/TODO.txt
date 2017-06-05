@@ -4,18 +4,41 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
   Increase duration of project in automated test.  Advice testrpc time to reach deadline
-
+  Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
 
 TODO:
-  Update Readme
-  Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
+
   Move to geth again
-  BUG - When contribution puts over, the balance isn't capped.
+
+
+
+So you have made it through your small "split" project. Let's cover here the typical mistakes that we have seen students make:
+
+LOW DIFFICULTY
+
+Did you check the bool return value of address.send()?
+Did you throw when it fails?
+Did you create methods to get balance, when the facility is already there?
+
+MEDIUM DIFFICULTY
+
+Did you pass proper beneficiary addresses as part of the constructor? Instead of using a setter afterwards.
+Did you check for empty addresses?
+Did you split msg.value and forgot that odd values may leave 1 wei in the contract balance?
+Did you cover the fallback function?
+Did you provide a kill switch?
+
+HIGH DIFFICULTY
+
+Did you send (a.k.a. push) the funds instead of letting the beneficiaries withdraw (a.k.a. pull) the funds?
+If you pushed the funds, did you cover a potential reentrance?
+
 
 =============================================
 
 
 DONE:
+    Update Readme
     Move broken tests to drafts (not in repo)
     Write automated test for refund()
     Tested - Refunds not allowed unless deadline is reached and project isn't fully funded.

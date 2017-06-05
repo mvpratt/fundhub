@@ -36,6 +36,13 @@ contract Project {
     }
 */
 
+/*
+    function kill() {
+        if (msg.sender != owner) throw;
+        selfdestruct(owner);
+    }
+*/
+
     event OnFund(uint timestamp, address contrib, uint amount);
 
 

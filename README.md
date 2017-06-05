@@ -2,8 +2,10 @@
 
 FundingHub is a crowdfunding platform that allows users to browse, create and contribute to projects.  There are two Solidity smart contracts named FundingHub.sol and Project.sol 
 
+Git Repository:
+https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
 
-## FUNDINGHUB
+## FUNDINGHUB Contract
 
 FundingHub is the registry of all Projects to be funded. FundingHub should have a constructor and the following functions:
 
@@ -12,7 +14,7 @@ FundingHub is the registry of all Projects to be funded. FundingHub should have 
 `contribute()` - This function allows users to contribute to a Project identified by its address. contribute calls the `fund()` function in the individual Project contract and passes on all Ether value attached to the function call.
 
 
-## PROJECT
+## PROJECT Contract
 
 Project is the contract that stores all the data of each project. Project should have a constructor and a struct to store the following information:
 
@@ -47,7 +49,7 @@ An automated test that covers the refund function in the Project contract using 
 1. Install and run the dapp like so.
 
 
-Tool versions:
+## Tool Versions
 
  * Tuffle 2.1.1
  * Node.js 6.9.5
@@ -64,15 +66,8 @@ The web interface works like so.
 
 How to run tests here
 
-
-### Known Bugs:
-
-1. N/A
-
-
-### TODO:
-
-1. N/A
+### Known Issues/bugs
+  BUG - When contribution puts over, the balance isn't capped.
 
 
 ### Release 1.0 Changelog:
@@ -80,6 +75,6 @@ How to run tests here
 * Initial release
 
 
-### Author info:
+### Author:
 
 mvpratt
