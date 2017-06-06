@@ -42,8 +42,16 @@ A simple web interface allows users to browse active projects, create their own 
 * Deadline and duration are in units of  seconds
 * Project states are as follows: (0 - created, 1 - fully funded, 2 - paid out)
 * This demonstation Dapp is limited to a maximum of 3 projects and 3 users.
-* Whenever you take an action such as create, payout or refund, make sure that the desired user is selected
+* Whenever you take an action such as create, payout or refund, _make sure that the desired user selected_
 
+#### How to test deadline
+1. Create a project with duration of 1
+2. Try to contribute to it, notice that contributions are rejected, because the deadline has already expired
+3. Now, create a project with duration of 50
+4. Contribute to it, the funds should be accepted.
+5. Request a refund.  Notice that the refund request is rejected.
+6. Now, fully fund the project
+7. Request payout
 
 ## AUTOMATED TESTS
 

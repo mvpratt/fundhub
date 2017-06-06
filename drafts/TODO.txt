@@ -3,10 +3,6 @@ AUTHOR: <mvpratt>
 
 
 IN PROGRESS:
-Finish testing deadline.
-  Move to geth again
-  Increase duration of project in automated test.  Advice testrpc time to reach deadline
-  Add security best practices (fallback function, withdrawl design pattern (dao), destroy)
 
 
 TODO:
@@ -61,6 +57,7 @@ DONE:
 
 
 BACKLOG:
+  Increase duration of project in automated test.  Advance testrpc time to reach deadline
   Cleanup javascript console logging
   Loads really slow in Safari, console won't open
   Show owner in project table

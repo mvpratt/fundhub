@@ -163,7 +163,7 @@ request refund - allowed
       console.log("deadline: " + value);
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       })
-
+      /// SEE README FOR HOW TO TEST DEADLINE IN THE BROWSER
       /// TODO - DEADLINE REACHED
 
       .then(function(){
