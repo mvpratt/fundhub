@@ -43,37 +43,32 @@ A simple web interface allows users to do the following:
 * Contribute to a Project
 
 
-## TESTS
+## AUTOMATED TESTS
+
+* `truffle test`
 
 `fund_refund.js` - An automated test that covers the refund function in the Project contract using the Truffle testing framework. 
 
 
 ## Installation
 
-Install and run the dapp like so:
 1. Run `testrpc` or `geth`  You must have web3.eth.accounts[0,1,2,3] unlocked, with a balance of ETH
-2. truffle compile 
-3. truffle migrate --reset --network development 
-4. truffle build --reset --network development
+2. `truffle compile` 
+3. `truffle migrate --reset --network development` 
+4. `truffle build --reset --network development`
 5. In the build directory, run this command: `php -S 0.0.0.0:8000`
 6. Connect to the page in Chrome
 
-## Tool Versions Supported
+## Tool Versions 
 
  * Tuffle 2.1.1
  * Node.js 6.9.5
- * Solidity ^0.4.2   
+ * Solidity 0.4.2 and above
  * TestRPC 3.0.3
  * geth 1.5.8-stable-f58fb322
- * Tested with Google Chrome browser
+ * Google Chrome 
 
-### Application Usage
 
-The web interface works like so.
-
-### Automated Tests
-
-* truffle test
 
 ### Known Issues/bugs
 
