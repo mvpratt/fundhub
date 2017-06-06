@@ -9,9 +9,9 @@ https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
 
 FundingHub is the registry of all Projects to be funded. FundingHub should have a constructor and the following functions:
 
-`createProject()` - This function allows a user to add a new project to the FundingHub. The function deploys a new Project contract and keeps track of its address. The `createProject()` function accepts all constructor values that the Project contract requires.
+`createProject()` - This function allows a user to add a new project to the FundingHub. The function deploys a new Project contract and keeps track of its address. The createProject() function accepts all constructor values that the Project contract requires.
 
-`contribute()` - This function allows users to contribute to a Project identified by its address. `contribute()` calls the `fund()` function in the individual Project contract and passes on all Ether value attached to the function call.
+`contribute()` - This function allows users to contribute to a Project identified by its address. contribute() calls the fund() function in the individual Project contract and passes on all Ether value attached to the function call.
 
 
 ## PROJECT 
@@ -24,10 +24,10 @@ Project is the contract that stores all the data of each project. Project has a 
 * Please also implement the following functions:
 
 `fund()` - This is the function called when the FundingHub receives a contribution. The function must keep track of each contributor and the individual amounts contributed. 
-Rules: 
+#### Rules: 
 * If the contribution was sent after the deadline of the project passed, or the full amount has been reached, the function returns the value to the originator of the transaction 
-* If the full funding amount has been reached, the owner may call `payout()` to retrieve funds. 
-* If the deadline has passed without the funding goal being reached, contributers may get their money back by calling `refund()`.
+* If the full funding amount has been reached, the owner may call payout() to retrieve funds.
+* If the deadline has passed without the funding goal being reached, contributers may get their money back by calling refund().
 
 `payout()` - This is the function that sends all funds received in the contract to the owner of the project.  Only the owner may receive the payout.
 
@@ -78,3 +78,9 @@ A simple web interface allows users to do the following:
 ### Author:
 
 mvpratt
+
+### Screenshot:
+
+https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/blob/master/Screenshot.png
+
+
