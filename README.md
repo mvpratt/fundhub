@@ -36,11 +36,13 @@ Project is the contract that stores all the data of each project. Project has a 
 
 ## INTERFACE
 
-A simple web interface allows users to do the following:
+A simple web interface allows users to browse active projects, create their own project, and dontribute to a project
 
-* Browse active Projects
-* Create their own Project
-* Contribute to a Project
+#### Guidelines
+* Deadline and duration are in units of  seconds
+* Project states are as follows: (0 - created, 1 - fully funded, 2 - paid out)
+* This demonstation Dapp is limited to a maximum of 3 projects and 3 users.
+* Whenever you take an action such as create, payout or refund, make sure that the desired user is selected
 
 
 ## AUTOMATED TESTS

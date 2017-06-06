@@ -27,22 +27,6 @@ contract Project {
     uint public state;
 
 
-/*
-    modifier onlyBy(address _account)
-    {
-        if (msg.sender != _account)
-            throw;
-        _;
-    }
-*/
-
-/*
-    function kill() {
-        if (msg.sender != owner) throw;
-        selfdestruct(owner);
-    }
-*/
-
     event OnFund(uint timestamp, address contrib, uint amount);
 
 
@@ -59,7 +43,6 @@ contract Project {
 
     function fund(address contrib) payable public {
 
-        //bal = this.balance - info.amount_goal;
 
         if (state == CREATED && this.balance < info.amount_goal && now < info.deadline) {    // not reached goal yet
             balances[contrib] += msg.value;
@@ -68,13 +51,10 @@ contract Project {
             balances[contrib] += msg.value;            
             state = FULLY_FUNDED;
         }
-        //else if (state == CREATED && this.balance > info.amount_goal) { // over goal, return partial funds
-        //    balances[contrib] += (msg.value - bal);
-        //    state = FULLY_FUNDED;
-        //    success = contrib.send(bal);
-       // }
+
         else {                                 // project is either fully funded or deadline reached
             success = contrib.send(msg.value); // return all funds
+            if (!success) throw;
         }
         OnFund(now, contrib, msg.value);
     }
@@ -84,6 +64,7 @@ contract Project {
             bal = balances[msg.sender];
             balances[msg.sender] = 0;
             success = msg.sender.send(bal);
+            if (!success) throw;
         }
     }
 
@@ -91,6 +72,7 @@ contract Project {
     	if (msg.sender == info.owner && state == FULLY_FUNDED){  
             state = PAID_OUT;
             success = info.owner.send(this.balance);
+            if (!success) throw;
         }
     }
 

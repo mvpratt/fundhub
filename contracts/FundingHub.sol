@@ -69,9 +69,4 @@ contract FundingHub {
         return version;
     }
 
-    //function destroy() {
-    //    if (msg.sender == owner) { // without this funds could be locked in the contract forever!
-    //        suicide(owner);
-    //    }
-    //}
 }
