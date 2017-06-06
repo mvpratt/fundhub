@@ -9,7 +9,7 @@ IN PROGRESS:
 TODO:
 
   Move to geth again
-
+Finish testing deadline.
 
 
 So you have made it through your small "split" project. Let's cover here the typical mistakes that we have seen students make:
