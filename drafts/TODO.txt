@@ -6,7 +6,7 @@ IN PROGRESS:
 
 
 TODO:
-
+Cleanup automated deadline test
 
 =============================================
 

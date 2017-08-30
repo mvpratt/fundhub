@@ -1,4 +1,4 @@
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.15;
 
 
 contract Project {
@@ -10,7 +10,6 @@ contract Project {
       uint deadline;     // in units of seconds
     }
 
-    uint8 constant public version = 2;
 
     Info public info;
 
@@ -98,10 +97,6 @@ contract Project {
     function getOwner() constant returns(address) {
         return info.owner;
     }
-	
-	//function getCreator() constant returns(address) {
-    //    return creator;
-    //}
 
     function getDeadline() constant returns(uint) {
         return info.deadline;
@@ -110,9 +105,5 @@ contract Project {
     function getDuration() constant returns(uint) {
         return info.duration;
     }
-
-    //function getVersion() constant returns(uint) {
-    //    return version;
-    //}
     
 }

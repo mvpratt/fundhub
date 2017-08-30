@@ -1,4 +1,4 @@
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.15;
 
 import "./Project.sol";
 
@@ -19,12 +19,10 @@ contract FundingHub {
   Project proj;
 
   uint8 public num_projects     = 0;
-  uint8 constant public version = 1;
+
+  event OnContribute(uint timestamp, address contrib, uint amount);
 
 
-    event OnContribute(uint timestamp, address contrib, uint amount);
-
-	// Constructor function
 	function FundingHub() {
 	}
 
@@ -50,22 +48,8 @@ contract FundingHub {
     }
 
 
-    //function getNumProjects() constant returns(uint8) {
-    //    return num_projects;
-    //}
-
-
-    //function getIndexLastDeployedProject() constant returns(uint8) {
-    //    return num_projects;
-    //}
-
-
     function getAddressLastDeployedProject() constant returns(address) {
         return myProjects[num_projects];
     }
 
-
-    //function getVersion() constant returns (uint8) {
-    //    return version;
-    //}
 }

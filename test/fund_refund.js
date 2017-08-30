@@ -19,48 +19,6 @@ deadline reached
 request refund - allowed
 */
 
-  it("FundingHub version should match", function(done) {
-    
-    FundingHub.new()
-      .then( instance => instance.version.call() )
-      .then( function(value) {
-        assert.equal(value, 1, "Version doesn't match!"); 
-        done();
-      })
-      .catch(done);
-  });
-
-
-  it("Project version should match", function(done) {
-
-    var owner = alice;
-    var amount_goal = web3.toWei(10, "ether");
-    var duration = 50;
-  
-    var index = 1;   /// TODO: fix magic number
-    var fundhub;
-
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(coinbase, amount_goal, duration); 
-    })
-    .then( function() {
-      return fundhub.getProjectAddress.call(index);
-    })
-    .then( function(addr) {
-      return Project.at(addr);
-    })
-    .then( function(proj) {
-      return proj.version.call();
-    })        
-    .then( function(version) {
-          assert.equal(version.valueOf(), 2, "Version doesn't match!"); 
-          done();
-      })
-      .catch(done);
-  });
-
 
   it("Project contribution should match", function(done) {
 
@@ -72,24 +30,32 @@ request refund - allowed
 
   var proj;
   var fundhub; 
-  var instance; 
+  var proj_index;
 
-var index = 1;   /// TODO: fix magic number
 
+// Reuse for every test //
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
        return fundhub.createProject(coinbase, amount_goal, duration); 
     })
     .then( function() {
-      return fundhub.getProjectAddress.call(index);
+      return fundhub.num_projects.call()
+    })
+    .then( function(value) {
+      proj_index = value;
+      return fundhub.getProjectAddress(value);
     })
     .then( function(addr) {
       return Project.at(addr);
     })
     .then( function(value) {
-      proj = value;
-      fundhub.contribute(index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      proj = value;      
+    })
+// Reuse for every test //  
+
+    .then( function(value) {
+      fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       return proj.getAmountRaised.call();
@@ -112,24 +78,30 @@ var index = 1;   /// TODO: fix magic number
   var amount_contribute = web3.toWei(1, "ether");
   var proj;
   var fundhub; 
-  var instance; 
+  var proj_index; 
 
-var index = 1;   /// TODO: fix magic number
-
+// Reuse for every test //
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
        return fundhub.createProject(coinbase, amount_goal, duration); 
     })
     .then( function() {
-      return fundhub.getProjectAddress.call(index);
+      return fundhub.num_projects.call()
+    })
+    .then( function(value) {
+      proj_index = value;
+      return fundhub.getProjectAddress(value);
     })
     .then( function(addr) {
       return Project.at(addr);
     })
     .then( function(value) {
-      proj = value;
-      fundhub.contribute(index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      proj = value;      
+    })
+// Reuse for every test //  
+    .then( function() {      
+      fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       return proj.refund({from: user_addr});
@@ -155,42 +127,60 @@ var index = 1;   /// TODO: fix magic number
   var duration = 1;  // TODO - make longer
   var proj;
   var fundhub; 
-  var instance; 
+  var proj_index;
 
 
-var index = 1;   /// TODO: fix magic number
-
+// Reuse for every test //
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
        return fundhub.createProject(coinbase, amount_goal, duration); 
     })
     .then( function() {
-      return fundhub.getProjectAddress.call(index);
+      return fundhub.num_projects.call()
+    })
+    .then( function(value) {
+      proj_index = value;
+      return fundhub.getProjectAddress(value);
     })
     .then( function(addr) {
       return Project.at(addr);
     })
     .then( function(value) {
-      proj = value;
-      fundhub.contribute(index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      proj = value;      
+    })
+// Reuse for every test //  
+    .then( function() {      
+      fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       return proj.getDeadline.call();
     })
     .then(function(value){
-      /// TODO - ADVANCE TIME
-      /// run with "testrpc -s 1" to pass (1 block/second).  would be better to manually advance time
+
       console.log("deadline: " + value);
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+
+      /// TODO - ADVANCE TIME UNTIL DEADLINE REACHED
+      /// run with "testrpc -s 1" to pass (1 block/second).  would be better to manually advance time
+      return proj.refund({from: user_addr});
     })
-      /// SEE README FOR HOW TO TEST DEADLINE IN THE BROWSER
-      /// TODO - DEADLINE REACHED
-    .then(function(){
-        return proj.refund({from: user_addr})
+    .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
+      return proj.refund({from: user_addr});
+    })
+    .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
+      return proj.refund({from: user_addr});
     })
     .then(function(){
-        return proj.getAmountRaised.call();
+      return proj.getDeadline.call();
+    })
+    .then(function(value){ // call second time, to give time for testrpc to mine new block (one block per transaction)
+      console.log("deadline: " + value);
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      return proj.refund({from: user_addr});
+    })
+    .then(function(){
+      return proj.getAmountRaised.call();
     })  
     .then(function(amount){
       assert.equal(amount.valueOf(), 0, "Refund didnt work!"); 
@@ -199,7 +189,6 @@ var index = 1;   /// TODO: fix magic number
 
     .catch(done);
   });
-
 
 
 /*
