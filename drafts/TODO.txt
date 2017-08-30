@@ -3,10 +3,12 @@ AUTHOR: <mvpratt>
 
 
 IN PROGRESS:
-
+Get rid of getAmountRaised()
+Remove states
 
 TODO:
-Cleanup automated deadline test
+REfactor automated deadline test
+Test revert
 
 =============================================
 

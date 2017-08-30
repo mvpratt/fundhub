@@ -31,6 +31,7 @@ request refund - allowed
   var proj;
   var fundhub; 
   var proj_index;
+  var proj_addr;
 
 
 // Reuse for every test //
@@ -40,24 +41,26 @@ request refund - allowed
        return fundhub.createProject(coinbase, amount_goal, duration); 
     })
     .then( function() {
-      return fundhub.num_projects.call()
+      return fundhub.num_projects.call();
     })
     .then( function(value) {
       proj_index = value;
-      return fundhub.getProjectAddress(value);
+      return fundhub.getProjectAddress(proj_index);
     })
-    .then( function(addr) {
-      return Project.at(addr);
+    .then( function(value) {
+      proj_addr = value;
+      return Project.at(proj_addr);
     })
     .then( function(value) {
       proj = value;      
     })
 // Reuse for every test //  
 
-    .then( function(value) {
+    .then( function() {
       fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
+      //return web3.eth.getBalance(proj_addr);//
       return proj.getAmountRaised.call();
     })          
     .then( function(amount) {
@@ -79,6 +82,7 @@ request refund - allowed
   var proj;
   var fundhub; 
   var proj_index; 
+  var proj_addr;
 
 // Reuse for every test //
     FundingHub.new()
@@ -87,19 +91,21 @@ request refund - allowed
        return fundhub.createProject(coinbase, amount_goal, duration); 
     })
     .then( function() {
-      return fundhub.num_projects.call()
+      return fundhub.num_projects.call();
     })
     .then( function(value) {
       proj_index = value;
-      return fundhub.getProjectAddress(value);
+      return fundhub.getProjectAddress(proj_index);
     })
-    .then( function(addr) {
-      return Project.at(addr);
+    .then( function(value) {
+      proj_addr = value;
+      return Project.at(proj_addr);
     })
     .then( function(value) {
       proj = value;      
     })
 // Reuse for every test //  
+
     .then( function() {      
       fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
@@ -128,6 +134,7 @@ request refund - allowed
   var proj;
   var fundhub; 
   var proj_index;
+  var proj_addr;
 
 
 // Reuse for every test //
@@ -137,19 +144,21 @@ request refund - allowed
        return fundhub.createProject(coinbase, amount_goal, duration); 
     })
     .then( function() {
-      return fundhub.num_projects.call()
+      return fundhub.num_projects.call();
     })
     .then( function(value) {
       proj_index = value;
-      return fundhub.getProjectAddress(value);
+      return fundhub.getProjectAddress(proj_index);
     })
-    .then( function(addr) {
-      return Project.at(addr);
+    .then( function(value) {
+      proj_addr = value;
+      return Project.at(proj_addr);
     })
     .then( function(value) {
       proj = value;      
     })
 // Reuse for every test //  
+
     .then( function() {      
       fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })

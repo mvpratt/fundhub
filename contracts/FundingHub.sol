@@ -22,34 +22,28 @@ contract FundingHub {
 
   event OnContribute(uint timestamp, address contrib, uint amount);
 
-
 	function FundingHub() {
 	}
 
+  function createProject(address owner, uint funding_goal, uint duration) {
 
-    function createProject(address owner, uint funding_goal, uint duration) {
+    projectDeployed = new Project(owner, funding_goal, duration);
+    num_projects = num_projects + 1;
+    myProjects[num_projects] = projectDeployed;
+  }
 
-        projectDeployed = new Project(owner, funding_goal, duration);
-        num_projects = num_projects + 1;
-        myProjects[num_projects] = projectDeployed;
-    }
+  function contribute(uint index, address contrib) payable {
 
+    proj = Project(myProjects[index]);
+    proj.fund.value(msg.value)(contrib); 
+    OnContribute(now, contrib, msg.value);
+  }
 
-    function contribute(uint index, address contrib) payable {
+  function getProjectAddress(uint8 index) constant returns(address) {
+    return myProjects[index];
+  }
 
-      proj = Project(myProjects[index]);
-      proj.fund.value(msg.value)(contrib); 
-      OnContribute(now, contrib, msg.value);
-    }
-
-
-    function getProjectAddress(uint8 index) constant returns(address) {
-        return myProjects[index];
-    }
-
-
-    function getAddressLastDeployedProject() constant returns(address) {
-        return myProjects[num_projects];
-    }
-
+  function getAddressLastDeployedProject() constant returns(address) {
+    return myProjects[num_projects];
+  }
 }
