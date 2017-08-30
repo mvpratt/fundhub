@@ -1,6 +1,6 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.8;
 
-import "Project.sol";
+import "./Project.sol";
 
 
 contract FundingHub {
@@ -50,14 +50,14 @@ contract FundingHub {
     }
 
 
-    function getNumProjects() constant returns(uint8) {
-        return num_projects;
-    }
+    //function getNumProjects() constant returns(uint8) {
+    //    return num_projects;
+    //}
 
 
-    function getIndexLastDeployedProject() constant returns(uint8) {
-        return num_projects;
-    }
+    //function getIndexLastDeployedProject() constant returns(uint8) {
+    //    return num_projects;
+    //}
 
 
     function getAddressLastDeployedProject() constant returns(address) {
@@ -65,8 +65,7 @@ contract FundingHub {
     }
 
 
-    function getVersion() constant returns (uint8) {
-        return version;
-    }
-
+    //function getVersion() constant returns (uint8) {
+    //    return version;
+    //}
 }

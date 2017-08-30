@@ -1,4 +1,4 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.8;
 
 
 contract Project {
@@ -54,7 +54,7 @@ contract Project {
 
         else {                                 // project is either fully funded or deadline reached
             success = contrib.send(msg.value); // return all funds
-            if (!success) throw;
+            if (!success) revert();//throw;
         }
         OnFund(now, contrib, msg.value);
     }
@@ -64,7 +64,7 @@ contract Project {
             bal = balances[msg.sender];
             balances[msg.sender] = 0;
             success = msg.sender.send(bal);
-            if (!success) throw;
+            if (!success) revert();//throw;
         }
     }
 
@@ -72,16 +72,16 @@ contract Project {
     	if (msg.sender == info.owner && state == FULLY_FUNDED){  
             state = PAID_OUT;
             success = info.owner.send(this.balance);
-            if (!success) throw;
+            if (!success) revert();//throw;
         }
     }
 
 
 // Get Functions
 	
-	function getState() constant returns(uint) {
-        return state;
-    }
+	//function getState() constant returns(uint) {
+    //    return state;
+    //}
 
     function getAmountGoal() constant returns(uint) {
         return info.amount_goal;
@@ -99,9 +99,9 @@ contract Project {
         return info.owner;
     }
 	
-	function getCreator() constant returns(address) {
-        return creator;
-    }
+	//function getCreator() constant returns(address) {
+    //    return creator;
+    //}
 
     function getDeadline() constant returns(uint) {
         return info.deadline;
@@ -111,7 +111,8 @@ contract Project {
         return info.duration;
     }
 
-    function getVersion() constant returns(uint) {
-        return version;
-    }
+    //function getVersion() constant returns(uint) {
+    //    return version;
+    //}
+    
 }
