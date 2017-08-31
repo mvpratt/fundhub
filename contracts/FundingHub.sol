@@ -6,11 +6,9 @@ import "./Project.sol";
 contract FundingHub {
 
   address[4] public myProjects;       // Array of projects 
-  address    public projectDeployed;  // Last project deployed
+  uint8 public num_projects     = 0;
 
   Project proj;
-
-  uint8 public num_projects     = 0;
 
   event OnContribute(uint timestamp, address contrib, uint amount);
   event OnCreateProject(uint timestamp, address project_address);
@@ -20,10 +18,10 @@ contract FundingHub {
 
   function createProject(address owner, uint funding_goal, uint duration) {
 
-    projectDeployed = new Project(owner, funding_goal, duration);
     num_projects = num_projects + 1;
-    myProjects[num_projects] = projectDeployed;
-    OnCreateProject(now, projectDeployed);
+    myProjects[num_projects] = new Project(owner, funding_goal, duration);
+
+    OnCreateProject(now, myProjects[num_projects]);
   }
 
   function contribute(uint index, address contrib) payable {
@@ -37,7 +35,4 @@ contract FundingHub {
     return myProjects[index];
   }
 
-  function getAddressLastDeployedProject() constant returns(address) {
-    return myProjects[num_projects];
-  }
 }
