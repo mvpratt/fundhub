@@ -51,10 +51,6 @@ contract Project {
 
 // Get Functions
 	
-    function getAmountRaised() constant returns(uint) {
-        return this.balance;
-    }
-	
 	function getAmountContributed(address contrib) constant returns(uint) {
         return balances[contrib];
     }

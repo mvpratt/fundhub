@@ -13,6 +13,7 @@ contract FundingHub {
   uint8 public num_projects     = 0;
 
   event OnContribute(uint timestamp, address contrib, uint amount);
+  event OnCreateProject(uint timestamp, address project_address);
 
 	function FundingHub() {
 	}
@@ -22,6 +23,7 @@ contract FundingHub {
     projectDeployed = new Project(owner, funding_goal, duration);
     num_projects = num_projects + 1;
     myProjects[num_projects] = projectDeployed;
+    OnCreateProject(now, projectDeployed);
   }
 
   function contribute(uint index, address contrib) payable {

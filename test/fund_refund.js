@@ -50,7 +50,6 @@ function ProjectInfo(i) {
    return result;
 };
 
-// create a project and verify the constructor
 
   it("Create Project, verify constructor", function(done) {
 
@@ -72,7 +71,7 @@ function ProjectInfo(i) {
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(templateProject.index);
+      return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -88,6 +87,7 @@ function ProjectInfo(i) {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+      return;
 // Reuse for every test //  
     })     
     .then( function() { 
@@ -120,7 +120,7 @@ function ProjectInfo(i) {
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(templateProject.index);
+      return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -136,15 +136,21 @@ function ProjectInfo(i) {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+      //console.log("project index: " + myProject.index);
+      //console.log("project address: " + myProject.address);
+      //console.log("balance: project" + web3.eth.getBalance(myProject.address.toString()));
+      return;
 // Reuse for every test //  
     })
-
     .then( function() {
-      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
-      //return web3.eth.getBalance(proj_addr);//
-      return proj.getAmountRaised.call();
+      //console.log("project index: " + myProject.index);
+      //console.log("project address: " + myProject.address);
+      //console.log("balance: project " + web3.eth.getBalance(myProject.address.toString()));
+      //console.log("balance bob: " + web3.eth.getBalance(bob));      
+      return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
       assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
@@ -174,7 +180,7 @@ function ProjectInfo(i) {
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(templateProject.index);
+      return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -190,29 +196,29 @@ function ProjectInfo(i) {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+      return;
 // Reuse for every test //  
     })
 
     .then( function() {
-      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
-      return proj.getAmountRaised.call();
+      return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
       //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), myProject.amount_goal, "Amount doesn't match!"); 
-      //done();
+      assert.equal(amount.valueOf(), myProject.amount_goal, "Amount raised doesn't match!"); 
     })
     .then( function() {
-      proj.payout({from: myProject.owner});
+      return proj.payout({from: myProject.owner});
     })
     .then(function(){
-      return proj.getAmountRaised.call();
+      return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
       //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), 0, "Amount doesn't match!"); 
+      assert.equal(amount.valueOf(), 0, "Amount raised doesn't match!"); 
       done();
     })
     .catch(done);
@@ -240,7 +246,7 @@ function ProjectInfo(i) {
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(templateProject.index);
+      return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -256,17 +262,18 @@ function ProjectInfo(i) {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+      return;
 // Reuse for every test //  
     })
 
     .then( function() {      
-      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       return proj.refund({from: user_addr});
     })
     .then(function(){
-      return proj.getAmountRaised.call();
+      return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
       //console.log("amount raised: " + amount);
@@ -276,6 +283,8 @@ function ProjectInfo(i) {
     .catch(done);
 
   });
+
+  
 
 /*
   it("Project refund should be allowed after deadline reached and project not fully funded", function(done) {
@@ -298,7 +307,7 @@ function ProjectInfo(i) {
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(templateProject.index);
+      return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -314,10 +323,11 @@ function ProjectInfo(i) {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+      return;
 // Reuse for every test //  
     })
     .then( function() {      
-      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(value){
       console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
@@ -339,19 +349,18 @@ function ProjectInfo(i) {
       return proj.refund({from: user_addr});
     })
     .then(function(){
-      return proj.getAmountRaised.call();
+      return web3.eth.getBalance(myProject.address.toString());
     })  
     .then(function(amount){
       assert.equal(amount.valueOf(), 0, "Refund didnt work!"); 
       done();
     })
-
     .catch(done);
   });
-
-
-
 */
+
+
+
 /*
 function createProject() {
 
@@ -395,7 +404,7 @@ var proj;
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline; 
-      return myProject;
+      return;
     })  
     return myProject;
 }

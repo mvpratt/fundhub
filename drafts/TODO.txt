@@ -3,20 +3,22 @@ AUTHOR: <mvpratt>
 
 
 IN PROGRESS:
-
 Test payout - denied
 
 TODO:
+Bug - sometimes events dont fire
+Check account balances for required funds at the beginning of each test
 Tests fail sometimes :(   run everything 10x
 fix deadline test
 modularize project creation
-Get rid of getAmountRaised()
 Test revert
 
 
 DONE:
 Remove states
-Test payout - succees
+Test payout - succeess
+Bug - sometimes tests fail - especially the deadline test  (added returns for every promise.  FIXED)
+Get rid of getAmountRaised()
 
 
 // HOW TO: track a bunch of projects
