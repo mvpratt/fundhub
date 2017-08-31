@@ -3,12 +3,19 @@ AUTHOR: <mvpratt>
 
 
 IN PROGRESS:
-Get rid of getAmountRaised()
-Remove states
+Test payout - succees
+Test payout - denied
 
 TODO:
-REfactor automated deadline test
+fix deadline test
+modularize automated tests
+Get rid of getAmountRaised()
+
 Test revert
+
+
+DONE:
+Remove states
 
 =============================================
 

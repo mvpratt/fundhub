@@ -2,9 +2,10 @@
 var FundingHub = artifacts.require("./FundingHub.sol");
 var Project = artifacts.require("./Project.sol");
 
+var gasLimit = 4500000;
+
 contract('Project: Basic fund and refund, single contributer', function(accounts) {
   
-
   coinbase  = accounts[0]; 
   alice     = accounts[1];
   bob       = accounts[2];
@@ -12,52 +13,135 @@ contract('Project: Basic fund and refund, single contributer', function(accounts
 
 /*
 Tests:
-get reference to project instance
-contribute 1 ETH
-request refund - rejected
-deadline reached 
-request refund - allowed
+done - verify constructor
+done - get reference to project instance
+done - contribute 1 ETH
+done - request refund - rejected
+done - deadline reached 
+done - request refund - allowed
 */
 
+// Application Store
+templateProject = {
+  //instance: 0,
+  address: '',
+  owner: alice,
+  amount_goal: web3.toWei(10, "ether"),
+  duration: 50,
+  deadline: 0,
+  index: 1
+}
 
-  it("Project contribution should match", function(done) {
+blankProject = {
+  //instance: 0,
+  address: '',
+  owner: '',
+  amount_goal: 0,
+  duration: 0,
+  deadline: 0,
+  index: 0
+}
 
-  var owner = alice;
+function ProjectInfo(i) {
+   var result = {};
+   result.owner = i[0];
+   result.amount_goal = parseInt(i[1]);
+   result.duration = parseInt(i[2]);
+   result.deadline = parseInt([3]);
+   return result;
+};
+
+// create a project and verify the constructor
+
+  it("Create Project, verify constructor", function(done) {
+
+  var myProject = blankProject;
   var user_addr = bob;
-  var amount_goal = web3.toWei(10, "ether");
-  var duration = 50;
   var amount_contribute = web3.toWei(1, "ether");
-
   var proj;
   var fundhub; 
-  var proj_index;
-  var proj_addr;
-
+  var info;
 
 // Reuse for every test //
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
-       return fundhub.createProject(coinbase, amount_goal, duration); 
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
     })
     .then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
-      proj_index = value;
-      return fundhub.getProjectAddress(proj_index);
+      myProject.index = value;
+      return fundhub.getProjectAddress(templateProject.index);
     })
     .then( function(value) {
-      proj_addr = value;
-      return Project.at(proj_addr);
+      myProject.address = value;
+      return Project.at(myProject.address);
     })
     .then( function(value) {
       proj = value;      
+      return proj.info.call();
     })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
 // Reuse for every test //  
+    })     
+    .then( function() { 
+      assert.equal(templateProject.owner, myProject.owner, "Owner doesn't match!"); 
+      assert.equal(templateProject.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
+      assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");  
+      done();
+    })
+    .catch(done);
+  });
+
+
+  it("Project contribution should match", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var proj;
+  var fundhub; 
+  var info;
+
+// Reuse for every test //
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(templateProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      proj = value;      
+      return proj.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+// Reuse for every test //  
+    })
 
     .then( function() {
-      fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       //return web3.eth.getBalance(proj_addr);//
@@ -71,43 +155,47 @@ request refund - allowed
   });
 
 
-
   it("Project refund should be rejected when deadline not reached", function(done) {
 
-  var owner = alice;
+  var myProject = blankProject;
   var user_addr = bob;
-  var amount_goal = web3.toWei(10, "ether");
-  var duration = 50;
   var amount_contribute = web3.toWei(1, "ether");
   var proj;
   var fundhub; 
-  var proj_index; 
-  var proj_addr;
+  var info;
 
 // Reuse for every test //
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
-       return fundhub.createProject(coinbase, amount_goal, duration); 
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
     })
     .then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
-      proj_index = value;
-      return fundhub.getProjectAddress(proj_index);
+      myProject.index = value;
+      return fundhub.getProjectAddress(templateProject.index);
     })
     .then( function(value) {
-      proj_addr = value;
-      return Project.at(proj_addr);
+      myProject.address = value;
+      return Project.at(myProject.address);
     })
     .then( function(value) {
       proj = value;      
+      return proj.info.call();
     })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
 // Reuse for every test //  
+    })
 
     .then( function() {      
-      fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       return proj.refund({from: user_addr});
@@ -123,51 +211,50 @@ request refund - allowed
 
   });
 
-
+/*
   it("Project refund should be allowed after deadline reached and project not fully funded", function(done) {
 
-  var owner = alice;
+  var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var amount_goal = web3.toWei(10, "ether");
-  var duration = 1;  // TODO - make longer
   var proj;
   var fundhub; 
-  var proj_index;
-  var proj_addr;
-
+  var info;
 
 // Reuse for every test //
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
-       return fundhub.createProject(coinbase, amount_goal, duration); 
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
     })
     .then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
-      proj_index = value;
-      return fundhub.getProjectAddress(proj_index);
+      myProject.index = value;
+      return fundhub.getProjectAddress(templateProject.index);
     })
     .then( function(value) {
-      proj_addr = value;
-      return Project.at(proj_addr);
+      myProject.address = value;
+      return Project.at(myProject.address);
     })
     .then( function(value) {
       proj = value;      
-    })
-// Reuse for every test //  
-
-    .then( function() {      
-      fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
-    })
-    .then(function(){
-      return proj.getDeadline.call();
+      return proj.info.call();
     })
     .then(function(value){
-
-      console.log("deadline: " + value);
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+// Reuse for every test //  
+    })
+    .then( function() {      
+      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+    })
+    .then(function(value){
+      console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
 
       /// TODO - ADVANCE TIME UNTIL DEADLINE REACHED
@@ -180,11 +267,8 @@ request refund - allowed
     .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
       return proj.refund({from: user_addr});
     })
-    .then(function(){
-      return proj.getDeadline.call();
-    })
-    .then(function(value){ // call second time, to give time for testrpc to mine new block (one block per transaction)
-      console.log("deadline: " + value);
+    .then(function(value){
+      console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return proj.refund({from: user_addr});
     })
@@ -200,33 +284,59 @@ request refund - allowed
   });
 
 
+
+*/
 /*
+function createProject() {
 
-function createProject(fundhub, owner, amount_goal, duration){
+var templateProject = {
+  //instance: 0,
+  address: '',
+  owner: alice,
+  amount_goal: web3.toWei(10, "ether"),
+  duration: 50,
+  deadline: 0,
+  index: 1
+}
 
-  var proj;  
+var myProject = {};
+var fundhub;
+var proj;
 
-  return new Promise(function(resolve,reject){
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(templateProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      proj = value;      
+      return proj.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline; 
+      return myProject;
+    })  
+    return myProject;
+}
+*/
 
-      fundhub.createProject(owner, amount_goal, duration, {from: owner, gas: 4500000})
-        .then(function(){
-          return fundhub.getNumProjects.call();
-        })
-        .then(function(num){
-          return fundhub.getProjectAddress.call(num);
-        })
-        .then(function(addr){
-          return Project.at(addr);
-        })
-        .then(function(proj){
-          resolve(proj);
-        })
-        .catch(function(e) {
-          console.log(e);
-        });
 
-  });
-} // function
+/*
 
 
 function LogFund(proj) {  
@@ -249,4 +359,5 @@ function LogContribute(fundhub) {
     });
 }  
 */
+
 }); // contract
