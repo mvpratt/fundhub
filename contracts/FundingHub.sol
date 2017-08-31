@@ -5,14 +5,6 @@ import "./Project.sol";
 
 contract FundingHub {
 
-// HOW TO: track a bunch of projects
-//  And array (address -> index), store array size, project name?
-//  A mapping (address -> owner)
-
-// HOW TO: Call a function and send it ETH
-//address.func.value(amount)(arg1, arg2, arg3)
-
-
   address[4] public myProjects;       // Array of projects 
   address    public projectDeployed;  // Last project deployed
 

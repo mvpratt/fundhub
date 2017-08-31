@@ -3,19 +3,28 @@ AUTHOR: <mvpratt>
 
 
 IN PROGRESS:
-Test payout - succees
+
 Test payout - denied
 
 TODO:
+Tests fail sometimes :(   run everything 10x
 fix deadline test
-modularize automated tests
+modularize project creation
 Get rid of getAmountRaised()
-
 Test revert
 
 
 DONE:
 Remove states
+Test payout - succees
+
+
+// HOW TO: track a bunch of projects
+//  And array (address -> index), store array size, project name?
+//  A mapping (address -> owner)
+
+// HOW TO: Call a function and send it ETH
+//address.func.value(amount)(arg1, arg2, arg3)
 
 =============================================
 

@@ -21,7 +21,6 @@ done - deadline reached
 done - request refund - allowed
 */
 
-// Application Store
 templateProject = {
   //instance: 0,
   address: '',
@@ -155,7 +154,73 @@ function ProjectInfo(i) {
   });
 
 
-  it("Project refund should be rejected when deadline not reached", function(done) {
+  it("Project payout allowed when fundraising goal reached", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(10, "ether");
+  var proj;
+  var fundhub; 
+  var info;
+
+// Reuse for every test //
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(templateProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      proj = value;      
+      return proj.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+// Reuse for every test //  
+    })
+
+    .then( function() {
+      fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+    })
+    .then(function(){
+      return proj.getAmountRaised.call();
+    })          
+    .then( function(amount) {
+      //console.log("amount raised: " + amount);
+      assert.equal(amount.valueOf(), myProject.amount_goal, "Amount doesn't match!"); 
+      //done();
+    })
+    .then( function() {
+      proj.payout({from: myProject.owner});
+    })
+    .then(function(){
+      return proj.getAmountRaised.call();
+    })          
+    .then( function(amount) {
+      //console.log("amount raised: " + amount);
+      assert.equal(amount.valueOf(), 0, "Amount doesn't match!"); 
+      done();
+    })
+    .catch(done);
+  });
+
+
+
+  it("Project refund request should be rejected before deadline reached", function(done) {
 
   var myProject = blankProject;
   var user_addr = bob;
@@ -204,6 +269,7 @@ function ProjectInfo(i) {
       return proj.getAmountRaised.call();
     })          
     .then( function(amount) {
+      //console.log("amount raised: " + amount);
       assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
       done();
     })

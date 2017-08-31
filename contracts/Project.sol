@@ -50,10 +50,6 @@ contract Project {
     }
 
 // Get Functions
-
-    //function getAmountGoal() constant returns(uint) {
-    //    return info.amount_goal;
-    //}
 	
     function getAmountRaised() constant returns(uint) {
         return this.balance;
@@ -62,16 +58,4 @@ contract Project {
 	function getAmountContributed(address contrib) constant returns(uint) {
         return balances[contrib];
     }
-
-    //function getOwner() constant returns(address) {
-    //    return info.owner;
-    //}
-
-    //function getDeadline() constant returns(uint) {
-    //    return info.deadline;
-    //}
-
-    //function getDuration() constant returns(uint) {
-    //    return info.duration;
-    //}
 }
