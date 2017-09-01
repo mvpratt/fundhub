@@ -61,9 +61,4 @@ contract Project {
             if (!info.owner.send(this.balance)) revert();
         }
     }
-
-// Get Functions
-	function getAmountContributed(address contrib) constant returns(uint) {
-        return balances[contrib];
-    }
 }

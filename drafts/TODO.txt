@@ -4,17 +4,23 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
+    Change to withdrawl model
 
+       - Refund request denied when project is fully funded
 
 Automated tests:
 
   Project Creation:
   DONE - Project created, constructor loads default values
 
+  Project Contributions:
+       - Contribute from multiple users
+
   Project Refunds:
   DONE - Refund request denied when deadline not reached yet
   DONE - Refund request from non-contributer denied
-       - Refund request fullfilled when deadline reached and project not fully funded
+
+       - Refund request fullfilled when deadline reached and project not fully funded --play_time example.
 
 
   Project Payouts:
@@ -22,51 +28,41 @@ Automated tests:
   DONE - Payout request denied when project not fully funded
        - Payout request from non-owner is denied -- WILL CAUSE REVERT()
 
+  FundHub:
+       - Create multiple projects
 
 
 TODO: 
-Verify amounts of payouts, refunds, contributions, etc
-Build GUI
-Any other contract optimizations?  Remove - getProjectAddress() and getAmountContributed()
-Test refactor to be reusable in web code?  Functions - get list of projects, get list of project contributers
+  Test - Project
+  Test - FundHub
+  Verify amounts of payouts, refunds, contributions, etc (minus gas cost)
+  Build GUI
+  Any other contract optimizations?  
+  Test refactor to be reusable in web code?  
+  Functions - get list of projects, get list of project contributers.  Remove - getProjectAddress() and getAmountContributed()
+  
   Update readme
   Bug - sometimes events dont fire
-  Bug - Tests fail sometimes :(   run everything 10x
-  fix deadline test--  play_time example.
   modularize project creation
   Test revert()  -- Note: reverts will caust truffle tests to fail  (maybe need to catch them??)
 
-
-
-Create 3 projects
-
-  Automated tests:
-    Test - Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
-    Test - Check that requester received funds, more precisely (minus gas cost)
-    Test - Cleanup debug / admin function calls
-
   Error checking/security  - i.e. weird / malformed /invalid inputs
     Requesting funds when balance is 0
-    Users cant get refund out of a funded project
-    Does contract need some overhead funds?  make sure doesnt run out of money
-    Change to withdrawl model
     Owner cant fund own contract!
-
-  Create new test cases in which additional projects are deployed from FundingHub
-
 
 
 // HOW TO: track a bunch of projects
-//  And array (address -> index), store array size, project name?
+//  An array (address -> index), store array size, project name?
 //  A mapping (address -> owner)
 
 // HOW TO: Call a function and send it ETH
-//address.func.value(amount)(arg1, arg2, arg3)
+// address.func.value(amount)(arg1, arg2, arg3)
+
 
 =============================================
 
-
 DONE:
+
   Use modifiers
   Remove states
   Test payout - succeess

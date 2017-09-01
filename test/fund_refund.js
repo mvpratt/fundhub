@@ -39,13 +39,36 @@ function ProjectInfo(i) {
    return result;
 };
 
+  it("Create Project, verify constructor -- modular methodology", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var fundhub; 
+
+
+  createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration)
+  .then(function(value){
+    myProject = value;
+          console.log("project owner: " + myProject.owner);
+      console.log("project goal: " + myProject.amount_goal);
+      console.log("project duration: " + myProject.duration);
+  })
+  .then( function() { 
+      //assert.equal(templateProject.owner, myProject.owner, "Owner doesn't match!"); 
+      assert.equal(templateProject.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
+      //assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");  
+      done();
+    })
+    .catch(done);
+  });
+
 
   it("Create Project, verify constructor", function(done) {
 
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  //
   var fundhub; 
   var info;
 
@@ -408,6 +431,71 @@ function ProjectInfo(i) {
   });
 
 
+  it("Refund request denied when project is fully funded", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(10, "ether");
+  
+  var fundhub; 
+  var info;
+
+// Reuse for every test //
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(myProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      myProject.instance = value;      
+      return myProject.instance.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+      return;
+// Reuse for every test //  
+    })
+
+    .then( function() {      
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+    })
+    .then(function(){
+      return myProject.instance.refund({from: user_addr});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), amount_contribute, "Invalid refund allowed!"); 
+      done();
+    })
+    .catch(done);
+
+  });
+
+
+
   it("Refund request denied when deadline not reached yet", function(done) {
 
   var myProject = blankProject;
@@ -452,13 +540,18 @@ function ProjectInfo(i) {
       return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
     })
     .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+    })    
+    .then(function(){
       return myProject.instance.refund({from: user_addr});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      //console.log("amount raised: " + amount);
       assert.equal(amount.valueOf(), amount_contribute, "Invalid refund allowed!"); 
       done();
     })
@@ -541,36 +634,24 @@ function ProjectInfo(i) {
   });
 */
 
+function createProject(owner, amount_goal, duration){
 
+  var myProject = {};
+  var fundhub; 
+  var info;
 
-/*
-function createProject() {
-
-var templateProject = {
-  //instance: 0,
-  address: '',
-  owner: alice,
-  amount_goal: web3.toWei(10, "ether"),
-  duration: 50,
-  deadline: 0,
-  index: 1
-}
-
-var myProject = {};
-var fundhub;
-
-
+  return new Promise(function(resolve,reject){
     FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    .then( function(value) {
+       fundhub = value;
+       return fundhub.createProject(owner, amount_goal, duration); 
     })
     .then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(templateProject.index);
+      return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -585,17 +666,22 @@ var fundhub;
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
-      myProject.deadline = info.deadline; 
-      return;
-    })  
-    return myProject;
+      myProject.deadline = info.deadline;
+      console.log("project owner: " + myProject.owner);
+      console.log("project goal: " + myProject.amount_goal);
+      console.log("project duration: " + myProject.duration);
+      resolve(myProject);
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error creating project; see log.");
+  });
+
+  });
 }
-*/
 
 
 /*
-
-
 function LogFund(proj) {  
   myProject.instance.OnFund()
     .watch(function(e, value) {
