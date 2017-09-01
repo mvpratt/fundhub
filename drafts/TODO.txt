@@ -3,22 +3,57 @@ AUTHOR: <mvpratt>
 
 
 IN PROGRESS:
-Test payout - denied
-
-TODO:
-Bug - sometimes events dont fire
-Check account balances for required funds at the beginning of each test
-Tests fail sometimes :(   run everything 10x
-fix deadline test
-modularize project creation
-Test revert
 
 
-DONE:
-Remove states
-Test payout - succeess
-Bug - sometimes tests fail - especially the deadline test  (added returns for every promise.  FIXED)
-Get rid of getAmountRaised()
+
+Automated tests:
+
+  Project Creation:
+  DONE - Project created, constructor loads default values
+
+  Project Refunds:
+  DONE - Refund request denied when deadline not reached yet
+  DONE - Refund request from non-contributer denied
+       - Refund request fullfilled when deadline reached and project not fully funded
+
+
+  Project Payouts:
+  DONE - Payout request fullfilled when fundraising goal reached
+  DONE - Payout request denied when project not fully funded
+       - Payout request from non-owner is denied -- WILL CAUSE REVERT()
+
+
+
+TODO: 
+Verify amounts of payouts, refunds, contributions, etc
+Build GUI
+Any other contract optimizations?  Remove - getProjectAddress() and getAmountContributed()
+Test refactor to be reusable in web code?  Functions - get list of projects, get list of project contributers
+  Update readme
+  Bug - sometimes events dont fire
+  Bug - Tests fail sometimes :(   run everything 10x
+  fix deadline test--  play_time example.
+  modularize project creation
+  Test revert()  -- Note: reverts will caust truffle tests to fail  (maybe need to catch them??)
+
+
+
+Create 3 projects
+
+  Automated tests:
+    Test - Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
+    Test - Check that requester received funds, more precisely (minus gas cost)
+    Test - Cleanup debug / admin function calls
+
+  Error checking/security  - i.e. weird / malformed /invalid inputs
+    Requesting funds when balance is 0
+    Users cant get refund out of a funded project
+    Does contract need some overhead funds?  make sure doesnt run out of money
+    Change to withdrawl model
+    Owner cant fund own contract!
+
+  Create new test cases in which additional projects are deployed from FundingHub
+
 
 
 // HOW TO: track a bunch of projects
@@ -29,6 +64,15 @@ Get rid of getAmountRaised()
 //address.func.value(amount)(arg1, arg2, arg3)
 
 =============================================
+
+
+DONE:
+  Use modifiers
+  Remove states
+  Test payout - succeess
+  Bug - sometimes tests fail - especially the deadline test  (added returns for every promise.  FIXED)
+  Get rid of getAmountRaised()
+  Update to truffle 3.4.x
 
 
 DONE:
@@ -75,9 +119,8 @@ DONE:
 
 ===============================================
 
-
 BACKLOG:
-  Increase duration of project in automated test.  Advance testrpc time to reach deadline
+  Check account balances for required funds at the beginning of each test
   Cleanup javascript console logging
   Loads really slow in Safari, console won't open
   Show owner in project table
@@ -85,30 +128,9 @@ BACKLOG:
   User wallet??
   Mist/Metamask/
 
-  Update to truffle 3.2.1?  -- required for play_time example.
-
-  Fix or remove broken tests  (only refund test required for b9lab)
-
   Debug - Reset FundingHub/Projects
-  Create new test cases in which additional projects are deployed from FundingHub
-
-  Error checking/security  - i.e. weird / malformed /invalid inputs
-    Requesting funds when balance is 0
-    Users cant get refund out of a funded project
-    Does contract need some overhead funds?  make sure doesnt run out of money
-    Change to withdrawl model
-    Owner cant fund own contract!
-
-  Refactoring:
-    Can choose order of tests?
-    Storage considerations
-    tests - use truffle "require" to get the contract ABI once at beginning
 
   Add basic error messages (for debug)
     When sending funds fails
     When transaction fails for another reason
 
-  Automated tests:
-    Test - Owner requests payout, not admin  (issue, owners balance decreases because of the request costs gas)
-    Test - Check that requester received funds, more precisely (minus gas cost)
-    Test - Cleanup debug / admin function calls

@@ -2,26 +2,17 @@
 var FundingHub = artifacts.require("./FundingHub.sol");
 var Project = artifacts.require("./Project.sol");
 
-var gasLimit = 4500000;
 
 contract('Project: Basic fund and refund, single contributer', function(accounts) {
   
-  coinbase  = accounts[0]; 
-  alice     = accounts[1];
-  bob       = accounts[2];
-  carol     = accounts[3];
+//var gasLimit = 4500000;
 
-/*
-Tests:
-done - verify constructor
-done - get reference to project instance
-done - contribute 1 ETH
-done - request refund - rejected
-done - deadline reached 
-done - request refund - allowed
-*/
+  var coinbase  = accounts[0]; 
+  var alice     = accounts[1];
+  var bob       = accounts[2];
+  var carol     = accounts[3];
 
-templateProject = {
+var templateProject = {
   //instance: 0,
   address: '',
   owner: alice,
@@ -31,7 +22,7 @@ templateProject = {
   index: 1
 }
 
-blankProject = {
+var blankProject = {
   //instance: 0,
   address: '',
   owner: '',
@@ -100,7 +91,7 @@ function ProjectInfo(i) {
   });
 
 
-  it("Project contribution should match", function(done) {
+  it("Project can receive a contribution", function(done) {
 
   var myProject = blankProject;
   var user_addr = bob;
@@ -143,7 +134,7 @@ function ProjectInfo(i) {
 // Reuse for every test //  
     })
     .then( function() {
-      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       //console.log("project index: " + myProject.index);
@@ -159,6 +150,136 @@ function ProjectInfo(i) {
     .catch(done);
   });
 
+
+  it("Payout requested, denied when project not fully funded", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var proj;
+  var fundhub; 
+  var info;
+
+// Reuse for every test //
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(myProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      proj = value;      
+      return proj.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+      return;
+// Reuse for every test //  
+    })
+
+    .then( function() {
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      //console.log("amount raised: " + amount);
+      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+    })
+    .then( function() {
+      return proj.payout({from: myProject.owner});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      //console.log("amount raised: " + amount);
+      assert.equal(amount.valueOf(), amount_contribute, "Invalid payout allowed!"); 
+      done();
+    })
+    .catch(done);
+  });
+
+/* CAUSES REVERT()
+  it("Payout request from non-owner is denied", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var proj;
+  var fundhub; 
+  var info;
+
+// Reuse for every test //
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(myProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      proj = value;      
+      return proj.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+      return;
+// Reuse for every test //  
+    })
+
+    .then( function() {
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      //console.log("amount raised: " + amount);
+      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+    })
+    .then( function() {
+      return proj.payout({from: user_addr});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      //console.log("amount raised: " + amount);
+      assert.equal(amount.valueOf(), amount_contribute, "Invalid payout allowed!"); 
+      done();
+    })
+    .catch(done);
+  });
+*/
 
   it("Project payout allowed when fundraising goal reached", function(done) {
 
@@ -201,14 +322,13 @@ function ProjectInfo(i) {
     })
 
     .then( function() {
-      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), myProject.amount_goal, "Amount raised doesn't match!"); 
+      assert.equal(amount.valueOf(), myProject.amount_goal, "Contribution unsuccessful!"); 
     })
     .then( function() {
       return proj.payout({from: myProject.owner});
@@ -217,8 +337,7 @@ function ProjectInfo(i) {
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), 0, "Amount raised doesn't match!"); 
+      assert.equal(amount.valueOf(), 0, "Payout failed!"); 
       done();
     })
     .catch(done);
@@ -226,7 +345,8 @@ function ProjectInfo(i) {
 
 
 
-  it("Project refund request should be rejected before deadline reached", function(done) {
+
+  it("Refund request from non-contributer denied", function(done) {
 
   var myProject = blankProject;
   var user_addr = bob;
@@ -267,7 +387,71 @@ function ProjectInfo(i) {
     })
 
     .then( function() {      
-      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+    })
+    .then(function(){
+      return proj.refund({from: alice});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), amount_contribute, "Invalid refund allowed!"); 
+      done();
+    })
+    .catch(done);
+
+  });
+
+
+  it("Refund request denied when deadline not reached yet", function(done) {
+
+  var myProject = blankProject;
+  var user_addr = bob;
+  var amount_contribute = web3.toWei(1, "ether");
+  var proj;
+  var fundhub; 
+  var info;
+
+// Reuse for every test //
+    FundingHub.new()
+    .then( function(instance) {
+       fundhub = instance;
+       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+    })
+    .then( function() {
+      return fundhub.num_projects.call();
+    })
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(myProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      proj = value;      
+      return proj.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+      return;
+// Reuse for every test //  
+    })
+
+    .then( function() {      
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(){
       return proj.refund({from: user_addr});
@@ -277,7 +461,7 @@ function ProjectInfo(i) {
     })          
     .then( function(amount) {
       //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
+      assert.equal(amount.valueOf(), amount_contribute, "Invalid refund allowed!"); 
       done();
     })
     .catch(done);
@@ -327,7 +511,7 @@ function ProjectInfo(i) {
 // Reuse for every test //  
     })
     .then( function() {      
-      return fundhub.contribute(myProject.index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
     })
     .then(function(value){
       console.log("deadline: " + myProject.deadline);   //TODO - fix magic number

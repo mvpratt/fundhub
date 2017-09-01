@@ -5,24 +5,30 @@ contract Project {
 
     struct Info {
       address owner; 
-      uint amount_goal;  // in units of Wei
+      uint amount_goal;  // in Wei
       uint duration;
-      uint deadline;     // in units of seconds
+      uint deadline;     // in seconds
     }
 
     Info public info;
     mapping(address => uint) public balances;  // Funding contributions
-    address public creator;
     uint public bal;                           // temp balance variable
 
-    event OnFund(uint timestamp, address contrib, uint amount);
+    event Fund(uint timestamp, address contrib, uint amount);
 
+    //access control
+    modifier onlyOwner { 
+        if (msg.sender != info.owner)  revert();
+        _; 
+    } 
 
+    // constructor
     function Project(address own, uint amt, uint dur) {
-        creator     = msg.sender;
-        info        = Info(own, amt, dur, (now+dur));
+        info = Info(own, amt, dur, (now+dur));
     }
 
+
+    // fund() must specify the contributer (which is not necessarily the message sender)
     function fund(address contrib) payable public {
 
         // not reached goal yet
@@ -34,12 +40,14 @@ contract Project {
         else {                                 
             if (!contrib.send(msg.value)) revert();
         }
-        OnFund(now, contrib, msg.value);
+        Fund(now, contrib, msg.value);
     }
 
+    // only refunds to contributers
     function refund() public {
-        
+
         // only refund if deadline reached before fully funded
+        // zero out balance before sending funds - to prevent DAO style recursive attack
     	if (now >= info.deadline && this.balance < info.amount_goal){ 
             bal = balances[msg.sender];
             balances[msg.sender] = 0;
@@ -47,14 +55,14 @@ contract Project {
         }
     }
 
-    function payout() public {
+    // only pays out to the owner
+    function payout() {
         if (msg.sender == info.owner && this.balance == info.amount_goal){ 
             if (!info.owner.send(this.balance)) revert();
         }
     }
 
 // Get Functions
-	
 	function getAmountContributed(address contrib) constant returns(uint) {
         return balances[contrib];
     }

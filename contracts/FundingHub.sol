@@ -5,30 +5,30 @@ import "./Project.sol";
 
 contract FundingHub {
 
-  address[4] public myProjects;       // Array of projects 
-  uint8 public num_projects     = 0;
-
+  address[4] public myProjects;        
+  uint public num_projects = 0;
   Project proj;
 
-  event OnContribute(uint timestamp, address contrib, uint amount);
-  event OnCreateProject(uint timestamp, address project_address);
+  event Contribute(uint timestamp, address contrib, uint amount);
+  event CreateProject(uint timestamp, address project_address);
 
 	function FundingHub() {
 	}
 
+  // project owner can be an account other than the creator
   function createProject(address owner, uint funding_goal, uint duration) {
 
     num_projects = num_projects + 1;
     myProjects[num_projects] = new Project(owner, funding_goal, duration);
-
-    OnCreateProject(now, myProjects[num_projects]);
+    CreateProject(now, myProjects[num_projects]);
   }
 
-  function contribute(uint index, address contrib) payable {
+  // Contributer is an account (external account, or contract account)
+  function contribute(uint index) payable {
 
     proj = Project(myProjects[index]);
-    proj.fund.value(msg.value)(contrib); 
-    OnContribute(now, contrib, msg.value);
+    proj.fund.value(msg.value)(msg.sender); 
+    Contribute(now, msg.sender, msg.value);
   }
 
   function getProjectAddress(uint8 index) constant returns(address) {
