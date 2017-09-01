@@ -2,10 +2,8 @@
 var FundingHub = artifacts.require("./FundingHub.sol");
 var Project = artifacts.require("./Project.sol");
 
-
-contract('Project: Basic fund and refund, single contributer', function(accounts) {
-  
-//var gasLimit = 4500000;
+var gasLimit = 4500000;
+contract('Test: Project contract', function(accounts) {
 
   var coinbase  = accounts[0]; 
   var alice     = accounts[1];
@@ -13,7 +11,7 @@ contract('Project: Basic fund and refund, single contributer', function(accounts
   var carol     = accounts[3];
 
 var templateProject = {
-  //instance: 0,
+  instance: 0,
   address: '',
   owner: alice,
   amount_goal: web3.toWei(10, "ether"),
@@ -23,7 +21,7 @@ var templateProject = {
 }
 
 var blankProject = {
-  //instance: 0,
+  instance: 0,
   address: '',
   owner: '',
   amount_goal: 0,
@@ -47,7 +45,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  //
   var fundhub; 
   var info;
 
@@ -69,8 +67,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -96,7 +94,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -118,8 +116,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -134,7 +132,7 @@ function ProjectInfo(i) {
 // Reuse for every test //  
     })
     .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
     })
     .then(function(){
       //console.log("project index: " + myProject.index);
@@ -156,7 +154,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -178,8 +176,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -202,7 +200,7 @@ function ProjectInfo(i) {
       assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
     })
     .then( function() {
-      return proj.payout({from: myProject.owner});
+      return myProject.instance.payout({from: myProject.owner});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -221,7 +219,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -243,8 +241,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -257,7 +255,7 @@ function ProjectInfo(i) {
     })
 
     .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -267,7 +265,7 @@ function ProjectInfo(i) {
       assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
     })
     .then( function() {
-      return proj.payout({from: user_addr});
+      return myProject.instance.payout({from: user_addr});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -286,7 +284,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(10, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -308,8 +306,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -322,7 +320,7 @@ function ProjectInfo(i) {
     })
 
     .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -331,7 +329,7 @@ function ProjectInfo(i) {
       assert.equal(amount.valueOf(), myProject.amount_goal, "Contribution unsuccessful!"); 
     })
     .then( function() {
-      return proj.payout({from: myProject.owner});
+      return myProject.instance.payout({from: myProject.owner});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -351,7 +349,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -373,8 +371,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -387,7 +385,7 @@ function ProjectInfo(i) {
     })
 
     .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -396,7 +394,7 @@ function ProjectInfo(i) {
       assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
     })
     .then(function(){
-      return proj.refund({from: alice});
+      return myProject.instance.refund({from: alice});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -415,7 +413,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -437,8 +435,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -451,10 +449,10 @@ function ProjectInfo(i) {
     })
 
     .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
     })
     .then(function(){
-      return proj.refund({from: user_addr});
+      return myProject.instance.refund({from: user_addr});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -476,7 +474,7 @@ function ProjectInfo(i) {
   var myProject = blankProject;
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  var proj;
+  
   var fundhub; 
   var info;
 
@@ -498,8 +496,8 @@ function ProjectInfo(i) {
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -511,7 +509,7 @@ function ProjectInfo(i) {
 // Reuse for every test //  
     })
     .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
+      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
     })
     .then(function(value){
       console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
@@ -519,18 +517,18 @@ function ProjectInfo(i) {
 
       /// TODO - ADVANCE TIME UNTIL DEADLINE REACHED
       /// run with "testrpc -s 1" to pass (1 block/second).  would be better to manually advance time
-      return proj.refund({from: user_addr});
+      return myProject.instance.refund({from: user_addr});
     })
     .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
-      return proj.refund({from: user_addr});
+      return myProject.instance.refund({from: user_addr});
     })
     .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
-      return proj.refund({from: user_addr});
+      return myProject.instance.refund({from: user_addr});
     })
     .then(function(value){
       console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-      return proj.refund({from: user_addr});
+      return myProject.instance.refund({from: user_addr});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -560,7 +558,7 @@ var templateProject = {
 
 var myProject = {};
 var fundhub;
-var proj;
+
 
     FundingHub.new()
     .then( function(instance) {
@@ -579,8 +577,8 @@ var proj;
       return Project.at(myProject.address);
     })
     .then( function(value) {
-      proj = value;      
-      return proj.info.call();
+      myProject.instance = value;      
+      return myProject.instance.info.call();
     })
     .then(function(value){
       info = new ProjectInfo(value);
@@ -599,7 +597,7 @@ var proj;
 
 
 function LogFund(proj) {  
-  proj.OnFund()
+  myProject.instance.OnFund()
     .watch(function(e, value) {
       if (e)
         console.error(e);
