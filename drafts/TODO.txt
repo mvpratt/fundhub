@@ -4,9 +4,8 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-    Change to withdrawl model
 
-       - Refund request denied when project is fully funded
+
 
 Automated tests:
 
@@ -19,7 +18,7 @@ Automated tests:
   Project Refunds:
   DONE - Refund request denied when deadline not reached yet
   DONE - Refund request from non-contributer denied
-
+  DONE - Refund request denied when project is fully funded
        - Refund request fullfilled when deadline reached and project not fully funded --play_time example.
 
 
@@ -33,19 +32,16 @@ Automated tests:
 
 
 TODO: 
-  Test - Project
-  Test - FundHub
+    - Change to withdrawl pattern
+  Test - Project, Test - FundHub.js
   Verify amounts of payouts, refunds, contributions, etc (minus gas cost)
   Build GUI
   Any other contract optimizations?  
   Test refactor to be reusable in web code?  
-  Functions - get list of projects, get list of project contributers.  Remove - getProjectAddress() and getAmountContributed()
-  
+  Functions - get list of projects, get list of project contributers.  Remove - getProjectAddress() and getAmountContributed() 
   Update readme
   Bug - sometimes events dont fire
-  modularize project creation
   Test revert()  -- Note: reverts will caust truffle tests to fail  (maybe need to catch them??)
-
   Error checking/security  - i.e. weird / malformed /invalid inputs
     Requesting funds when balance is 0
     Owner cant fund own contract!
@@ -62,7 +58,7 @@ TODO:
 =============================================
 
 DONE:
-
+  modularize project creation
   Use modifiers
   Remove states
   Test payout - succeess

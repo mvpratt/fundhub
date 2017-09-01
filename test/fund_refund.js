@@ -39,46 +39,14 @@ function ProjectInfo(i) {
    return result;
 };
 
-  it("Create Project, verify constructor -- modular methodology", function(done) {
+function createProject(fundhub, owner, amount_goal, duration){
 
-  var myProject = blankProject;
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(1, "ether");
-  var fundhub; 
-
-
-  createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration)
-  .then(function(value){
-    myProject = value;
-          console.log("project owner: " + myProject.owner);
-      console.log("project goal: " + myProject.amount_goal);
-      console.log("project duration: " + myProject.duration);
-  })
-  .then( function() { 
-      //assert.equal(templateProject.owner, myProject.owner, "Owner doesn't match!"); 
-      assert.equal(templateProject.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
-      //assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");  
-      done();
-    })
-    .catch(done);
-  });
-
-
-  it("Create Project, verify constructor", function(done) {
-
-  var myProject = blankProject;
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(1, "ether");
-  var fundhub; 
+  var myProject = {};
   var info;
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
+  return new Promise(function(resolve,reject){
+
+    fundhub.createProject(owner, amount_goal, duration).then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
@@ -99,69 +67,58 @@ function ProjectInfo(i) {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })     
-    .then( function() { 
-      assert.equal(templateProject.owner, myProject.owner, "Owner doesn't match!"); 
-      assert.equal(templateProject.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
-      assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");  
-      done();
-    })
-    .catch(done);
+      //console.log("project owner: " + myProject.owner);
+      //console.log("project goal: " + myProject.amount_goal);
+      //console.log("project duration: " + myProject.duration);
+      resolve(myProject);
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error creating project; see log.");
   });
+
+  });
+}
+
+it("Create Project, verify constructor", function(done) {
+
+  var myProject = {};
+  var myFundHub; 
+
+  FundingHub.new().then(function(value) {
+    myFundHub = value;
+    return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+  })
+  .then(function(value) { 
+    myProject = value;
+    assert.equal(templateProject.owner, myProject.owner, "Owner doesn't match!"); 
+    assert.equal(templateProject.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
+    assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");  
+    done();
+  })
+    .catch(done);
+});
 
 
   it("Project can receive a contribution", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  
-  var fundhub; 
-  var info;
+  var myFundHub; 
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+  FundingHub.new().then( function(value) {
+    myFundHub = value;
+    return;
+  })
+  .then( function() {
+    return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
     })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      //console.log("project index: " + myProject.index);
-      //console.log("project address: " + myProject.address);
-      //console.log("balance: project" + web3.eth.getBalance(myProject.address.toString()));
-      return;
-// Reuse for every test //  
-    })
-    .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
-    })
-    .then(function(){
-      //console.log("project index: " + myProject.index);
-      //console.log("project address: " + myProject.address);
-      //console.log("balance: project " + web3.eth.getBalance(myProject.address.toString()));
-      //console.log("balance bob: " + web3.eth.getBalance(bob));      
+    .then(function(){    
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
@@ -634,51 +591,8 @@ function ProjectInfo(i) {
   });
 */
 
-function createProject(owner, amount_goal, duration){
 
-  var myProject = {};
-  var fundhub; 
-  var info;
 
-  return new Promise(function(resolve,reject){
-    FundingHub.new()
-    .then( function(value) {
-       fundhub = value;
-       return fundhub.createProject(owner, amount_goal, duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
-    })
-    .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      console.log("project owner: " + myProject.owner);
-      console.log("project goal: " + myProject.amount_goal);
-      console.log("project duration: " + myProject.duration);
-      resolve(myProject);
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error creating project; see log.");
-  });
-
-  });
-}
 
 
 /*
