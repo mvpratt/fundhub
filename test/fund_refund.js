@@ -96,7 +96,7 @@ it("Create Project, verify constructor", function(done) {
     assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");  
     done();
   })
-    .catch(done);
+  .catch(done);
 });
 
 
@@ -109,74 +109,43 @@ it("Create Project, verify constructor", function(done) {
 
   FundingHub.new().then( function(value) {
     myFundHub = value;
-    return;
-  })
-  .then( function() {
     return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
-    })
-    .then( function(value) {
-      myProject = value;
-      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
-    })
-    .then(function(){    
-      return web3.eth.getBalance(myProject.address.toString());
-    })          
-    .then( function(amount) {
-      assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
-      done();
-    })
-    .catch(done);
+  })
+  .then( function(value) {
+    myProject = value;
+    return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
+  })
+  .then(function(){    
+    return web3.eth.getBalance(myProject.address.toString());
+  })          
+  .then( function(amount) {
+    assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
+    done();
+  })
+  .catch(done);
+  
   });
 
 
   it("Payout requested, denied when project not fully funded", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  
-  var fundhub; 
-  var info;
+  var myFundHub; 
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })
-
-    .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      //console.log("amount raised: " + amount);
       assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
     })
     .then( function() {
@@ -186,7 +155,6 @@ it("Create Project, verify constructor", function(done) {
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      //console.log("amount raised: " + amount);
       assert.equal(amount.valueOf(), amount_contribute, "Invalid payout allowed!"); 
       done();
     })
@@ -261,46 +229,18 @@ it("Create Project, verify constructor", function(done) {
 
   it("Project payout allowed when fundraising goal reached", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(10, "ether");
-  
-  var fundhub; 
-  var info;
+  var myFundHub; 
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })
-
-    .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -324,48 +264,20 @@ it("Create Project, verify constructor", function(done) {
 
 
 
-  it("Refund request from non-contributer denied", function(done) {
+  it("Refund request from non-contributer denied", function(done) {  // TODO -- make sure deadline is reached!!
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  
-  var fundhub; 
-  var info;
+  var myFundHub; 
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })
-
-    .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -390,46 +302,18 @@ it("Create Project, verify constructor", function(done) {
 
   it("Refund request denied when project is fully funded", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(10, "ether");
-  
-  var fundhub; 
-  var info;
+  var myFundHub; 
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })
-
-    .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -455,46 +339,18 @@ it("Create Project, verify constructor", function(done) {
 
   it("Refund request denied when deadline not reached yet", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
-  
-  var fundhub; 
-  var info;
+  var myFundHub; 
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })
-
-    .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());

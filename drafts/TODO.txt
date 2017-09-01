@@ -17,7 +17,7 @@ Automated tests:
 
   Project Refunds:
   DONE - Refund request denied when deadline not reached yet
-  DONE - Refund request from non-contributer denied
+  needs update - Refund request from non-contributer denied when deadline reached and project not fully funded --play_time example.
   DONE - Refund request denied when project is fully funded
        - Refund request fullfilled when deadline reached and project not fully funded --play_time example.
 
