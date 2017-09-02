@@ -75,12 +75,14 @@ function createProject () {
   })
 
   //.then(function(num){
-  //  return refreshProjectTable(num);    
+    //return refreshProjectTable(num);    
+  //  return refreshProjectTable(myProject);
   //})
   //.then(function(){
   //  return refreshUserTable(user_index);    
   //}) 
   .then(function(){
+    refreshProjectTable(myProject);
     setStatus("Finished creating project");
     logTimestamp("Project creation finished");
   })
@@ -119,57 +121,57 @@ function createProject () {
 }
 */
 
-function refreshProjectTable(index){
+function refreshProjectTable(myProject){
 
-  return new Promise(function(resolve,reject){
+  //return new Promise(function(resolve,reject){
 
-  fundhub.getProjectAddress.call(index)
-  .then(function(addr){
-    console.log("Project index: " + index);
-    console.log("Project address: " + addr);
-    var state_element = document.getElementById("project_address_"+index);
-    state_element.innerHTML = addr;
-    return Project.at(addr);
-  })
-  .then(function(instance){
-    proj = instance;  
-    return proj.getState.call();
-  }) 
-  .then(function(value) {
-    var state_element = document.getElementById("state_"+index);
-    state_element.innerHTML = value.valueOf();
-    return proj.getAmountGoal.call();
-  })
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_goal_"+index);
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-    return proj.getDeadline.call();
-  })
-  .then(function(value) {
-    console.log("Project deadline: " + value);
-    var refill_element = document.getElementById("deadline_"+index);
-    refill_element.innerHTML = value.valueOf();
-    return proj.getDuration.call();
-  })
-  .then(function(value) {
-    console.log("Project duration: " + value);    
-    var state_element = document.getElementById("duration_"+index);
-    state_element.innerHTML = value.valueOf();
-    return proj.getAmountRaised.call();
-  })  
-  .then(function(value) {
-    var refill_element = document.getElementById("amount_raised_"+index);
-    refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
-    return;
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error creating project; see log.");
-  });
+  //fundhub.getProjectAddress.call(index)
+  //.then(function(addr){
+    //console.log("Project index: " + index);
+    //console.log("Project address: " + addr);
+    var state_element = document.getElementById("project_address_"+myProject.index);
+    state_element.innerHTML = myProject.address;
+    //return Project.at(addr);
+  //})
+  //.then(function(instance){
+    //proj = instance;  
+    //return proj.getState.call();
+  //}) 
+  //.then(function(value) {
+  //  var state_element = document.getElementById("state_"+index);
+  //  state_element.innerHTML = //value.valueOf();
+    //return proj.getAmountGoal.call();
+  //})
+  //.then(function(value) {
+    var refill_element = document.getElementById("amount_goal_"+myProject.index);
+    refill_element.innerHTML = myProject.amount_goal;//web3.fromWei(value.valueOf(), "ether");
+    //return proj.getDeadline.call();
+  //})
+  //.then(function(value) {
+  //  console.log("Project deadline: " + value);
+    var refill_element = document.getElementById("deadline_"+myProject.index);
+    refill_element.innerHTML = myProject.deadline;//value.valueOf();
+    //return proj.getDuration.call();
+  //})
+  //.then(function(value) {
+  //  console.log("Project duration: " + value);    
+    var state_element = document.getElementById("duration_"+myProject.index);
+    state_element.innerHTML = myProject.duration;//value.valueOf();
+    //return proj.getAmountRaised.call();
+  //})  
+  //.then(function(value) {
+  //  var refill_element = document.getElementById("amount_raised_"+index);
+  //  refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+  //  return;
+  //})
+  //.catch(function(e) {
+  //  console.log(e);
+  //  setStatus("Error creating project; see log.");
+  //});
 
-  resolve(true);
+  //resolve(true);
 
-  });
+  //});
 }
 
 
