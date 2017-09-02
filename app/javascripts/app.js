@@ -108,16 +108,14 @@ function refreshProjectTable(myProject){
     var state_element = document.getElementById("duration_"+myProject.index);
     state_element.innerHTML = myProject.duration;
   
-    //return proj.getAmountRaised.call();
-  //})  
-  //.then(function(value) {
-  //  var refill_element = document.getElementById("amount_raised_"+index);
-  //  refill_element.innerHTML = web3.fromWei(value.valueOf(), "ether");
+    var refill_element = document.getElementById("amount_raised_"+myProject.index);
+    refill_element.innerHTML = web3.eth.getBalance(myProject.address.toString());//web3.fromWei(value.valueOf(), "ether");
+
   //  return;
   //})
   //.catch(function(e) {
   //  console.log(e);
-  //  setStatus("Error creating project; see log.");
+  //  setStatus("Error refreshing project table; see log.");
   //});
 
   resolve(true);
