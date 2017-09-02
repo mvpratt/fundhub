@@ -5,10 +5,10 @@ var Project = artifacts.require("./Project.sol");
 var gasLimit = 4500000;
 contract('Test: Project contract', function(accounts) {
 
-  var coinbase  = accounts[0]; 
-  var alice     = accounts[1];
-  var bob       = accounts[2];
-  var carol     = accounts[3];
+var coinbase  = accounts[0]; 
+var alice     = accounts[1];
+var bob       = accounts[2];
+var carol     = accounts[3];
 
 var templateProject = {
   instance: 0,
@@ -20,15 +20,6 @@ var templateProject = {
   index: 1
 }
 
-var blankProject = {
-  instance: 0,
-  address: '',
-  owner: '',
-  amount_goal: 0,
-  duration: 0,
-  deadline: 0,
-  index: 0
-}
 
 function ProjectInfo(i) {
    var result = {};
@@ -113,9 +104,11 @@ it("Create Project, verify constructor", function(done) {
   })
   .then( function(value) {
     myProject = value;
+    //LogContribute(myFundHub);
+    //LogFund(myProject);
     return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
   })
-  .then(function(){    
+  .then(function(value){    
     return web3.eth.getBalance(myProject.address.toString());
   })          
   .then( function(amount) {
@@ -164,7 +157,7 @@ it("Create Project, verify constructor", function(done) {
 /* CAUSES REVERT()
   it("Payout request from non-owner is denied", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
   
@@ -377,7 +370,7 @@ it("Create Project, verify constructor", function(done) {
 /*
   it("Project refund should be allowed after deadline reached and project not fully funded", function(done) {
 
-  var myProject = blankProject;
+  var myProject = {};
   var user_addr = bob;
   var amount_contribute = web3.toWei(1, "ether");
   
@@ -450,10 +443,10 @@ it("Create Project, verify constructor", function(done) {
 
 
 
-
+// DEBUG Event Logs
 /*
-function LogFund(proj) {  
-  myProject.instance.OnFund()
+function LogFund(myProject) {  
+  myProject.instance.Fund()
     .watch(function(e, value) {
       if (e)
         console.error(e);
@@ -463,7 +456,7 @@ function LogFund(proj) {
 } 
 
 function LogContribute(fundhub) {  
-  fundhub.OnContribute()
+  fundhub.Contribute()
     .watch(function(e, value) {
       if (e)
         console.error(e);

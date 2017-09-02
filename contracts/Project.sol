@@ -14,7 +14,7 @@ contract Project {
     mapping(address => uint) public balances;  // Funding contributions
     uint public bal;                           // temp balance variable
 
-    event Fund(uint timestamp, address contrib, uint amount);
+    event Fund(uint _timestamp, address _contrib, uint _amount);
 
     //access control
     modifier onlyOwner { 
@@ -23,24 +23,24 @@ contract Project {
     } 
 
     // constructor
-    function Project(address own, uint amt, uint dur) {
-        info = Info(own, amt, dur, (now+dur));
+    function Project(address _own, uint _amt, uint _dur) {
+        info = Info(_own, _amt, _dur, (now + _dur));
     }
 
 
     // fund() must specify the contributer (which is not necessarily the message sender)
-    function fund(address contrib) payable public {
+    function fund(address _contrib) payable public {
 
         // not reached goal yet
         if (this.balance <= info.amount_goal && now < info.deadline) {    
-            balances[contrib] += msg.value;
+            balances[_contrib] += msg.value;
         }
 
         // project either fully funded or deadline reached
         else {                                 
-            if (!contrib.send(msg.value)) revert();
+            if (!_contrib.send(msg.value)) revert();
         }
-        Fund(now, contrib, msg.value);
+        Fund(now, _contrib, msg.value);
     }
 
     // only refunds to contributers
