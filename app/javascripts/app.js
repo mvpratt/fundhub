@@ -29,7 +29,7 @@ function ProjectInfo(i) {
    return result;
 };
 
-// TODO - promisify
+
 function createProject () {
 
   var myProject = {};
@@ -111,13 +111,6 @@ function refreshProjectTable(myProject){
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
     refill_element.innerHTML = web3.eth.getBalance(myProject.address.toString());//web3.fromWei(value.valueOf(), "ether");
 
-  //  return;
-  //})
-  //.catch(function(e) {
-  //  console.log(e);
-  //  setStatus("Error refreshing project table; see log.");
-  //});
-
   resolve(true);
 
   });
@@ -146,10 +139,10 @@ function contribute() {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.contribute(proj_index, user_addr, {from: user_addr, value: amount_contribute, gas: 4500000})
+  fundhub.contribute(proj_index, {from: user_addr, value: amount_contribute, gas: 4500000})
   .then(function(){
     setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
-    return refreshProjectTable(proj_index);    
+    //return refreshProjectTable(proj_index);    
   })
   .then(function(){
     return refreshUserTable(user_index);    
