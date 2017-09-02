@@ -232,26 +232,11 @@ window.onload = function() {
 
   var myFundHub;
 
-  //FundingHub.new().then(function(value) {
-  //  myFundHub = value;
-  //  console.log("FundingHub deployed");
-  //});
-
-
-    //fundhub = FundingHub.deployed();
-
-  /*
-    fundhub.getVersion.call()
-    .then(function(value) {
-      console.log("FundingHub version: " + value);
-      console.log("FundingHub address: " + fundhub.address);
-      LogContribute();
-    })
-    .catch(function(e) {
-      console.log(e);
-      setStatus("Error getting version; see log.");
-    });
-    */
+  FundingHub.deployed().then(function(value) {
+    myFundHub = value;
+    console.log("FundingHub deployed!");
+  });
+  
   })
 }
 
