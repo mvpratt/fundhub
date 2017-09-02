@@ -28,6 +28,8 @@ var FundingHub = artifacts.require("./FundingHub.sol");
 var Project = artifacts.require("./Project.sol");
 
 var gasLimit = 4500000;
+
+
 contract('Test: Project contract', function(accounts) {
 
 var coinbase  = accounts[0]; 
@@ -41,7 +43,6 @@ var templateProject = {
   duration: 5
 }
 
-
 var testParams = {
   project_owner: alice,
   project_amount_goal: web3.toWei(10, "ether"),
@@ -49,7 +50,6 @@ var testParams = {
   user_addr: bob,
   amount_contribute: web3.toWei(1, "ether")
 }
-
 
 function ProjectInfo(i) {
    var result = {};
@@ -59,6 +59,7 @@ function ProjectInfo(i) {
    result.deadline = parseInt(i[3]);
    return result;
 };
+
 
 function createProject(fundhub, owner, amount_goal, duration){
 
@@ -106,6 +107,7 @@ function createProject(fundhub, owner, amount_goal, duration){
 
   });
 }
+
 
 /*
   it("Refund request from non-contributer denied", function(done) {  // TODO -- make sure deadline is reached!!
