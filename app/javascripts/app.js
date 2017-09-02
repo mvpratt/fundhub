@@ -20,7 +20,47 @@ function showUserBalances() {
   console.log("Carol           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[3]), "ether") + " ETH");
 }
 
+function ProjectInfo(i) {
+   var result = {};
+   result.owner = i[0];
+   result.amount_goal = parseInt(i[1]);
+   result.duration = parseInt(i[2]);
+   result.deadline = parseInt(i[3]);
+   return result;
+};
 
+// TODO - promisify
+function createProject () {
+
+  var myProject = {};
+  var info;
+
+  var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
+  var duration = document.getElementById("i_duration").value;
+  var user_index = Number(document.getElementById("i_user").value);
+  var user_addr = accounts[user_index];
+
+  fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000})
+  .then(function(){
+    return fundhub.num_projects.call();
+  })
+  //.then(function(num){
+  //  return refreshProjectTable(num);    
+  //})
+  //.then(function(){
+  //  return refreshUserTable(user_index);    
+  //}) 
+  .then(function(){
+    setStatus("Finished creating project");
+    logTimestamp("Project creation finished");
+  })
+  .catch(function(e) {
+    console.log(e);
+    setStatus("Error creating project; see log.");
+  });
+}
+
+/*
 function createProject () {
 
   var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
@@ -47,6 +87,7 @@ function createProject () {
     setStatus("Error creating project; see log.");
   });
 }
+*/
 
 function refreshProjectTable(index){
 
@@ -230,13 +271,13 @@ window.onload = function() {
     accounts = accs;
     showUserBalances();
 
-  var myFundHub;
+  //var myFundHub;
 
   FundingHub.deployed().then(function(value) {
-    myFundHub = value;
+    fundhub = value;
     console.log("FundingHub deployed!");
   });
-  
+
   })
 }
 
