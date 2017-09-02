@@ -44,6 +44,36 @@ function createProject () {
   .then(function(){
     return fundhub.num_projects.call();
   })
+
+    .then( function(value) {
+      myProject.index = value;
+      return fundhub.getProjectAddress(myProject.index);
+    })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      myProject.instance = value;      
+      return myProject.instance.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+      console.log("-----------------------------");
+      console.log("New project created:");
+      console.log("project owner: " + myProject.owner);
+      console.log("project address: " + myProject.address);
+      console.log("project goal: " + myProject.amount_goal);
+      console.log("project duration: " + myProject.duration);
+      console.log("project deadline: " + myProject.deadline);
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      console.log("-----------------------------");
+  })
+
   //.then(function(num){
   //  return refreshProjectTable(num);    
   //})
