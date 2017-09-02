@@ -77,9 +77,9 @@ function createProject () {
   .then(function(num){   
     return refreshProjectTable(myProject);
   })
-  //.then(function(){
-  //  return refreshUserTable(user_index);    
-  //}) 
+  .then(function(){
+    return refreshUserTable(user_index);    
+  }) 
   .then(function(){
     setStatus("Finished creating project");
     logTimestamp("Project creation finished");
