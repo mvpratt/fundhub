@@ -40,7 +40,6 @@ A simple web interface allows users to browse active projects, create their own 
 
 #### Guidelines
 * Deadline and duration are in units of  seconds
-* Project states are as follows: (0 - created, 1 - fully funded, 2 - paid out)
 * This demonstation Dapp is limited to a maximum of 3 projects and 3 users.
 * Whenever you take an action such as create, payout or refund, _make sure that the desired user selected_
 
@@ -62,7 +61,7 @@ A simple web interface allows users to browse active projects, create their own 
 
 ## Installation
 
-1. Run `testrpc` or `geth`  You must have web3.eth.accounts[0,1,2,3] unlocked, with a balance of ETH
+1. Run `testrpc` or `geth`  You must have web3.eth.accounts[0,1,2,3] unlocked, with a balance of at least 10 ETH
 2. `truffle compile` 
 3. `truffle migrate --reset --network development` 
 4. `truffle build --reset --network development`
@@ -71,16 +70,15 @@ A simple web interface allows users to browse active projects, create their own 
 
 ## Tool Versions 
 
- * Tuffle 2.1.1
- * Node.js 6.9.5
- * Solidity 0.4.2 and above
- * TestRPC 3.0.3
+ * Tuffle 3.9.4
+ * Node.js 6.11.2
+ * Solidity 0.4.15
+ * TestRPC 4.1.1
  * geth 1.5.8-stable-f58fb322
  * Google Chrome 
 
 
-
-### Known Issues/bugs
+### Errata
 
 * When contribution puts over the goal amount, the project accepts all the funds, the balance isn't capped automatically.  Contributers should be careful not to send funds more than the goal.
 

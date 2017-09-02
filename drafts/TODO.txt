@@ -4,47 +4,47 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
+Remove getProjectAddress() function
 
+  Build GUI
 
+Nothing with deadlines will work right now.  See play-with-time project from b9lab
+  option - Turn on 1 second delay for blocks
+  testrpc -b 1
 
-Automated tests:
-
-  Project Creation:
-  DONE - Project created, constructor loads default values
-
-  Project Contributions:
-       - Contribute from multiple users
-
-  Project Refunds:
-  DONE - Refund request denied when deadline not reached yet
-  needs update - Refund request from non-contributer denied when deadline reached and project not fully funded --play_time example.
-  DONE - Refund request denied when project is fully funded
-       - Refund request fullfilled when deadline reached and project not fully funded --play_time example.
-
-
-  Project Payouts:
-  DONE - Payout request fullfilled when fundraising goal reached
-  DONE - Payout request denied when project not fully funded
-       - Payout request from non-owner is denied -- WILL CAUSE REVERT()
-
-  FundHub:
-       - Create multiple projects
+  Make sure using withdrawl pattern
 
 
 TODO: 
-    - Change to withdrawl pattern
-  Test - Project, Test - FundHub.js
-  Verify amounts of payouts, refunds, contributions, etc (minus gas cost)
-  Build GUI
-  Any other contract optimizations?  
-  Test refactor to be reusable in web code?  
-  Functions - get list of projects, get list of project contributers.  Remove - getProjectAddress() and getAmountContributed() 
-  Update readme
-  Bug - sometimes events dont fire
+
+  Error checking/security  - i.e. malformed / invalid inputs
+    Requesting refund or payout when balance is 0
+    Can owner fund own contract?
+   
+  Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
+  
+  Functions - get list of projects, get list of project contributers.   
+  Design patterns: use require()
   Test revert()  -- Note: reverts will caust truffle tests to fail  (maybe need to catch them??)
-  Error checking/security  - i.e. weird / malformed /invalid inputs
-    Requesting funds when balance is 0
-    Owner cant fund own contract!
+  
+
+BACKLOG:
+
+  Check account balances for required funds at the beginning of each test
+  Cleanup javascript console logging
+  Loads really slow in Safari, console won't open
+  Show owner in project table
+
+
+  Debug - Reset FundingHub/Projects
+    Show events
+
+  Add basic error messages (for debug)
+    When sending funds fails
+    When transaction fails for another reason
+
+  Split tests - Project.js, FundHub.js
+
 
 
 // HOW TO: track a bunch of projects
@@ -111,18 +111,5 @@ DONE:
 
 ===============================================
 
-BACKLOG:
-  Check account balances for required funds at the beginning of each test
-  Cleanup javascript console logging
-  Loads really slow in Safari, console won't open
-  Show owner in project table
 
-  User wallet??
-  Mist/Metamask/
-
-  Debug - Reset FundingHub/Projects
-
-  Add basic error messages (for debug)
-    When sending funds fails
-    When transaction fails for another reason
 
