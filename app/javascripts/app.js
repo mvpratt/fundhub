@@ -15,7 +15,6 @@ function logTimestamp(message) {
 }
 
 function showUserBalances() {
-
   console.log("Alice (coinbase): balance : " + web3.fromWei(web3.eth.getBalance(accounts[1]), "ether") + " ETH");
   console.log("Bob             : balance : " + web3.fromWei(web3.eth.getBalance(accounts[2]), "ether") + " ETH");
   console.log("Carol           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[3]), "ether") + " ETH");
@@ -229,11 +228,19 @@ window.onload = function() {
     } 
 
     accounts = accs;
-
     showUserBalances();
 
-    fundhub = FundingHub.deployed();
-  
+  var myFundHub;
+
+  //FundingHub.new().then(function(value) {
+  //  myFundHub = value;
+  //  console.log("FundingHub deployed");
+  //});
+
+
+    //fundhub = FundingHub.deployed();
+
+  /*
     fundhub.getVersion.call()
     .then(function(value) {
       console.log("FundingHub version: " + value);
@@ -244,7 +251,8 @@ window.onload = function() {
       console.log(e);
       setStatus("Error getting version; see log.");
     });
-  });
+    */
+  })
 }
 
 
