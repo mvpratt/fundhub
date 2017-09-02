@@ -74,15 +74,13 @@ function createProject () {
       console.log("-----------------------------");
   })
 
-  //.then(function(num){
-    //return refreshProjectTable(num);    
-  //  return refreshProjectTable(myProject);
-  //})
+  .then(function(num){   
+    return refreshProjectTable(myProject);
+  })
   //.then(function(){
   //  return refreshUserTable(user_index);    
   //}) 
   .then(function(){
-    refreshProjectTable(myProject);
     setStatus("Finished creating project");
     logTimestamp("Project creation finished");
   })
@@ -92,71 +90,24 @@ function createProject () {
   });
 }
 
-/*
-function createProject () {
 
-  var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
-  var duration = document.getElementById("i_duration").value;
-  var user_index = Number(document.getElementById("i_user").value);
-  var user_addr = accounts[user_index];
-
-  fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000})
-  .then(function(){
-    return fundhub.getNumProjects.call();
-  })
-  .then(function(num){
-    return refreshProjectTable(num);    
-  })
-  .then(function(){
-    return refreshUserTable(user_index);    
-  }) 
-  .then(function(){
-    setStatus("Finished creating project");
-    logTimestamp("Project creation finished");
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error creating project; see log.");
-  });
-}
-*/
 
 function refreshProjectTable(myProject){
 
-  //return new Promise(function(resolve,reject){
+  return new Promise(function(resolve,reject){
 
-  //fundhub.getProjectAddress.call(index)
-  //.then(function(addr){
-    //console.log("Project index: " + index);
-    //console.log("Project address: " + addr);
     var state_element = document.getElementById("project_address_"+myProject.index);
     state_element.innerHTML = myProject.address;
-    //return Project.at(addr);
-  //})
-  //.then(function(instance){
-    //proj = instance;  
-    //return proj.getState.call();
-  //}) 
-  //.then(function(value) {
-  //  var state_element = document.getElementById("state_"+index);
-  //  state_element.innerHTML = //value.valueOf();
-    //return proj.getAmountGoal.call();
-  //})
-  //.then(function(value) {
+
     var refill_element = document.getElementById("amount_goal_"+myProject.index);
-    refill_element.innerHTML = myProject.amount_goal;//web3.fromWei(value.valueOf(), "ether");
-    //return proj.getDeadline.call();
-  //})
-  //.then(function(value) {
-  //  console.log("Project deadline: " + value);
+    refill_element.innerHTML = myProject.amount_goal;
+
     var refill_element = document.getElementById("deadline_"+myProject.index);
-    refill_element.innerHTML = myProject.deadline;//value.valueOf();
-    //return proj.getDuration.call();
-  //})
-  //.then(function(value) {
-  //  console.log("Project duration: " + value);    
+    refill_element.innerHTML = myProject.deadline;
+
     var state_element = document.getElementById("duration_"+myProject.index);
-    state_element.innerHTML = myProject.duration;//value.valueOf();
+    state_element.innerHTML = myProject.duration;
+  
     //return proj.getAmountRaised.call();
   //})  
   //.then(function(value) {
@@ -169,9 +120,9 @@ function refreshProjectTable(myProject){
   //  setStatus("Error creating project; see log.");
   //});
 
-  //resolve(true);
+  resolve(true);
 
-  //});
+  });
 }
 
 
