@@ -44,7 +44,6 @@ function createProject () {
   .then(function(){
     return fundhub.num_projects.call();
   })
-
     .then( function(value) {
       myProject.index = value;
       return fundhub.getProjectAddress(myProject.index);
@@ -73,8 +72,7 @@ function createProject () {
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       console.log("-----------------------------");
   })
-
-  .then(function(num){   
+  .then(function(){   
     return refreshProjectTable(myProject);
   })
   .then(function(){
@@ -93,9 +91,9 @@ function createProject () {
 
 /*
 
-function refreshProjectTable(){
+function refreshProjectTable(index){
 
-  var ProjectAddressList = {};
+  //var ProjectAddressList = {};
   var myProjects = {};
   var info;
   var num_projects;
@@ -113,9 +111,9 @@ function refreshProjectTable(){
   resolve(true);
   }
 }
-*/
-    //  for (uint i = 1; i < num_projects; i++) {
 
+    //  for (uint i = 1; i < num_projects; i++) {
+*/
 
 
 function refreshProjectTable(myProject){
@@ -135,7 +133,7 @@ function refreshProjectTable(myProject){
     state_element.innerHTML = myProject.duration;
   
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
-    refill_element.innerHTML = web3.eth.getBalance(myProject.address.toString());//web3.fromWei(value.valueOf(), "ether");
+    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
 
   resolve(true);
 
@@ -160,15 +158,45 @@ function refreshUserTable(index){
 
 function contribute() {
 
+  var myProject = {};
+  var info;
+
   var amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
-  var proj_index = Number(document.getElementById("i_project_num").value);
+  myProject.index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.contribute(proj_index, {from: user_addr, value: amount_contribute, gas: 4500000})
+  fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
   .then(function(){
     setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
-    //return refreshProjectTable(proj_index);    
+    return fundhub.getProjectAddress(myProject.index);
+  })
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      myProject.instance = value;      
+      return myProject.instance.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+      console.log("-----------------------------");
+      console.log("New project contribution:");
+      console.log("project owner: " + myProject.owner);
+      console.log("project address: " + myProject.address);
+      console.log("project goal: " + myProject.amount_goal);
+      console.log("project duration: " + myProject.duration);
+      console.log("project deadline: " + myProject.deadline);
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      console.log("-----------------------------");
+  })
+  .then(function(){   
+    return refreshProjectTable(myProject);
   })
   .then(function(){
     return refreshUserTable(user_index);    
