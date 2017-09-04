@@ -3,6 +3,8 @@ var accounts;  // array of all accounts
 
 var proj;      // Test project
 var fundhub;   // Main contract
+
+//var gasLimit = 4500000;
  
 
 function setStatus(message) {
@@ -115,6 +117,54 @@ function refreshProjectTable(index){
     //  for (uint i = 1; i < num_projects; i++) {
 */
 
+function refreshProjectTableByIndex(index){
+
+  return new Promise(function(resolve,reject){
+
+  var myProject = {};
+  var info;
+  
+  myProject.index = index;
+
+  fundhub.getProjectAddress(myProject.index)
+
+    .then( function(value) {
+      myProject.address = value;
+      return Project.at(myProject.address);
+    })
+    .then( function(value) {
+      myProject.instance = value;      
+      return myProject.instance.info.call();
+    })
+    .then(function(value){
+      info = new ProjectInfo(value);
+      myProject.owner = info.owner;
+      myProject.amount_goal = info.amount_goal;
+      myProject.duration = info.duration;
+      myProject.deadline = info.deadline;
+  
+
+    var state_element = document.getElementById("project_address_"+myProject.index);
+    state_element.innerHTML = myProject.address;
+
+    var refill_element = document.getElementById("amount_goal_"+myProject.index);
+    refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
+
+    var refill_element = document.getElementById("deadline_"+myProject.index);
+    refill_element.innerHTML = myProject.deadline;
+
+    var state_element = document.getElementById("duration_"+myProject.index);
+    state_element.innerHTML = myProject.duration;
+  
+    var refill_element = document.getElementById("amount_raised_"+myProject.index);
+    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
+
+  })
+  resolve(true);
+
+  });
+}
+
 
 function refreshProjectTable(myProject){
 
@@ -124,7 +174,7 @@ function refreshProjectTable(myProject){
     state_element.innerHTML = myProject.address;
 
     var refill_element = document.getElementById("amount_goal_"+myProject.index);
-    refill_element.innerHTML = myProject.amount_goal;
+    refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
 
     var refill_element = document.getElementById("deadline_"+myProject.index);
     refill_element.innerHTML = myProject.deadline;
@@ -185,18 +235,10 @@ function contribute() {
       myProject.amount_goal = info.amount_goal;
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
-      console.log("-----------------------------");
-      console.log("New project contribution:");
-      console.log("project owner: " + myProject.owner);
-      console.log("project address: " + myProject.address);
-      console.log("project goal: " + myProject.amount_goal);
-      console.log("project duration: " + myProject.duration);
-      console.log("project deadline: " + myProject.deadline);
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-      console.log("-----------------------------");
   })
   .then(function(){   
-    return refreshProjectTable(myProject);
+    //return refreshProjectTable(myProject);
+    return refreshProjectTableByIndex(myProject.index);
   })
   .then(function(){
     return refreshUserTable(user_index);    
@@ -227,7 +269,7 @@ function requestPayout() {
   })
   .then(function(){
     setStatus("Payout sent!");
-    return refreshProjectTable(proj_index); 
+    return refreshProjectTableByIndex(proj_index); 
   })
   .then(function(){
     return refreshUserTable(user_index);    
@@ -258,7 +300,7 @@ function requestRefund() {
   })
   .then(function(){
     setStatus("Refund sent!");
-    return refreshProjectTable(proj_index); 
+    return refreshProjectTableByIndex(proj_index); 
   })
   .then(function(){
     return refreshUserTable(user_index);    
