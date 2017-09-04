@@ -102,7 +102,7 @@ function createProject(fundhub, owner, amount_goal, duration){
   })
   .catch(function(e) {
     console.log(e);
-    setStatus("Error creating project; see log.");
+    console.log("Error creating project; see log.");
   });
 
   });

@@ -4,18 +4,21 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
+
+Add function to get list of projects that are in the fundhub
+
+
+
+
+TODO: 
+
 Remove getProjectAddress() function
 
-  Build GUI
-
-Nothing with deadlines will work right now.  See play-with-time project from b9lab
+Automated tests - Nothing with deadlines will work right now.  See play-with-time project from b9lab
   option - Turn on 1 second delay for blocks
   testrpc -b 1
 
   Make sure using withdrawl pattern
-
-
-TODO: 
 
   Error checking/security  - i.e. malformed / invalid inputs
     Requesting refund or payout when balance is 0

@@ -13,7 +13,7 @@ module.exports = {
     "skeleton.css": [
       "stylesheets/skeleton.css"
     ],
-    "nomalize.css": [
+    "normalize.css": [
       "stylesheets/normalize.css"
     ],    
     "images/": "images/"

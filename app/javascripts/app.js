@@ -91,6 +91,32 @@ function createProject () {
 }
 
 
+/*
+
+function refreshProjectTable(){
+
+  var ProjectAddressList = {};
+  var myProjects = {};
+  var info;
+  var num_projects;
+
+  return new Promise(function(resolve,reject){
+
+    fundhub.num_projects.call().then( function(value) {
+      num_projects = value.valueOf();
+      return fundhub.myProjects(1).call();
+    })
+    .then(function(value){
+      console.log("Project "+"1"+" address: "+ value);
+      return;
+   });
+  resolve(true);
+  }
+}
+*/
+    //  for (uint i = 1; i < num_projects; i++) {
+
+
 
 function refreshProjectTable(myProject){
 
@@ -244,8 +270,6 @@ window.onload = function() {
 
     accounts = accs;
     showUserBalances();
-
-  //var myFundHub;
 
   FundingHub.deployed().then(function(value) {
     fundhub = value;
