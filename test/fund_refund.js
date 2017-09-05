@@ -43,13 +43,7 @@ var templateProject = {
   duration: 5
 }
 
-var testParams = {
-  project_owner: alice,
-  project_amount_goal: web3.toWei(10, "ether"),
-  project_duration: 5,
-  user_addr: bob,
-  amount_contribute: web3.toWei(1, "ether")
-}
+
 
 function ProjectInfo(i) {
    var result = {};
@@ -61,14 +55,14 @@ function ProjectInfo(i) {
 };
 
 
-function createProject(fundhub, amount_goal, duration){
+function createProject(fundhub, owner, amount_goal, duration){
 
   var myProject = {};
   var info;
 
   return new Promise(function(resolve,reject){
 
-    fundhub.createProject(amount_goal, duration, {from: templateProject.owner}).then( function() {
+    fundhub.createProject(amount_goal, duration, {from: owner}).then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
@@ -187,47 +181,62 @@ function createProject(fundhub, amount_goal, duration){
 
 it("Create Project, verify constructor", function(done) {
 
+var testParams = {
+  owner: alice,
+  amount_goal: web3.toWei(10, "ether"),
+  duration: 5,
+  user_addr: bob,
+  amount_contribute: web3.toWei(1, "ether")
+};
+
   var myProject = {};
   var myFundHub; 
   var my_deadline;
 
   FundingHub.new().then(function(value) {
     myFundHub = value;
-    return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
+    return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
   })
   .then(function(value) { 
     myProject = value;
-    assert.equal(templateProject.owner, myProject.owner, "Owner doesn't match!"); 
-    assert.equal(templateProject.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
-    assert.equal(templateProject.duration, myProject.duration, "Duration doesn't match!");
+    assert.equal(testParams.owner, myProject.owner, "Owner doesn't match!"); 
+    assert.equal(testParams.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
+    assert.equal(testParams.duration, myProject.duration, "Duration doesn't match!");
     //assert.equal(my_deadline, myProject.deadline, "Deadline doesn't match!");   
     done();
   })
   .catch(done);
 });
 
+
   it("Project can receive a contribution", function(done) {
 
+var testParams = {
+  owner: alice,
+  amount_goal: web3.toWei(10, "ether"),
+  duration: 5,
+  user_addr: bob,
+  amount_contribute: web3.toWei(1, "ether")
+};
+
   var myProject = {};
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(1, "ether");
   var myFundHub; 
 
   FundingHub.new().then( function(value) {
     myFundHub = value;
-    return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
+    return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
   })
   .then( function(value) {
     myProject = value;
     //LogContribute(myFundHub);
     //LogFund(myProject);
-    return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
+    return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
   })
   .then(function(value){    
     return web3.eth.getBalance(myProject.address.toString());
   })          
   .then( function(amount) {
-    assert.equal(amount.valueOf(), amount_contribute, "Amount doesn't match!"); 
+    assert.equal(amount.valueOf(), testParams.amount_contribute, "Amount doesn't match!"); 
     done();
   })
   .catch(done);
@@ -237,24 +246,30 @@ it("Create Project, verify constructor", function(done) {
 
   it("Payout requested, denied when project not fully funded", function(done) {
 
+  var testParams = {
+    owner: alice,
+    amount_goal: web3.toWei(10, "ether"),
+    duration: 5,
+    user_addr: bob,
+    amount_contribute: web3.toWei(1, "ether")
+  };
+
   var myProject = {};
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(1, "ether");
   var myFundHub; 
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: 4500000});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Contribution unsuccessful!"); 
     })
     .then( function() {
       return myProject.instance.payout({from: myProject.owner});
@@ -263,7 +278,7 @@ it("Create Project, verify constructor", function(done) {
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      assert.equal(amount.valueOf(), amount_contribute, "Invalid payout allowed!"); 
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Invalid payout allowed!"); 
       done();
     })
     .catch(done);
@@ -337,18 +352,24 @@ it("Create Project, verify constructor", function(done) {
 
   it("Project payout allowed when fundraising goal reached", function(done) {
 
+  var testParams = {
+    owner: alice,
+    amount_goal: web3.toWei(10, "ether"),
+    duration: 5,
+    user_addr: bob,
+    amount_contribute: web3.toWei(10, "ether")
+  };
+
   var myProject = {};
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(10, "ether");
   var myFundHub; 
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -374,33 +395,39 @@ it("Create Project, verify constructor", function(done) {
 
   it("Refund request denied when project is fully funded", function(done) {
 
+  var testParams = {
+    owner: alice,
+    amount_goal: web3.toWei(10, "ether"),
+    duration: 5,
+    user_addr: bob,
+    amount_contribute: web3.toWei(10, "ether")
+  };
+
   var myProject = {};
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(10, "ether");
   var myFundHub; 
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000});
+      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Contribution unsuccessful!"); 
     })
     .then(function(){
-      return myProject.instance.refund({from: user_addr});
+      return myProject.instance.refund({from: testParams.user_addr});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
-      assert.equal(amount.valueOf(), amount_contribute, "Invalid refund allowed!"); 
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Invalid refund allowed!"); 
       done();
     })
     .catch(done);
