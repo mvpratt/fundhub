@@ -5,13 +5,14 @@ AUTHOR: <mvpratt>
 IN PROGRESS:
 
 
-Add function to get list of projects that are in the fundhub
+GUI - refund  (advance time past deadline, request refund)
 
 
 
 
 TODO: 
 
+Make owner default to creator, or remove owner?
 Remove getProjectAddress() function
 
 Automated tests - Nothing with deadlines will work right now.  See play-with-time project from b9lab

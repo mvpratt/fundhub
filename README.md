@@ -43,13 +43,20 @@ A simple web interface allows users to browse active projects, create their own 
 * This demonstation Dapp is limited to a maximum of 3 projects and 3 users.
 * Whenever you take an action such as create, payout or refund, _make sure that the desired user selected_
 
-#### How to test deadline
-1. Create a project with duration of 1
-2. Try to contribute to it, notice that contributions are rejected, because the deadline has already expired
-3. Now, create a project with duration of 50
-4. Contribute to it, the funds should be accepted.
-5. Request a refund.  Notice that the refund request is rejected.
-6. Now, fully fund the project
+#### Test refund (rejected)
+1. Create a project with a goal of 10 ETH and duration of 60 (seconds)
+2. Contribute 1 ETH to it
+3. Request a refund.  It should be rejected, because the deadline has not been reached yet.
+
+#### Test refund (success)
+1. Create a project with a goal of 10 ETH and duration of 60 (seconds)
+2. Contribute 1 ETH to it
+3. Request a refund.  Notice that the refund request is rejected.
+4. Wait until 60 seconds have passed since project creating
+5. Request refund again, it should be successful
+
+#### Test payout
+1. Create project & fully fund it.
 7. Request payout
 
 ## AUTOMATED TESTS
@@ -61,16 +68,16 @@ A simple web interface allows users to browse active projects, create their own 
 
 ## Installation
 
-1. Run `testrpc` or `geth`  You must have web3.eth.accounts[0,1,2,3] unlocked, with a balance of at least 10 ETH
+1. `testrpc -i 42`
 2. `truffle compile` 
-3. `truffle migrate --reset --network development` 
-4. `truffle build --reset --network development`
-5. In the build directory, run this command: `php -S 0.0.0.0:8000`
-6. Connect to the page in Chrome
+3. `truffle migrate --reset` 
+4. `truffle build --reset`
+5. In the `/build` directory: `php -S 0.0.0.0:8000`
+6. Open `localhost:8000` in Google Chrome
 
 ## Tool Versions 
 
- * Tuffle 3.9.4
+ * Tuffle 3.4.9
  * Node.js 6.11.2
  * Solidity 0.4.15
  * TestRPC 4.1.1

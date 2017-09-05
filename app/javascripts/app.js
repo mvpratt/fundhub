@@ -4,7 +4,7 @@ var accounts;  // array of all accounts
 var proj;      // Test project
 var fundhub;   // Main contract
 
-//var gasLimit = 4500000;
+var gasLimit = 4500000;
  
 
 function setStatus(message) {
@@ -42,7 +42,7 @@ function createProject () {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: 4500000})
+  fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: gasLimit})
   .then(function(){
     return fundhub.num_projects.call();
   })
@@ -216,7 +216,7 @@ function contribute() {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: 4500000})
+  fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
   .then(function(){
     setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
     return fundhub.getProjectAddress(myProject.index);

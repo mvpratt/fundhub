@@ -29,7 +29,7 @@ contract Project {
 
 
     // fund() must specify the contributer (which is not necessarily the message sender)
-    function fund(address _contrib) payable public {
+    function fund(address _contrib) payable external {
 
         // not reached goal yet
         if (this.balance <= info.amount_goal && now < info.deadline) {    
@@ -44,7 +44,7 @@ contract Project {
     }
 
     // only refunds to contributers
-    function refund() public {
+    function refund() external {
 
         // only refund if deadline reached before fully funded
         // zero out balance before sending funds - to prevent DAO style recursive attack
@@ -56,7 +56,7 @@ contract Project {
     }
 
     // only pays out to the owner
-    function payout() {
+    function payout() external {
         if (msg.sender == info.owner && this.balance == info.amount_goal){ 
             if (!info.owner.send(this.balance)) revert();
         }
