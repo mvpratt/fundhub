@@ -4,27 +4,21 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-Automated tests - Nothing with deadlines will work right now.  See play-with-time project from b9lab
-  option - Turn on 1 second delay for blocks
-  testrpc -b 1
-
 
 
 TODO: 
 
-Incorporate Timothy GUI upgrades
-
-Make owner default to creator, or remove owner?
+  Incorporate Timothy GUI upgrades
 
   Make sure using withdrawl pattern
 
   Error checking/security  - i.e. malformed / invalid inputs
     Requesting refund or payout when balance is 0
-
    
   Design patterns: use require()
-  Test revert()  -- Note: reverts will caust truffle tests to fail  (maybe need to catch them??)
+  Test revert()  -- Note: reverts will cause tests to fail  (maybe need to catch the errors??)
   
+
 
 BACKLOG:
 
@@ -36,7 +30,6 @@ Remove getProjectAddress() function
   Cleanup javascript console logging
   Loads really slow in Safari, console won't open
   Show owner in project table
-
 
   Debug - Reset FundingHub/Projects
     Show events

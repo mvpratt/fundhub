@@ -89,7 +89,7 @@ A simple web interface allows users to browse active projects, create their own 
 
 * When contribution puts over the goal amount, the project accepts all the funds, the balance isn't capped automatically.  Contributers should be careful not to send funds more than the goal.
 
-* Project creator is the owner
+* Project creator is the owner -- MUST be an external account (not another contract)
 
 * Project creator can also contribute to the project
 
