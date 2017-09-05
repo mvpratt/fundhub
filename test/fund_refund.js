@@ -472,6 +472,33 @@ var testParams = {
 
 */  
 
+function increaseTime(seconds){
+
+  return new Promise(function(resolve,reject){
+
+    web3.currentProvider.sendAsync({jsonrpc: "2.0", method: "evm_increaseTime", params: [seconds], id: 0 },
+      function(err, result) {
+        console.log("evm_increaseTime() callback");
+        resolve(true);
+    }
+    );
+  });    
+}
+
+function mineBlock(){
+
+  return new Promise(function(resolve,reject){
+
+    web3.currentProvider.sendAsync({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0 },
+      function(err, result) {
+        console.log("evm_mine() callback");
+        resolve(true);
+    }
+    );
+  });    
+}
+
+
 
   it("Refund request allowed when deadline reached and project not fully funded", function(done) {
 
@@ -480,7 +507,7 @@ var testParams = {
     amount_goal: web3.toWei(10, "ether"),
     duration: 5,
     user_addr: bob,
-    amount_contribute: web3.toWei(10, "ether")
+    amount_contribute: web3.toWei(1, "ether")
   };
 
   var myProject = {}; 
@@ -513,24 +540,20 @@ var testParams = {
       assert.equal(amount.valueOf(), testParams.amount_contribute, "Invalid refund allowed!"); 
       return;
     })
-    .then( function() {    
+
     // advance time
-      //console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
+    .then( function() {    
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      return increaseTime(10000);
+    })
+    .then(function() {
+      return mineBlock();
+    })
+    .then(function() {
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return;
     })
-    .then(function() {
-    web3.currentProvider.sendAsync({
-      jsonrpc: "2.0",
-      method: "evm_increaseTime",
-      params: 10000,
-      id: 42
-    }, function(err, result) {
-    // this is your callback
-      console.log("callback");
-      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-    });
-    })
+
     // Now refund request should be granted
     .then(function(){
       return myProject.instance.refund({from: testParams.user_addr});

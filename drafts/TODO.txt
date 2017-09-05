@@ -20,16 +20,15 @@ Make owner default to creator, or remove owner?
 
   Error checking/security  - i.e. malformed / invalid inputs
     Requesting refund or payout when balance is 0
-    Can owner fund own contract?
+
    
-  Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
-  
-  Functions - get list of projects, get list of project contributers.   
   Design patterns: use require()
   Test revert()  -- Note: reverts will caust truffle tests to fail  (maybe need to catch them??)
   
 
 BACKLOG:
+
+  Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
 
 Remove getProjectAddress() function
 
