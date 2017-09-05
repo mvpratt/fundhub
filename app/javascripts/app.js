@@ -143,7 +143,6 @@ function refreshProjectTableByIndex(index){
       myProject.duration = info.duration;
       myProject.deadline = info.deadline;
   
-
     var state_element = document.getElementById("project_address_"+myProject.index);
     state_element.innerHTML = myProject.address;
 
@@ -237,7 +236,6 @@ function contribute() {
       myProject.deadline = info.deadline;
   })
   .then(function(){   
-    //return refreshProjectTable(myProject);
     return refreshProjectTableByIndex(myProject.index);
   })
   .then(function(){
@@ -315,9 +313,9 @@ function requestRefund() {
 }
 
 
-
+/*
 function LogContribute() {  
-  fundhub.OnContribute()
+  fundhub.Contribute()
     .watch(function(e, value) {
       if (e)
         console.error(e);
@@ -325,6 +323,7 @@ function LogContribute() {
         console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
     });
 }    
+*/
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {

@@ -61,14 +61,14 @@ function ProjectInfo(i) {
 };
 
 
-function createProject(fundhub, owner, amount_goal, duration){
+function createProject(fundhub, amount_goal, duration){
 
   var myProject = {};
   var info;
 
   return new Promise(function(resolve,reject){
 
-    fundhub.createProject(owner, amount_goal, duration).then( function() {
+    fundhub.createProject(amount_goal, duration, {from: templateProject.owner}).then( function() {
       return fundhub.num_projects.call();
     })
     .then( function(value) {
@@ -120,7 +120,7 @@ function createProject(fundhub, owner, amount_goal, duration){
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub,templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
       myProject = value;
@@ -193,7 +193,7 @@ it("Create Project, verify constructor", function(done) {
 
   FundingHub.new().then(function(value) {
     myFundHub = value;
-    return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+    return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
   })
   .then(function(value) { 
     myProject = value;
@@ -215,7 +215,7 @@ it("Create Project, verify constructor", function(done) {
 
   FundingHub.new().then( function(value) {
     myFundHub = value;
-    return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+    return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
   })
   .then( function(value) {
     myProject = value;
@@ -244,7 +244,7 @@ it("Create Project, verify constructor", function(done) {
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
       myProject = value;
@@ -283,7 +283,7 @@ it("Create Project, verify constructor", function(done) {
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+       return fundhub.createProject(templateProject.amount_goal, templateProject.duration); 
     })
     .then( function() {
       return fundhub.num_projects.call();
@@ -344,7 +344,7 @@ it("Create Project, verify constructor", function(done) {
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
       myProject = value;
@@ -381,7 +381,7 @@ it("Create Project, verify constructor", function(done) {
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
       myProject = value;
@@ -418,7 +418,7 @@ it("Create Project, verify constructor", function(done) {
 
     FundingHub.new().then( function(value) {
       myFundHub = value;
-      return createProject(myFundHub, templateProject.owner, templateProject.amount_goal, templateProject.duration);
+      return createProject(myFundHub, templateProject.amount_goal, templateProject.duration);
     })
     .then( function(value) {
       myProject = value;
@@ -460,7 +460,7 @@ it("Create Project, verify constructor", function(done) {
     FundingHub.new()
     .then( function(instance) {
        fundhub = instance;
-       return fundhub.createProject(templateProject.owner, templateProject.amount_goal, templateProject.duration); 
+       return fundhub.createProject( templateProject.amount_goal, templateProject.duration); 
     })
     .then( function() {
       return fundhub.num_projects.call();

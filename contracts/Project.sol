@@ -23,8 +23,8 @@ contract Project {
     } 
 
     // constructor
-    function Project(address _own, uint _amt, uint _dur) {
-        info = Info(_own, _amt, _dur, (now + _dur));
+    function Project(uint _amt, uint _dur) {
+        info = Info(tx.origin, _amt, _dur, (now + _dur));
     }
 
 

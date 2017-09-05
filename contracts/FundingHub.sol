@@ -16,10 +16,10 @@ contract FundingHub {
 	}
 
   // project owner can be an account other than the creator
-  function createProject(address _owner, uint _funding_goal, uint _duration) {
+  function createProject(uint _funding_goal, uint _duration) {
 
     num_projects = num_projects + 1;
-    myProjects[num_projects] = new Project(_owner, _funding_goal, _duration);
+    myProjects[num_projects] = new Project(_funding_goal, _duration);
     CreateProject(now, myProjects[num_projects]);
   }
 

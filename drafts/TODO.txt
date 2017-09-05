@@ -4,20 +4,17 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-
-GUI - refund  (advance time past deadline, request refund)
-
+Automated tests - Nothing with deadlines will work right now.  See play-with-time project from b9lab
+  option - Turn on 1 second delay for blocks
+  testrpc -b 1
 
 
 
 TODO: 
 
-Make owner default to creator, or remove owner?
-Remove getProjectAddress() function
+Incorporate Timothy GUI upgrades
 
-Automated tests - Nothing with deadlines will work right now.  See play-with-time project from b9lab
-  option - Turn on 1 second delay for blocks
-  testrpc -b 1
+Make owner default to creator, or remove owner?
 
   Make sure using withdrawl pattern
 
@@ -33,6 +30,8 @@ Automated tests - Nothing with deadlines will work right now.  See play-with-tim
   
 
 BACKLOG:
+
+Remove getProjectAddress() function
 
   Check account balances for required funds at the beginning of each test
   Cleanup javascript console logging
