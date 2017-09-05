@@ -16,12 +16,11 @@ Automated Test status:
   Project Payouts:
   DONE - Payout request fullfilled when fundraising goal reached
   DONE - Payout request denied when project not fully funded
-       - Payout request from non-owner is denied -- WILL CAUSE REVERT()
+       - Payout request from non-owner is denied -- WILL CAUSE REVERT() exceptiin
 
   FundHub:
        - Create multiple projects
 */
-
 
 
 var FundingHub = artifacts.require("./FundingHub.sol");
@@ -37,13 +36,12 @@ var alice     = accounts[1];
 var bob       = accounts[2];
 var carol     = accounts[3];
 
+
 var templateProject = {
   owner: alice,
   amount_goal: web3.toWei(10, "ether"),
   duration: 5
 }
-
-
 
 function ProjectInfo(i) {
    var result = {};
@@ -263,7 +261,7 @@ var testParams = {
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: 4500000});
+      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -283,6 +281,8 @@ var testParams = {
     })
     .catch(done);
   });
+
+
 
 /* CAUSES REVERT()
   it("Payout request from non-owner is denied", function(done) {
@@ -392,7 +392,6 @@ var testParams = {
 
 
 
-
   it("Refund request denied when project is fully funded", function(done) {
 
   var testParams = {
@@ -433,9 +432,9 @@ var testParams = {
     .catch(done);
 
   });
+
+
 /*
-
-
   it("Refund request denied when deadline not reached yet", function(done) {
 
   var myProject = {};
@@ -473,79 +472,81 @@ var testParams = {
 
 */  
 
-/*
-  it("Project refund should be allowed after deadline reached and project not fully funded", function(done) {
 
-  var myProject = {};
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(1, "ether");
-  
-  var fundhub; 
-  var info;
+  it("Refund request allowed when deadline reached and project not fully funded", function(done) {
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject( templateProject.amount_goal, templateProject.duration); 
-    })
-    .then( function() {
-      return fundhub.num_projects.call();
+  var testParams = {
+    owner: alice,
+    amount_goal: web3.toWei(10, "ether"),
+    duration: 5,
+    user_addr: bob,
+    amount_contribute: web3.toWei(10, "ether")
+  };
+
+  var myProject = {}; 
+  var myFundHub;
+
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
     })
     .then( function(value) {
-      myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
-      return;
-// Reuse for every test //  
-    })
-    .then( function() {      
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
-    })
-    .then(function(value){
-      console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-
-      /// TODO - ADVANCE TIME UNTIL DEADLINE REACHED
-      /// run with "testrpc -s 1" to pass (1 block/second).  would be better to manually advance time
-      return myProject.instance.refund({from: user_addr});
-    })
-    .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
-      return myProject.instance.refund({from: user_addr});
-    })
-    .then(function(){ // call second time, to give time for testrpc to mine new block (one block per transaction)
-      return myProject.instance.refund({from: user_addr});
-    })
-    .then(function(value){
-      console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-      return myProject.instance.refund({from: user_addr});
+      myProject = value;
+      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
-    })  
-    .then(function(amount){
-      assert.equal(amount.valueOf(), 0, "Refund didnt work!"); 
-      done();
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Contribution unsuccessful!"); 
+      return;
     })
-    .catch(done);
-  });
-*/
 
+    // Refund request should be denied at first
+    .then(function(){
+      return myProject.instance.refund({from: testParams.user_addr});
+    })
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Invalid refund allowed!"); 
+      return;
+    })
+    .then( function() {    
+    // advance time
+      //console.log("deadline: " + myProject.deadline);   //TODO - fix magic number
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      return;
+    })
+    .then(function() {
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_increaseTime",
+      params: 10000,
+      id: 42
+    }, function(err, result) {
+    // this is your callback
+      console.log("callback");
+      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+    });
+    })
+    // Now refund request should be granted
+    .then(function(){
+      return myProject.instance.refund({from: testParams.user_addr});
+    })
+    .then(function(){
+      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then( function(amount) {
+      assert.equal(amount.valueOf(), 0, "Refund request failed!"); 
+      done();
+    })    
+
+    .catch(done);
+
+  });
 
 
 

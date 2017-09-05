@@ -42,7 +42,7 @@ function createProject () {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.createProject(user_addr, amount_goal, duration, {from: user_addr, gas: gasLimit})
+  fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
   .then(function(){
     return fundhub.num_projects.call();
   })
