@@ -13,12 +13,12 @@ Execution cost: 597029 gas.
 
 IN PROGRESS:
 
-Truffle migration script that creates a project after FundingHub deployed
+
 
 
 TODO: 
 
-From "miscellaneous printout -- choose size of struct elements"
+From "miscellaneous printout -- choose size of struct elements to stack and save space"
 
   Incorporate Timothy GUI upgrades
 
@@ -39,12 +39,8 @@ BACKLOG:
   Remove getProjectAddress() function
 
   Check account balances for required funds at the beginning of each test
-  Cleanup javascript console logging
-  Loads really slow in Safari, console won't open
-  Show owner in project table
 
-  Debug - Reset FundingHub/Projects
-    Show events
+  Show owner in project table
 
   Add basic error messages (for debug)
     When sending funds fails
@@ -56,6 +52,7 @@ BACKLOG:
 =============================================
 
 DONE:
+  Truffle migration script that creates a project after FundingHub deployed
   contribute() should use project address, not index
   Dont save duration in the contract
   modularize project creation
