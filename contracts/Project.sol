@@ -6,7 +6,6 @@ contract Project {
     struct Info {
       address owner; 
       uint amount_goal;  // in Wei
-      uint duration;
       uint deadline;     // in seconds
     }
 
@@ -23,8 +22,8 @@ contract Project {
     } 
 
     // constructor
-    function Project(uint _amt, uint _dur) {
-        info = Info(tx.origin, _amt, _dur, (now + _dur));
+    function Project(uint _funding_goal, uint _duration) {
+        info = Info(tx.origin, _funding_goal, (now + _duration));
     }
 
 
