@@ -26,8 +26,7 @@ function ProjectInfo(i) {
    var result = {};
    result.owner = i[0];
    result.amount_goal = parseInt(i[1]);
-   result.duration = parseInt(i[2]);
-   result.deadline = parseInt(i[3]);
+   result.deadline = parseInt(i[2]);
    return result;
 };
 
@@ -51,6 +50,7 @@ function createProject () {
       return fundhub.getProjectAddress(myProject.index);
     })
     .then( function(value) {
+        console.log("project address: " + myProject.address);    
       myProject.address = value;
       return Project.at(myProject.address);
     })
@@ -62,14 +62,14 @@ function createProject () {
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
+      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
       console.log("-----------------------------");
       console.log("New project created:");
       console.log("project owner: " + myProject.owner);
       console.log("project address: " + myProject.address);
       console.log("project goal: " + myProject.amount_goal);
-      console.log("project duration: " + myProject.duration);
+      //console.log("project duration: " + myProject.duration);
       console.log("project deadline: " + myProject.deadline);
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       console.log("-----------------------------");
@@ -91,31 +91,6 @@ function createProject () {
 }
 
 
-/*
-
-function refreshProjectTable(index){
-
-  //var ProjectAddressList = {};
-  var myProjects = {};
-  var info;
-  var num_projects;
-
-  return new Promise(function(resolve,reject){
-
-    fundhub.num_projects.call().then( function(value) {
-      num_projects = value.valueOf();
-      return fundhub.myProjects(1).call();
-    })
-    .then(function(value){
-      console.log("Project "+"1"+" address: "+ value);
-      return;
-   });
-  resolve(true);
-  }
-}
-
-    //  for (uint i = 1; i < num_projects; i++) {
-*/
 
 function refreshProjectTableByIndex(index){
 
@@ -140,7 +115,7 @@ function refreshProjectTableByIndex(index){
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
+      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
   
     var state_element = document.getElementById("project_address_"+myProject.index);
@@ -152,8 +127,8 @@ function refreshProjectTableByIndex(index){
     var refill_element = document.getElementById("deadline_"+myProject.index);
     refill_element.innerHTML = myProject.deadline;
 
-    var state_element = document.getElementById("duration_"+myProject.index);
-    state_element.innerHTML = myProject.duration;
+    //var state_element = document.getElementById("duration_"+myProject.index);
+    //state_element.innerHTML = myProject.duration;
   
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
@@ -178,8 +153,8 @@ function refreshProjectTable(myProject){
     var refill_element = document.getElementById("deadline_"+myProject.index);
     refill_element.innerHTML = myProject.deadline;
 
-    var state_element = document.getElementById("duration_"+myProject.index);
-    state_element.innerHTML = myProject.duration;
+    //var state_element = document.getElementById("duration_"+myProject.index);
+    //state_element.innerHTML = myProject.duration;
   
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
@@ -232,7 +207,7 @@ function contribute() {
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      myProject.duration = info.duration;
+      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
   })
   .then(function(){   

@@ -9,6 +9,8 @@ contract FundingHub {
   uint public num_projects = 0;
   Project proj;
 
+ // mapping(address => uint) public balances;  // Funding contributions
+
   event Contribute(uint _timestamp, address _contrib, uint _amount);
   event CreateProject(uint _timestamp, address _project_address);
 

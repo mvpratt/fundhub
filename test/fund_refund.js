@@ -44,7 +44,7 @@ function increaseTime(seconds){
 
     web3.currentProvider.sendAsync({jsonrpc: "2.0", method: "evm_increaseTime", params: [seconds], id: 0 },
       function(err, result) {
-        console.log("evm_increaseTime() callback");
+        //console.log("evm_increaseTime() callback");
         resolve(true);
     }
     );
@@ -57,7 +57,7 @@ function mineBlock(){
 
     web3.currentProvider.sendAsync({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0 },
       function(err, result) {
-        console.log("evm_mine() callback");
+        //console.log("evm_mine() callback");
         resolve(true);
     }
     );
@@ -355,7 +355,7 @@ var testParams = {
 
     // advance time
     .then( function() {    
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return increaseTime(10000);
     })
     .then(function() {
@@ -371,7 +371,7 @@ var testParams = {
       return myProject.instance.refund({from: testParams.user_addr});
     })
     .then(function(){
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {
@@ -418,14 +418,14 @@ var testParams = {
 
     // advance time past deadline
     .then( function() {    
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return increaseTime(10000);
     })
     .then(function() {
       return mineBlock();
     })
     .then(function() {
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return;
     })
 
@@ -434,7 +434,7 @@ var testParams = {
       return myProject.instance.refund({from: testParams.owner});
     })
     .then(function(){
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+      //console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       return web3.eth.getBalance(myProject.address.toString());
     })          
     .then( function(amount) {

@@ -1,10 +1,23 @@
 
 AUTHOR: <mvpratt>
 
+9/6/17
+Project size: 1612 bytes
+Transaction cost: 481282 gas. 
+Execution cost: 324426 gas.
+
+FundingHub size: 2995 bytes
+Transaction cost: 841337 gas. 
+Execution cost: 597029 gas.
+
 
 IN PROGRESS:
 
+contribute() should use project address, not index
 
+Truffle migration script that creates a project after FundingHub deployed
+
+Fro "miscellaneous printout -- choose size of struct elements"
 
 TODO: 
 
@@ -53,6 +66,7 @@ Remove getProjectAddress() function
 =============================================
 
 DONE:
+  Dont save duration in the contract
   modularize project creation
   Use modifiers
   Remove states
