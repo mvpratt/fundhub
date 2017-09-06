@@ -4,12 +4,11 @@ import "./Project.sol";
 
 
 contract FundingHub {
-
-  address[4] public myProjects;        
+      
   uint public num_projects = 0;
   Project proj;
 
- // mapping(address => uint) public balances;  // Funding contributions
+  mapping(uint => address) public myProjects;  
 
   event Contribute(uint _timestamp, address _contrib, uint _amount);
   event CreateProject(uint _timestamp, address _project_address);
