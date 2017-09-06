@@ -1,9 +1,9 @@
 
-var accounts;  // array of all accounts
 
-var proj;      // Test project
+// External user accounts (Array)
+//var accounts;
+
 var fundhub;   // Main contract
-
 var gasLimit = 4500000;
  
 
@@ -17,9 +17,10 @@ function logTimestamp(message) {
 }
 
 function showUserBalances() {
-  console.log("Alice (coinbase): balance : " + web3.fromWei(web3.eth.getBalance(accounts[1]), "ether") + " ETH");
-  console.log("Bob             : balance : " + web3.fromWei(web3.eth.getBalance(accounts[2]), "ether") + " ETH");
-  console.log("Carol           : balance : " + web3.fromWei(web3.eth.getBalance(accounts[3]), "ether") + " ETH");
+  console.log("Coinbase : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether") + " ETH");  
+  console.log("Alice    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]), "ether") + " ETH");
+  console.log("Bob      : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[2]), "ether") + " ETH");
+  console.log("Carol    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[3]), "ether") + " ETH");
 }
 
 function ProjectInfo(i) {
@@ -39,7 +40,7 @@ function createProject () {
   var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
   var duration = document.getElementById("i_duration").value;
   var user_index = Number(document.getElementById("i_user").value);
-  var user_addr = accounts[user_index];
+  var user_addr = web3.eth.accounts[user_index];
 
   fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
   .then(function(){
@@ -170,10 +171,10 @@ function refreshUserTable(index){
   return new Promise(function(resolve,reject){
 
     var refill_element = document.getElementById("user_address_"+index);
-    refill_element.innerHTML = accounts[index];
+    refill_element.innerHTML = web3.eth.accounts[index];
 
     var refill_element = document.getElementById("user_balance_"+index);
-    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(accounts[index]), "ether");
+    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), "ether");
 
     resolve(true);
 
@@ -189,7 +190,7 @@ function contribute() {
   
   var amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
   var user_index = Number(document.getElementById("i_user").value);
-  var user_addr = accounts[user_index];
+  var user_addr = web3.eth.accounts[user_index];
 
   fundhub.getProjectAddress(myProject.index)
   .then(function(value){
@@ -229,9 +230,10 @@ function contribute() {
 
 function requestPayout() {
 
+  var proj;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
-  var user_addr = accounts[user_index];
+  var user_addr = web3.eth.accounts[user_index];
 
   fundhub.getProjectAddress.call(proj_index)
   .then(function(addr){
@@ -260,9 +262,10 @@ function requestPayout() {
 
 function requestRefund() {
 
+  var proj;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
-  var user_addr = accounts[user_index];
+  var user_addr = web3.eth.accounts[user_index];
 
   fundhub.getProjectAddress.call(proj_index)
   .then(function(addr){
@@ -311,9 +314,8 @@ window.onload = function() {
     if (accs.length == 0) {
       alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
       return;
-    } 
+    }   
 
-    accounts = accs;
     showUserBalances();
 
   FundingHub.deployed().then(function(value) {

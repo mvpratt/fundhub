@@ -13,7 +13,7 @@ Execution cost: 597029 gas.
 
 IN PROGRESS:
 
-
+Show all projects on page load
 
 
 TODO: 
