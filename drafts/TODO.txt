@@ -13,8 +13,6 @@ Execution cost: 597029 gas.
 
 IN PROGRESS:
 
-contribute() should use project address, not index
-
 Truffle migration script that creates a project after FundingHub deployed
 
 
@@ -38,7 +36,7 @@ BACKLOG:
 
   Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
 
-Remove getProjectAddress() function
+  Remove getProjectAddress() function
 
   Check account balances for required funds at the beginning of each test
   Cleanup javascript console logging
@@ -55,18 +53,10 @@ Remove getProjectAddress() function
   Split tests - Project.js, FundHub.js
 
 
-
-// HOW TO: track a bunch of projects
-//  An array (address -> index), store array size, project name?
-//  A mapping (address -> owner)
-
-// HOW TO: Call a function and send it ETH
-// address.func.value(amount)(arg1, arg2, arg3)
-
-
 =============================================
 
 DONE:
+  contribute() should use project address, not index
   Dont save duration in the contract
   modularize project creation
   Use modifiers

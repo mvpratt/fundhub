@@ -25,17 +25,8 @@ contract FundingHub {
   }
 
   // Contributer is an account (external account, or contract account)
-/*
-  function contribute(uint _index) payable {
-
-    proj = Project(myProjects[_index]);
-    proj.fund.value(msg.value)(msg.sender); 
-    Contribute(now, msg.sender, msg.value);
-  }
-*/
-
   function contribute(address _project_address) payable {
-    
+
     proj = Project(_project_address);
     proj.fund.value(msg.value)(msg.sender); 
     Contribute(now, msg.sender, msg.value);
