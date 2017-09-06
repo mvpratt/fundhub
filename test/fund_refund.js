@@ -37,7 +37,6 @@ var bob       = accounts[2];
 var carol     = accounts[3];
 
 
-
 function increaseTime(seconds){
 
   return new Promise(function(resolve,reject){
@@ -68,7 +67,6 @@ function ProjectInfo(i) {
    var result = {};
    result.owner = i[0];
    result.amount_goal = parseInt(i[1]);
-   //result.duration = parseInt(i[2]);
    result.deadline = parseInt(i[2]);
    return result;
 };
@@ -130,7 +128,7 @@ var testParams = {
   amount_goal: web3.toWei(10, "ether"),
   duration: 5,
   user_addr: bob,
-  amount_contribute: web3.toWei(1, "ether")
+  amount_contribute: 0
 };
 
   var myProject = {};
@@ -171,7 +169,7 @@ var testParams = {
   })
   .then( function(value) {
     myProject = value;
-    return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+    return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
   })
   .then(function(value){    
     return web3.eth.getBalance(myProject.address.toString());
@@ -204,7 +202,7 @@ var testParams = {
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+      return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -245,7 +243,7 @@ var testParams = {
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+      return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -287,7 +285,7 @@ var testParams = {
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+      return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -331,7 +329,7 @@ var testParams = {
     })
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+      return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -406,7 +404,7 @@ var testParams = {
     // contribute funds
     .then( function(value) {
       myProject = value;
-      return myFundHub.contribute(myProject.index, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+      return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
@@ -489,7 +487,7 @@ var testParams = {
     })
 
     .then( function() {
-      return fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit});
+      return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
     })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());

@@ -185,18 +185,19 @@ function contribute() {
   var myProject = {};
   var info;
 
-  var amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
   myProject.index = Number(document.getElementById("i_project_num").value);
+  
+  var amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = accounts[user_index];
 
-  fundhub.contribute(myProject.index, {from: user_addr, value: amount_contribute, gas: gasLimit})
+  fundhub.getProjectAddress(myProject.index)
+  .then(function(value){
+    myProject.address = value;
+    return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
+   }) 
   .then(function(){
     setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
-    return fundhub.getProjectAddress(myProject.index);
-  })
-    .then( function(value) {
-      myProject.address = value;
       return Project.at(myProject.address);
     })
     .then( function(value) {

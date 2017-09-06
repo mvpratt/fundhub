@@ -24,9 +24,7 @@ contract Project {
     // constructor
     function Project(uint _funding_goal, uint _duration) {
         info = Info({owner: tx.origin, amount_goal: _funding_goal, deadline: (now + _duration)});
-        //info = Info(tx.origin, _funding_goal, (now + _duration));
     }
-
 
     // fund() must specify the contributer (which is not necessarily the message sender)
     function fund(address _contrib) payable external {

@@ -17,9 +17,10 @@ contribute() should use project address, not index
 
 Truffle migration script that creates a project after FundingHub deployed
 
-Fro "miscellaneous printout -- choose size of struct elements"
 
 TODO: 
+
+From "miscellaneous printout -- choose size of struct elements"
 
   Incorporate Timothy GUI upgrades
 
