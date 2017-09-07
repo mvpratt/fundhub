@@ -15,6 +15,9 @@ IN PROGRESS:
 
 Show all projects on page load
 
+  Remove getProjectAddress() function
+
+
 
 TODO: 
 
@@ -36,7 +39,6 @@ BACKLOG:
 
   Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
 
-  Remove getProjectAddress() function
 
   Check account balances for required funds at the beginning of each test
 

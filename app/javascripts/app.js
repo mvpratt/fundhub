@@ -76,7 +76,7 @@ function createProject () {
     return refreshProjectTableAll();
   })
   .then(function(){
-    return refreshUserTable(user_index);    
+    return refreshUserTable();    
   }) 
   .then(function(){
     setStatus("Finished creating project");
@@ -185,7 +185,7 @@ function refreshProjectTableAll(){
 }
 
 
-function refreshUserTable(index){
+function refreshUserTableByIndex(index){
 
   return new Promise(function(resolve,reject){
 
@@ -198,6 +198,24 @@ function refreshUserTable(index){
     resolve(true);
 
   })
+}
+
+function refreshUserTable(){
+
+  var num_users = 3;
+  var promises = [];
+
+  return new Promise(function(resolve,reject){
+
+    for (i = 1; i <= num_users; i++) { 
+      promises.push(refreshUserTableByIndex(i));
+    }
+    return Promise.all(promises);
+  })
+  .then(function(){
+    resolve(true);
+  })
+
 }
 
 function contribute() {
@@ -235,7 +253,7 @@ function contribute() {
     return refreshProjectTableAll();
   })
   .then(function(){
-    return refreshUserTable(user_index);    
+    return refreshUserTable();    
   })
   .then(function(){
     logTimestamp("Contribution finished");
@@ -267,7 +285,7 @@ function requestPayout() {
     return refreshProjectTableAll(); 
   })
   .then(function(){
-    return refreshUserTable(user_index);    
+    return refreshUserTable();    
   })
   .then(function(){
     logTimestamp("Payout request finished");
@@ -299,7 +317,7 @@ function requestRefund() {
     return refreshProjectTableAll(); 
   })
   .then(function(){
-    return refreshUserTable(user_index);    
+    return refreshUserTable();    
   })
   .then(function(){
     logTimestamp("Request refund finished");
@@ -339,9 +357,17 @@ window.onload = function() {
     fundhub = value;
     console.log("FundingHub deployed!");
     showUserBalances();
-    //refreshProjectTableAll();
     return;  
-  });
+  })
+  .then(function(){
+    return refreshUserTable();
+  })
+  .then(function(){
+    return refreshProjectTableAll();
+  })
+  .then(function(){
+    return;
+  })
 
   })
 }
