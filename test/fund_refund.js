@@ -72,6 +72,12 @@ function ProjectInfo(i) {
 };
 
 
+function getProjectAddress(fundhub, index) {
+
+  return fundhub.myProjects.call(index);
+}
+
+
 function createProject(fundhub, owner, amount_goal, duration){
 
   var myProject = {};
@@ -84,7 +90,7 @@ function createProject(fundhub, owner, amount_goal, duration){
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
+      return getProjectAddress(fundhub, myProject.index);
     })
     .then( function(value) {
       myProject.address = value;
@@ -466,7 +472,7 @@ var testParams = {
     })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
+      return getProjectAddress(myProject.index);
     })
     .then( function(value) {
       myProject.address = value;

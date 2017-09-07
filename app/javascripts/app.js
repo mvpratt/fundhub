@@ -28,6 +28,13 @@ function ProjectInfo(i) {
    return result;
 };
 
+function getProjectAddress(index) {
+
+  return new Promise(function(resolve,reject){
+    resolve(fundhub.myProjects.call(index));
+  });
+}
+
 
 function createProject () {
 
@@ -45,7 +52,7 @@ function createProject () {
   })
     .then( function(value) {
       myProject.index = value;
-      return fundhub.getProjectAddress(myProject.index);
+      return getProjectAddress(myProject.index);
     })
     .then( function(value) {
         console.log("project address: " + myProject.address);    
@@ -99,11 +106,11 @@ function refreshProjectTableByIndex(index){
   
   myProject.index = index;
 
-  fundhub.getProjectAddress(myProject.index)
-
+  getProjectAddress(myProject.index)
     .then( function(value) {
       myProject.address = value;
-      return Project.at(myProject.address);
+      console.log("project address: "+myProject.address);
+      return Project.at(myProject.address.toString());
     })
     .then( function(value) {
       myProject.instance = value;      
@@ -130,37 +137,14 @@ function refreshProjectTableByIndex(index){
   
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
-
+    return;
   })
-  resolve(true);
-
-  });
-}
-
-
-function refreshProjectTable(myProject){
-
-  return new Promise(function(resolve,reject){
-
-    var state_element = document.getElementById("project_address_"+myProject.index);
-    state_element.innerHTML = myProject.address;
-
-    var refill_element = document.getElementById("amount_goal_"+myProject.index);
-    refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
-
-    var refill_element = document.getElementById("deadline_"+myProject.index);
-    refill_element.innerHTML = myProject.deadline;
-
-    //var state_element = document.getElementById("duration_"+myProject.index);
-    //state_element.innerHTML = myProject.duration;
-  
-    var refill_element = document.getElementById("amount_raised_"+myProject.index);
-    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
 
   resolve(true);
 
   });
 }
+
 
 
 function refreshProjectTableAll(){
@@ -169,7 +153,7 @@ function refreshProjectTableAll(){
 
   fundhub.num_projects.call()
   .then(function(value) {
-
+    console.log("num_projects: "+value);
     var promises = [];
 
     for (i = 1; i <= value; i++) { 
@@ -229,7 +213,7 @@ function contribute() {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
 
-  fundhub.getProjectAddress(myProject.index)
+  getProjectAddress(myProject.index)
   .then(function(value){
     myProject.address = value;
     return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
@@ -248,6 +232,7 @@ function contribute() {
       myProject.amount_goal = info.amount_goal;
       //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+      return;
   })
   .then(function(){   
     return refreshProjectTableAll();
@@ -272,7 +257,7 @@ function requestPayout() {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
 
-  fundhub.getProjectAddress.call(proj_index)
+  getProjectAddress(proj_index)
   .then(function(addr){
     return Project.at(addr);
   })
@@ -304,7 +289,7 @@ function requestRefund() {
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
 
-  fundhub.getProjectAddress.call(proj_index)
+  getProjectAddress(proj_index)
   .then(function(addr){
     return Project.at(addr);
   })
@@ -355,8 +340,8 @@ window.onload = function() {
 
   FundingHub.deployed().then(function(value) {
     fundhub = value;
-    console.log("FundingHub deployed!");
     showUserBalances();
+    console.log("FundingHub deployed!");
     return;  
   })
   .then(function(){

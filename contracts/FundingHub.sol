@@ -33,8 +33,8 @@ contract FundingHub {
   }
 
 
-  function getProjectAddress(uint8 _index) constant returns(address) {
-    return myProjects[_index];
-  }
+  //function getProjectAddress(uint8 _index) constant returns(address) {
+  //  return myProjects[_index];
+ // }
 
 }
