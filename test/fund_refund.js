@@ -221,6 +221,10 @@ var testParams = {
     .then( function() {
       return myProject.instance.payout({from: myProject.owner});
     })
+    .catch(function(error){
+      //e.message.indexOf('invalid opcode') >= 0
+      console.log("payout() request denied")
+    })
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          

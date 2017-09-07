@@ -2,14 +2,9 @@
 AUTHOR: <mvpratt>
 
 9/6/17
-Project size: 1612 bytes
-Transaction cost: 481282 gas. 
-Execution cost: 324426 gas.
-
 FundingHub size: 2995 bytes
 Transaction cost: 841337 gas. 
 Execution cost: 597029 gas.
-
 
 9/7/17
 Removed getProjectAddress()
@@ -18,52 +13,37 @@ Transaction cost: 786827 gas
 Execution cost: 556391 gas
 
 
-Project size: 1612 bytes
-
-
-
-
 IN PROGRESS:
 
+  Test revert() / require() -- need to catch the errors?)
   Bug -- Show all projects on page load
-
-
-
-TODO: 
-
-From "miscellaneous printout -- choose size of struct elements to stack and save space"
-
-  Incorporate Timothy GUI upgrades
-
-  Make sure using withdrawl pattern
 
   Error checking/security  - i.e. malformed / invalid inputs
     Requesting refund or payout when balance is 0
-   
-  Design patterns: use require()
-  Test revert()  -- Note: reverts will cause tests to fail  (maybe need to catch the errors??)
-  
+
+TODO: 
+
+  From "miscellaneous printout -- choose size of struct elements to stack and save space"
+  Incorporate Timothy GUI upgrades
 
 
 BACKLOG:
 
   Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
-
-
   Check account balances for required funds at the beginning of each test
-
   Show owner in project table
 
   Add basic error messages (for debug)
     When sending funds fails
     When transaction fails for another reason
 
-  Split tests - Project.js, FundHub.js
 
 
 =============================================
 
 DONE:
+  Make sure using withdrawl pattern
+  Design patterns: use require() // cleanup fund / refund / payout logic
   Remove getProjectAddress() function
   Truffle migration script that creates a project after FundingHub deployed
   contribute() should use project address, not index
