@@ -1,8 +1,5 @@
 
 
-// External user accounts (Array)
-//var accounts;
-
 var fundhub;   // Main contract
 var gasLimit = 4500000;
  
@@ -76,7 +73,7 @@ function createProject () {
       console.log("-----------------------------");
   })
   .then(function(){   
-    return refreshProjectTable(myProject);
+    return refreshProjectTableAll();
   })
   .then(function(){
     return refreshUserTable(user_index);    
@@ -166,6 +163,28 @@ function refreshProjectTable(myProject){
 }
 
 
+function refreshProjectTableAll(){
+
+  return new Promise(function(resolve,reject){
+
+  fundhub.num_projects.call()
+  .then(function(value) {
+
+    var promises = [];
+
+    for (i = 1; i <= value; i++) { 
+      promises.push(refreshProjectTableByIndex(i));
+    }
+    return Promise.all(promises);
+  })
+  .then(function(){
+    resolve(true);
+  })
+
+  });
+}
+
+
 function refreshUserTable(index){
 
   return new Promise(function(resolve,reject){
@@ -213,7 +232,7 @@ function contribute() {
       myProject.deadline = info.deadline;
   })
   .then(function(){   
-    return refreshProjectTableByIndex(myProject.index);
+    return refreshProjectTableAll();
   })
   .then(function(){
     return refreshUserTable(user_index);    
@@ -245,7 +264,7 @@ function requestPayout() {
   })
   .then(function(){
     setStatus("Payout sent!");
-    return refreshProjectTableByIndex(proj_index); 
+    return refreshProjectTableAll(); 
   })
   .then(function(){
     return refreshUserTable(user_index);    
@@ -277,7 +296,7 @@ function requestRefund() {
   })
   .then(function(){
     setStatus("Refund sent!");
-    return refreshProjectTableByIndex(proj_index); 
+    return refreshProjectTableAll(); 
   })
   .then(function(){
     return refreshUserTable(user_index);    
@@ -316,11 +335,12 @@ window.onload = function() {
       return;
     }   
 
-    showUserBalances();
-
   FundingHub.deployed().then(function(value) {
     fundhub = value;
     console.log("FundingHub deployed!");
+    showUserBalances();
+    //refreshProjectTableAll();
+    return;  
   });
 
   })
