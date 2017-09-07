@@ -32,9 +32,4 @@ contract FundingHub {
     Contribute(now, msg.sender, msg.value);
   }
 
-
-  //function getProjectAddress(uint8 _index) constant returns(address) {
-  //  return myProjects[_index];
- // }
-
 }

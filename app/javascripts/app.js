@@ -54,8 +54,7 @@ function createProject () {
       myProject.index = value;
       return getProjectAddress(myProject.index);
     })
-    .then( function(value) {
-        console.log("project address: " + myProject.address);    
+    .then( function(value) {    
       myProject.address = value;
       return Project.at(myProject.address);
     })
@@ -109,7 +108,6 @@ function refreshProjectTableByIndex(index){
   getProjectAddress(myProject.index)
     .then( function(value) {
       myProject.address = value;
-      console.log("project address: "+myProject.address);
       return Project.at(myProject.address.toString());
     })
     .then( function(value) {

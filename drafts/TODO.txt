@@ -11,11 +11,21 @@ Transaction cost: 841337 gas.
 Execution cost: 597029 gas.
 
 
+9/7/17
+Removed getProjectAddress()
+FundingHub size: 2791 bytes
+Transaction cost: 786827 gas
+Execution cost: 556391 gas
+
+
+Project size: 1612 bytes
+
+
+
+
 IN PROGRESS:
 
-Show all projects on page load
-
-  Remove getProjectAddress() function
+  Bug -- Show all projects on page load
 
 
 
@@ -54,6 +64,7 @@ BACKLOG:
 =============================================
 
 DONE:
+  Remove getProjectAddress() function
   Truffle migration script that creates a project after FundingHub deployed
   contribute() should use project address, not index
   Dont save duration in the contract

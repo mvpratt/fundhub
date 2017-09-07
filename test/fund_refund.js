@@ -72,9 +72,11 @@ function ProjectInfo(i) {
 };
 
 
-function getProjectAddress(fundhub, index) {
+function getProjectAddress(fundhub,index) {
 
-  return fundhub.myProjects.call(index);
+  return new Promise(function(resolve,reject){
+    resolve(fundhub.myProjects.call(index));
+  });
 }
 
 
