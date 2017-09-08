@@ -57,6 +57,7 @@ contract Project {
 
 
     function fund(address _contrib) payable external {
+
         // not reached goal yet
         if (this.balance <= info.amount_goal && now < info.deadline) {    
             balances[_contrib] += msg.value;
@@ -68,6 +69,7 @@ contract Project {
         Fund(now, _contrib, msg.value);
     }
 
+
     // only pays out to the owner
     function payout() external onlyOwner() {
 
@@ -75,19 +77,22 @@ contract Project {
         if ( !info.owner.send(this.balance) ) revert();
     }
 
-    // only refunds to contributers
-    // only refund if deadline reached before fully funded
-    // zero out balance before sending funds - to prevent re-entrancy attack
+
+    // Only refund if:
+    //   valid contributer AND
+    //   deadline reached AND
+    //   funding goal not reached
     function refund() external {
 
         uint bal;
 
-        require(now >= info.deadline);                  /// this is working -- refund does not happen
-        require(this.balance < info.amount_goal);       /// this is not working -- refund still happens
+        require(now >= info.deadline);                  
+        require(this.balance < info.amount_goal);       
         require(balances[msg.sender] > 0);
 
+        // zero out balance before sending funds - to prevent re-entrancy attack
         bal = balances[msg.sender];
-        balances[msg.sender] = 0;
+        balances[msg.sender] = 0;  
         if (!msg.sender.send(bal)) revert();
     }
 }

@@ -18,7 +18,7 @@ import "./Project.sol";
 contract FundingHub {
       
   uint public num_projects = 0;
-  Project proj;
+  //Project proj;
 
   mapping(uint => address) public myProjects;  
 
@@ -39,7 +39,7 @@ contract FundingHub {
   // Contributer is an account (external account, or contract account)
   function contribute(address _project_address) payable {
 
-    proj = Project(_project_address);
+    Project proj = Project(_project_address);
     proj.fund.value(msg.value)(msg.sender); // note: fund() could cause revert() 
     Contribute(now, msg.sender, msg.value);
   }

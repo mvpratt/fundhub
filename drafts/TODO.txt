@@ -4,7 +4,8 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-  Bug -- refund() allowed when it shouldnt be.  -looks like project not compiling????
+  Bug -- refund() allowed when it shouldnt be.  this was traced to some error in fund()
+
 
   Test revert() / require() -- need to catch the errors)
   Bug -- Show all projects on page load
