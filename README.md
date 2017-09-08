@@ -6,21 +6,21 @@ Git Repository:
 https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
 
 
-## CHANGES SINCE LAST SUBMITAL:
+## CHANGES SINCE LAST SUBMITAL
 
-* FundingHub contract:
+* FundingHub contract
  *   contribute() should take a project address, not index
  *   Removed getProjectAddress() and other custom get functions
  *   Moved variables from global scope to local scope when possible
 
-* Project contract:
+* Project contract
  *   Got rid of getAmountRaised() and other custom get functions
  *   Removed redundant state variables
  *   Use require() to check conditions in fund(), payout(), refund()
  *   Detect overfunding, return excess funds to contributer
  *   Moved variables from global scope to local scope when possible
 
-* Tests:
+* Tests
  *   Automated testing of deadline feature
  *   Made dedicated function for project creation and other recurring tasks
  *   Truffle migration script that creates a project after FundingHub deployed
@@ -60,9 +60,16 @@ Project is the contract that stores all the data of each project. Project has a 
 
 A simple web interface allows users to browse active projects, create their own project, and dontribute to a project
 
+#### Installation
+1. `testrpc -i 42`
+2. `truffle migrate --reset` 
+3. `truffle build`
+4. `cd /build; python -m SimpleHTTPServer 8000`
+5. Open `localhost:8000` in Google Chrome
+
 #### Guidelines
 * Deadline and duration are in units of  seconds
-* This demonstation Dapp is limited to a maximum of 3 projects and 3 users.
+* The WebUI is limited to a maximum of 3 projects and 3 users.
 * Whenever you take an action such as create, payout or refund, _make sure that the desired user selected_
 
 #### Test refund (rejected)
@@ -81,21 +88,11 @@ A simple web interface allows users to browse active projects, create their own 
 1. Create project & fully fund it.
 7. Request payout
 
+
 ## AUTOMATED TESTS
-
-* `truffle test`
-
-`fund_refund.js` - An automated test that covers the refund function in the Project contract using the Truffle testing framework. 
-
-
-## Installation
-
 1. `testrpc -i 42`
-2. `truffle compile` 
-3. `truffle migrate --reset` 
-4. `truffle build --reset`
-5. In the `/build` directory: `php -S 0.0.0.0:8000`
-6. Open `localhost:8000` in Google Chrome
+2. `truffle test test/fund_refund.js` - Tests createProject(), contribute(), refund(), payout()
+
 
 ## Tool Versions 
 
