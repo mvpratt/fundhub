@@ -397,7 +397,7 @@ var testParams = {
       return myProject.instance.refund({from: testParams.user_addr});
     })
     .catch(function(error){
-      console.log("refund() request denied");
+      console.log("refund() exception");
       return;
     })
     .then(function(){
@@ -427,7 +427,6 @@ var testParams = {
       assert.equal(amount.valueOf(), 0, "Refund request failed!"); 
       done();
     })    
-
     .catch(done);
 
   });
@@ -478,7 +477,7 @@ var testParams = {
       return myProject.instance.refund({from: testParams.owner});
     })
     .catch(function(error){
-      console.log("refund() request denied");
+      console.log("refund() exception");
       return;
     })    
     .then(function(){
@@ -488,77 +487,62 @@ var testParams = {
       assert.equal(amount.valueOf(), testParams.amount_contribute, "Invalid refund allowed!"); 
       done();
     })    
-
     .catch(done);
 
   });
 
 
-/* CAUSES REVERT()
   it("Payout request from non-owner is denied", function(done) {
 
-  var myProject = {};
-  var user_addr = bob;
-  var amount_contribute = web3.toWei(1, "ether");
-  
-  var fundhub; 
-  var info;
+    var testParams = {
+      owner: alice,
+      amount_goal: web3.toWei(1, "ether"),
+      duration: 5,
+      user_addr: bob,
+      amount_contribute: web3.toWei(1, "ether")
+    };
 
-// Reuse for every test //
-    FundingHub.new()
-    .then( function(instance) {
-       fundhub = instance;
-       return fundhub.createProject(templateProject.amount_goal, templateProject.duration); 
+    var myProject = {}; 
+    var myFundHub;
+
+    // create project
+    FundingHub.new().then( function(value) {
+      myFundHub = value;
+      return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
     })
-    .then( function() {
-      return fundhub.num_projects.call();
+
+    // contribute funds
+    .then(function(value) {
+      myProject = value;
+      return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
     })
-    .then( function(value) {
-      myProject.index = value;
-      return getProjectAddress(myProject.index);
-    })
-    .then( function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address);
-    })
-    .then( function(value) {
-      myProject.instance = value;      
-      return myProject.instance.info.call();
-    })
-    .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      //myProject.duration = info.duration;
-      myProject.deadline = info.deadline;
+    .then(function(){
+      return web3.eth.getBalance(myProject.address.toString());
+    })          
+    .then(function(amount) {
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Contribution unsuccessful!"); 
       return;
-// Reuse for every test //  
     })
 
-    .then( function() {
-      return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
+    // Request payout, should be denied.
+    .then(function(){
+      return myProject.instance.payout({from: testParams.user_addr});
     })
+    .catch(function(error){
+      console.log("payout() request denied");
+      return;
+    })    
     .then(function(){
       return web3.eth.getBalance(myProject.address.toString());
     })          
-    .then( function(amount) {
-      //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), amount_contribute, "Contribution unsuccessful!"); 
-    })
-    .then( function() {
-      return myProject.instance.payout({from: user_addr});
-    })
-    .then(function(){
-      return web3.eth.getBalance(myProject.address.toString());
-    })          
-    .then( function(amount) {
-      //console.log("amount raised: " + amount);
-      assert.equal(amount.valueOf(), amount_contribute, "Invalid payout allowed!"); 
+    .then(function(amount) {
+      assert.equal(amount.valueOf(), testParams.amount_contribute, "Invalid payout allowed!"); 
       done();
-    })
+    })    
     .catch(done);
+
   });
-*/
+
 
 
 

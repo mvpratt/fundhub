@@ -50,8 +50,6 @@ contract Project {
     }
 
 
-//todo - detect contributions to already fully funded projects
-
     // if overfund, return the extra 
     function fund(address _contributer) payable public {
 

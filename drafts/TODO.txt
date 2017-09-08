@@ -1,28 +1,23 @@
 
 AUTHOR: <mvpratt>
 
-
 IN PROGRESS:
-
-  Test revert() / require() -- need to catch the errors
-
-  Error checking/security  - i.e. malformed / invalid inputs
-    Requesting refund or payout when balance is 0
 
 
 
 TODO: 
 
-  From "miscellaneous printout -- choose size of struct elements to stack and save space"
-  Incorporate Timothy GUI upgrades
-
-  add selfdestruct()
-  autopayout
+  Catch all revert() and require() errors in tests --- verify that they can be triggered
+  Incorporate  GUI upgrades
   
   Bug -- Show all projects on page load
+  Detect attempt to create project by non external account??
 
 
 BACKLOG:
+
+Make tests more modular
+Make app more modular
 
   Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
   Check account balances for required funds at the beginning of each test
@@ -32,11 +27,17 @@ BACKLOG:
     When sending funds fails
     When transaction fails for another reason
 
+  From "miscellaneous printout -- choose size of struct elements to stack and save space"
 
+  autopayout
+  autorefund
 
 =============================================
 
 DONE:
+  selfdestruct()
+  Error checking/security  - i.e. malformed / invalid inputs
+    Requesting refund or payout when balance is 0
   Detect overfunding, return excess funds to contributer
   Make sure using withdrawl pattern
   Design patterns: use require() // cleanup fund / refund / payout logic
