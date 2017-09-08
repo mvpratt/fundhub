@@ -87,8 +87,12 @@ function createProject(fundhub, owner, amount_goal, duration){
 
   return new Promise(function(resolve,reject){
 
-    fundhub.createProject(amount_goal, duration, {from: owner}).then( function() {
+    fundhub.createProject(amount_goal, duration, {from: owner, gas: gasLimit}).then(function() {
       return fundhub.num_projects.call();
+    })
+    .catch(function(error){
+      console.log("fundhub.createProject() exception");
+      return;
     })
     .then( function(value) {
       myProject.index = value;
@@ -165,7 +169,7 @@ var testParams = {
   amount_goal: web3.toWei(10, "ether"),
   duration: 5,
   user_addr: bob,
-  amount_contribute: web3.toWei(0.1, "ether")
+  amount_contribute: web3.toWei(1, "ether")
 };
 
   var myProject = {};
@@ -175,9 +179,17 @@ var testParams = {
     myFundHub = value;
     return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
   })
+  .catch(function(error){
+      console.log("createProject() exception");
+      return;
+  })
   .then( function(value) {
     myProject = value;
     return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+  })
+  .catch(function(error){
+      console.log("contribute() exception");
+      return;
   })
   .then(function(value){    
     return web3.eth.getBalance(myProject.address.toString());

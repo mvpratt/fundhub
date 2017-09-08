@@ -12,6 +12,10 @@ Changes:
 Contract size: 1499 bytes
 Transaction cost: 450718 gas. 
 Execution cost: 301802 gas.
+
+9/8/17
+Changes:
+- added overfund checks
 */
 
 pragma solidity ^0.4.15;
@@ -38,46 +42,45 @@ contract Project {
     // constructor
     function Project(uint _funding_goal, uint _duration) {
 
-        info = Info({ owner       : tx.origin, 
-                      amount_goal : _funding_goal, 
-                      deadline    : (now + _duration)
-                   });
+        info = Info({ 
+            owner: tx.origin, 
+            amount_goal: _funding_goal, 
+            deadline: (now + _duration)
+        });
     }
 
-    // fund() must specify the contributer (which is not necessarily the message sender)
-    function fund(address _contrib) payable external {
 
-        require(this.balance <= info.amount_goal);
+//todo - detect contributions to already fully funded projects
+
+    // if overfund, return the extra 
+    function fund(address _contributer) payable public {
+
+        uint overfunded;
+        uint contribution;
+
         require(now < info.deadline);
 
-        balances[_contrib] += msg.value;
-        Fund(now, _contrib, msg.value);
+        if (this.balance > info.amount_goal) {
+          overfunded = this.balance - info.amount_goal;
+          contribution = msg.value - overfunded;
+          if (!_contributer.send(overfunded)) revert();
+        }
+        
+        else {
+          overfunded = 0;
+          contribution = msg.value;
+        }
 
+        balances[_contributer] += contribution;
+        Fund(now, _contributer, contribution);
     }
 
-/*
-    function fund(address _contrib) payable external {
-
-        //require(this.balance < info.amount_goal);
-        //require(now < info.deadline);
-
-        // not reached goal yet
-        if (this.balance <= info.amount_goal && now < info.deadline) {    
-            balances[_contrib] += msg.value;
-        }
-        // project either fully funded or deadline reached
-        else {                                 
-            if (!_contrib.send(msg.value)) revert();
-        }
-        Fund(now, _contrib, msg.value);
-    }
-*/
 
     // only pays out to the owner
-    function payout() external onlyOwner() {
+    function payout() public onlyOwner() {
 
         require(this.balance == info.amount_goal);
-        if ( !info.owner.send(this.balance) ) revert();
+        if (!info.owner.send(this.balance)) revert();
     }
 
 
@@ -85,10 +88,9 @@ contract Project {
     //   valid contributer AND
     //   deadline reached AND
     //   funding goal not reached
-    function refund() external {
+    function refund() public {
 
         uint bal;
-
         require(now >= info.deadline);                  
         require(this.balance < info.amount_goal);       
         require(balances[msg.sender] > 0);

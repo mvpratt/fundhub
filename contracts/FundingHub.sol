@@ -9,6 +9,10 @@ Removed getProjectAddress()
 FundingHub size: 2791 bytes
 Transaction cost: 786827 gas
 Execution cost: 556391 gas
+
+9/8/17
+Moved Project to local variable
+
 */
 
 pragma solidity ^0.4.15;
@@ -18,7 +22,6 @@ import "./Project.sol";
 contract FundingHub {
       
   uint public num_projects = 0;
-  //Project proj;
 
   mapping(uint => address) public myProjects;  
 
@@ -40,7 +43,7 @@ contract FundingHub {
   function contribute(address _project_address) payable {
 
     Project proj = Project(_project_address);
-    proj.fund.value(msg.value)(msg.sender); // note: fund() could cause revert() 
+    proj.fund.value(msg.value)(msg.sender); // note: fund() can cause revert() 
     Contribute(now, msg.sender, msg.value);
   }
 }
