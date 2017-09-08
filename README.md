@@ -102,20 +102,20 @@ https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/blob/master/Screenshot
 
 ## CHANGES SINCE LAST SUBMITAL:
 
-FundingHub contract:
+* FundingHub contract:
  *   contribute() should take a project address, not index
  *   Removed getProjectAddress() and other custom get functions
  *   Moved variables from global scope to local scope when possible
 
-Project contract:
+* Project contract:
  *   Got rid of getAmountRaised() and other custom get functions
  *   Removed redundant state variables
  *   Use require() to check conditions in fund(), payout(), refund()
  *   Detect overfunding, return excess funds to contributer
  *   Moved variables from global scope to local scope when possible
 
-Tests:
+* Tests:
  *   Automated testing of deadline feature
  *   Made dedicated function for project creation and other recurring tasks
  *   Truffle migration script that creates a project after FundingHub deployed
-  *   Updated to truffle 3.4.9 and solidity 0.4.15
+ *   Updated to truffle 3.4.9 and solidity 0.4.15
