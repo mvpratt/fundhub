@@ -1,21 +1,12 @@
 
 AUTHOR: <mvpratt>
 
-9/6/17
-FundingHub size: 2995 bytes
-Transaction cost: 841337 gas. 
-Execution cost: 597029 gas.
-
-9/7/17
-Removed getProjectAddress()
-FundingHub size: 2791 bytes
-Transaction cost: 786827 gas
-Execution cost: 556391 gas
-
 
 IN PROGRESS:
 
-  Test revert() / require() -- need to catch the errors?)
+  Bug -- refund() allowed when it shouldnt be.  -looks like project not compiling????
+
+  Test revert() / require() -- need to catch the errors)
   Bug -- Show all projects on page load
 
   Error checking/security  - i.e. malformed / invalid inputs

@@ -1,7 +1,19 @@
+/*
+9/6/17
+FundingHub size: 2995 bytes
+Transaction cost: 841337 gas. 
+Execution cost: 597029 gas.
+
+9/7/17
+Removed getProjectAddress()
+FundingHub size: 2791 bytes
+Transaction cost: 786827 gas
+Execution cost: 556391 gas
+*/
+
 pragma solidity ^0.4.15;
 
 import "./Project.sol";
-
 
 contract FundingHub {
       
@@ -28,8 +40,7 @@ contract FundingHub {
   function contribute(address _project_address) payable {
 
     proj = Project(_project_address);
-    proj.fund.value(msg.value)(msg.sender); 
+    proj.fund.value(msg.value)(msg.sender); // note: fund() could cause revert() 
     Contribute(now, msg.sender, msg.value);
   }
-
 }

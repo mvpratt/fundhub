@@ -1,15 +1,20 @@
-pragma solidity ^0.4.15;
-
 /*
 9/6/17
 Contract size: 1612 bytes
 Transaction cost: 481282 gas. 
 Execution cost: 324426 gas.
 
-
 9/7/17
-
+Changes:
+- Made "bal" a local variable
+- use OnlyOwner() modifier
+- use "require statements" in fund(), payout(), refund()
+Contract size: 1499 bytes
+Transaction cost: 450718 gas. 
+Execution cost: 301802 gas.
 */
+
+pragma solidity ^0.4.15;
 
 contract Project {
 
@@ -39,13 +44,27 @@ contract Project {
                    });
     }
 
-    // fund() must specify the contributer (which is not necessarily the message sender)
+   /* // fund() must specify the contributer (which is not necessarily the message sender)
     function fund(address _contrib) payable external {
 
         require(this.balance < info.amount_goal);
         require(now < info.deadline);
 
         balances[_contrib] += msg.value;
+        Fund(now, _contrib, msg.value);
+
+    }*/
+
+
+    function fund(address _contrib) payable external {
+        // not reached goal yet
+        if (this.balance <= info.amount_goal && now < info.deadline) {    
+            balances[_contrib] += msg.value;
+        }
+        // project either fully funded or deadline reached
+        else {                                 
+            if (!_contrib.send(msg.value)) revert();
+        }
         Fund(now, _contrib, msg.value);
     }
 
@@ -59,13 +78,13 @@ contract Project {
     // only refunds to contributers
     // only refund if deadline reached before fully funded
     // zero out balance before sending funds - to prevent re-entrancy attack
-
     function refund() external {
 
         uint bal;
 
-        require(now >= info.deadline);
-        require(this.balance < info.amount_goal);
+        require(now >= info.deadline);                  /// this is working -- refund does not happen
+        require(this.balance < info.amount_goal);       /// this is not working -- refund still happens
+        require(balances[msg.sender] > 0);
 
         bal = balances[msg.sender];
         balances[msg.sender] = 0;
