@@ -128,7 +128,7 @@ function createProject(fundhub, owner, amount_goal, duration){
 }
 
 
-/*
+
 it("Create Project, verify constructor", function(done) {
 
 var testParams = {
@@ -279,7 +279,7 @@ var testParams = {
     })
     .catch(done);
   });
-*/
+
 
 
   it("Refund request denied when project is fully funded", function(done) {
@@ -350,7 +350,7 @@ var testParams = {
 
   });
 
-/*
+
   it("Refund request denied when deadline not reached yet -AND- Refund request allowed when deadline reached and project not fully funded", function(done) {
 
   var testParams = {
@@ -480,7 +480,7 @@ var testParams = {
     .catch(done);
 
   });
-*/
+
 
 /* CAUSES REVERT()
   it("Payout request from non-owner is denied", function(done) {
