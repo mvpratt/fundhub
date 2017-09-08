@@ -44,19 +44,22 @@ contract Project {
                    });
     }
 
-   /* // fund() must specify the contributer (which is not necessarily the message sender)
+    // fund() must specify the contributer (which is not necessarily the message sender)
     function fund(address _contrib) payable external {
 
-        require(this.balance < info.amount_goal);
+        require(this.balance <= info.amount_goal);
         require(now < info.deadline);
 
         balances[_contrib] += msg.value;
         Fund(now, _contrib, msg.value);
 
-    }*/
+    }
 
-
+/*
     function fund(address _contrib) payable external {
+
+        //require(this.balance < info.amount_goal);
+        //require(now < info.deadline);
 
         // not reached goal yet
         if (this.balance <= info.amount_goal && now < info.deadline) {    
@@ -68,7 +71,7 @@ contract Project {
         }
         Fund(now, _contrib, msg.value);
     }
-
+*/
 
     // only pays out to the owner
     function payout() external onlyOwner() {
