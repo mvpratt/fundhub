@@ -25,9 +25,17 @@ https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
  *   Made dedicated function for project creation and other recurring tasks
  *   Truffle migration script that creates a project after FundingHub deployed
 
+* UI updates:
+ *  Use project creation defaults if user doesnt specify
+ *  Show state in project table
+ *  Show partial project address
+ *  Show time left instead of duration / deadline
+ *  Refresh project table and user table after every transaction
+
 * Other
  *   Updated to truffle 3.4.9 and solidity 0.4.15
- *   UI updates
+
+
 
 ## FUNDINGHUB 
 

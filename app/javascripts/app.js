@@ -236,12 +236,21 @@ function contribute() {
   var myProject = {};
   var info;
 
-  myProject.index = Number(document.getElementById("i_project_num").value);
-  
-  var amount_contribute = web3.toWei(document.getElementById("contrib_amount").value, "ether");
+  var amount_contribute = document.getElementById("contrib_amount").value;
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
 
+  const default_amount_contribute = web3.toWei(1, "ether");
+
+  if (amount_contribute === undefined || amount_contribute === null || amount_contribute === ""){
+    amount_contribute = default_amount_contribute;
+  }
+  else {
+    amount_contribute = web3.toWei(amount_contribute, "ether");
+  }
+
+  myProject.index = Number(document.getElementById("i_project_num").value);
+  
   getProjectAddress(myProject.index)
   .then(function(value){
     myProject.address = value;
