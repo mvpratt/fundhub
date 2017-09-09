@@ -110,14 +110,12 @@ function createProject(fundhub, owner, amount_goal, duration){
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
       console.log("-----------------------------");
       console.log("New project created:");
       console.log("project owner: " + myProject.owner);
       console.log("project address: " + myProject.address);
       console.log("project goal: " + myProject.amount_goal);
-      //console.log("project duration: " + myProject.duration);
       console.log("project deadline: " + myProject.deadline);
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       console.log("-----------------------------");
@@ -155,7 +153,6 @@ var testParams = {
     myProject = value;
     assert.equal(testParams.owner, myProject.owner, "Owner doesn't match!"); 
     assert.equal(testParams.amount_goal, myProject.amount_goal, "Amount goal doesn't match!"); 
-    //assert.equal(testParams.duration, myProject.duration, "Duration doesn't match!");  
     done();
   })
   .catch(done);
@@ -333,7 +330,6 @@ var testParams = {
       return;
     })
     .then( function(amount) {
-      //console.log("getBalance()");
       assert.equal(amount.valueOf(), testParams.amount_contribute, "Contribution unsuccessful!"); 
       assert.equal(amount.valueOf(), testParams.amount_goal, "Funding goal not reached!");
       return;

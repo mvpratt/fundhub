@@ -136,7 +136,7 @@ function refreshProjectTableByIndex(index){
       myProject.amount_goal = info.amount_goal;
       myProject.deadline = info.deadline;
 
-      project_balance = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
+      project_balance = web3.eth.getBalance(myProject.address.toString()).valueOf();
       current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
   
       state_element = document.getElementById("project_address_"+myProject.index);
@@ -146,16 +146,16 @@ function refreshProjectTableByIndex(index){
       refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
      
       refill_element = document.getElementById("amount_raised_"+myProject.index);
-      refill_element.innerHTML = project_balance;
+      refill_element.innerHTML = web3.fromWei(project_balance, "ether");
 
       refill_element = document.getElementById("deadline_"+myProject.index);
       refill_element.innerHTML = myProject.deadline - current_time;
 
-    if(project_balance === myProject.amount_goal) {
+    if(project_balance == myProject.amount_goal) {
       project_state = "FULLY FUNDED!";
     }
     else if(current_time > myProject.deadline) {
-      project_state = "EXPIRED.  REQUEST REFUND";
+      project_state = "EXPIRED. REQUEST REFUND";
     }
     else {
       project_state = "ACCEPTING FUNDS";
