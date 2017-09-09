@@ -1,7 +1,7 @@
 
 
 var fundhub;   // Main contract
-var gasLimit = 4500000;
+const gasLimit = 4500000;
  
 
 function setStatus(message) {
@@ -44,13 +44,16 @@ function createProject () {
   const default_amount_goal = web3.toWei(10, "ether");
   const default_duration = 200;
 
-  var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
-  if (amount_goal === undefined){
+  var amount_goal = document.getElementById("i_amount_goal").value;
+  if (amount_goal === undefined || amount_goal === null || amount_goal === ""){
     amount_goal = default_amount_goal;
+  }
+  else {
+    amount_goal = web3.toWei(amount_goal, "ether");
   }
 
   var duration = document.getElementById("i_duration").value;
-  if (duration === undefined){
+  if (duration === undefined || duration === null || duration === ""){
     duration = default_duration;
   }
 
@@ -104,14 +107,18 @@ function createProject () {
 }
 
 
-
 function refreshProjectTableByIndex(index){
 
   return new Promise(function(resolve,reject){
 
   var myProject = {};
   var info;
-  
+  var project_state;
+  var project_balance;
+  var current_time;
+  var refill_element;
+  var state_element;
+
   myProject.index = index;
 
   getProjectAddress(myProject.index)
@@ -127,23 +134,39 @@ function refreshProjectTableByIndex(index){
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
+
+      project_balance = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
+      current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
   
-    var state_element = document.getElementById("project_address_"+myProject.index);
-    state_element.innerHTML = (myProject.address.substring(0,6) + "...." + myProject.address.substring(38,42)).toString();
+      state_element = document.getElementById("project_address_"+myProject.index);
+      state_element.innerHTML = (myProject.address.substring(0,6) + "...." + myProject.address.substring(38,42)).toString();
 
+      refill_element = document.getElementById("amount_goal_"+myProject.index);
+      refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
+     
+      refill_element = document.getElementById("amount_raised_"+myProject.index);
+      refill_element.innerHTML = project_balance;
 
-    var refill_element = document.getElementById("amount_goal_"+myProject.index);
-    refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
+      refill_element = document.getElementById("deadline_"+myProject.index);
+      refill_element.innerHTML = myProject.deadline - current_time;
 
-    
-    var refill_element = document.getElementById("deadline_"+myProject.index);
-    var current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
-    refill_element.innerHTML = myProject.deadline - current_time;
-  
-    var refill_element = document.getElementById("amount_raised_"+myProject.index);
-    refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
+    if(project_balance === myProject.amount_goal) {
+      project_state = "FULLY FUNDED!";
+    }
+    else if(current_time > myProject.deadline) {
+      project_state = "EXPIRED.  REQUEST REFUND";
+    }
+    else {
+      project_state = "ACCEPTING FUNDS";
+    }
+
+//paid out
+//error
+
+    refill_element = document.getElementById("state_"+myProject.index);
+    refill_element.innerHTML = project_state;
+
     return;
   })
 
@@ -152,9 +175,6 @@ function refreshProjectTableByIndex(index){
   });
 }
 
-//function secondsToDate(seconds) {
-//}
-
 
 function refreshProjectTableAll() {
 
@@ -162,7 +182,6 @@ function refreshProjectTableAll() {
 
   fundhub.num_projects.call()
   .then(function(value) {
-    console.log("num_projects: "+value);
     var promises = [];
 
     for (i = 1; i <= value; i++) { 
@@ -240,7 +259,6 @@ function contribute() {
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
       return;
   })

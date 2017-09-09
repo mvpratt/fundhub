@@ -91,7 +91,7 @@ A simple web interface allows users to browse active projects, create their own 
 
 
 ## AUTOMATED TESTS
-1. `testrpc -i 42`
+1. `testrpc -i 42 -b 1`  (network 42, automatic mining 1 block/sec)
 2. `truffle test test/fund_refund.js` - Tests createProject(), contribute(), refund(), payout()
 
 
