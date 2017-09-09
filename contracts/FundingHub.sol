@@ -1,19 +1,4 @@
-/*
-9/6/17
-FundingHub size: 2995 bytes
-Transaction cost: 841337 gas. 
-Execution cost: 597029 gas.
 
-9/7/17
-Removed getProjectAddress()
-FundingHub size: 2791 bytes
-Transaction cost: 786827 gas
-Execution cost: 556391 gas
-
-9/8/17
-Moved Project to local variable
-
-*/
 
 pragma solidity ^0.4.15;
 
@@ -22,14 +7,11 @@ import "./Project.sol";
 contract FundingHub {
       
   uint public num_projects = 0;
-
   mapping(uint => address) public myProjects;  
-
   event Contribute(uint _timestamp, address _contrib, uint _amount);
   event CreateProject(uint _timestamp, address _project_address);
 
-	function FundingHub() {
-	}
+	function FundingHub() {}
 
   // project owner can be an account other than the creator
   function createProject(uint _funding_goal, uint _duration) {
@@ -47,3 +29,21 @@ contract FundingHub {
     Contribute(now, msg.sender, msg.value);
   }
 }
+
+
+/*
+9/6/17
+FundingHub size: 2995 bytes
+Transaction cost: 841337 gas. 
+Execution cost: 597029 gas.
+
+9/7/17
+Removed getProjectAddress()
+FundingHub size: 2791 bytes
+Transaction cost: 786827 gas
+Execution cost: 556391 gas
+
+9/8/17
+Moved Project to local variable
+
+*/

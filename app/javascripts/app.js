@@ -41,8 +41,19 @@ function createProject () {
   var myProject = {};
   var info;
 
+  const default_amount_goal = web3.toWei(10, "ether");
+  const default_duration = 200;
+
   var amount_goal = web3.toWei(document.getElementById("i_amount_goal").value, "ether");
+  if (amount_goal === undefined){
+    amount_goal = default_amount_goal;
+  }
+
   var duration = document.getElementById("i_duration").value;
+  if (duration === undefined){
+    duration = default_duration;
+  }
+
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
 
@@ -66,14 +77,12 @@ function createProject () {
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
-      //myProject.duration = info.duration;
       myProject.deadline = info.deadline;
       console.log("-----------------------------");
       console.log("New project created:");
       console.log("project owner: " + myProject.owner);
       console.log("project address: " + myProject.address);
       console.log("project goal: " + myProject.amount_goal);
-      //console.log("project duration: " + myProject.duration);
       console.log("project deadline: " + myProject.deadline);
       console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
       console.log("-----------------------------");
@@ -128,8 +137,10 @@ function refreshProjectTableByIndex(index){
     var refill_element = document.getElementById("amount_goal_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
 
+    
     var refill_element = document.getElementById("deadline_"+myProject.index);
-    refill_element.innerHTML = myProject.deadline;
+    var current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+    refill_element.innerHTML = myProject.deadline - current_time;
   
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
@@ -141,9 +152,11 @@ function refreshProjectTableByIndex(index){
   });
 }
 
+//function secondsToDate(seconds) {
+//}
 
 
-function refreshProjectTableAll(){
+function refreshProjectTableAll() {
 
   return new Promise(function(resolve,reject){
 
@@ -342,10 +355,10 @@ window.onload = function() {
     return;  
   })
   .then(function(){
-    return refreshUserTable();
+    return refreshProjectTableAll();
   })
   .then(function(){
-    return refreshProjectTableAll();
+    return refreshUserTable();
   })
   .then(function(){
     return;
