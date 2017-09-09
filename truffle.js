@@ -16,6 +16,9 @@ module.exports = {
     "normalize.css": [
       "stylesheets/normalize.css"
     ],    
+    "custom.css": [
+      "stylesheets/custom.css"
+    ], 
     "images/": "images/"
   }),
   networks: {

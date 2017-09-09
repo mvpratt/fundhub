@@ -24,8 +24,10 @@ https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
  *   Automated testing of deadline feature
  *   Made dedicated function for project creation and other recurring tasks
  *   Truffle migration script that creates a project after FundingHub deployed
- *   Updated to truffle 3.4.9 and solidity 0.4.15
 
+* Other
+ *   Updated to truffle 3.4.9 and solidity 0.4.15
+ *   UI updates
 
 ## FUNDINGHUB 
 
@@ -39,35 +41,34 @@ FundingHub is the registry of all Projects to be funded. FundingHub should have 
 ## PROJECT 
 
 Project is the contract that stores all the data of each project. Project has a constructor and a struct to store the following information:
-
 * the address of the owner of the project
-* the amount to be raised (eg 100000 wei)
+* the amount to be raised (e.g. 100000 wei)
 * the deadline, i.e. the time before which the amount has to be raised
-* Please also implement the following functions:
 
-`fund()` - This is the function called when the FundingHub receives a contribution. The function must keep track of each contributor and the individual amounts contributed. 
 #### Rules: 
 * If the contribution was sent after the deadline of the project passed, or the full amount has been reached, the function returns the value to the originator of the transaction 
 * If the full funding amount has been reached, the owner may call payout() to retrieve funds.
 * If the deadline has passed without the funding goal being reached, contributers may get their money back by calling refund().
 
+`fund()` - This is the function called when the FundingHub receives a contribution. The function must keep track of each contributor and the individual amounts contributed. 
+
 `payout()` - This is the function that sends all funds received in the contract to the owner of the project.  Only the owner may receive the payout.
 
-`refund()` - This function sends funds back to the contributer that requests them.  This is only permitted if deadline is reach and project is not fully funded.
+`refund()` - This function sends funds back to the contributer that requests them.  This is only permitted if deadline is reached and project is not fully funded.
 
 
 ## INTERFACE
 
 A simple web interface allows users to browse active projects, create their own project, and dontribute to a project
 
-#### Installation
+### Installation
 1. `testrpc -i 42`
 2. `truffle migrate --reset` 
 3. `truffle build`
 4. `cd /build; python -m SimpleHTTPServer 8000`
 5. Open `localhost:8000` in Google Chrome
 
-#### Guidelines
+### Guidelines
 * Deadline and duration are in units of  seconds
 * The WebUI is limited to a maximum of 3 projects and 3 users.
 * Whenever you take an action such as create, payout or refund, _make sure that the desired user selected_

@@ -122,16 +122,14 @@ function refreshProjectTableByIndex(index){
       myProject.deadline = info.deadline;
   
     var state_element = document.getElementById("project_address_"+myProject.index);
-    state_element.innerHTML = myProject.address;
+    state_element.innerHTML = (myProject.address.substring(0,6) + "...." + myProject.address.substring(38,42)).toString();
+
 
     var refill_element = document.getElementById("amount_goal_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
 
     var refill_element = document.getElementById("deadline_"+myProject.index);
     refill_element.innerHTML = myProject.deadline;
-
-    //var state_element = document.getElementById("duration_"+myProject.index);
-    //state_element.innerHTML = myProject.duration;
   
     var refill_element = document.getElementById("amount_raised_"+myProject.index);
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(myProject.address.toString()).valueOf(), "ether");
@@ -171,8 +169,9 @@ function refreshUserTableByIndex(index){
 
   return new Promise(function(resolve,reject){
 
+    var user_address =  web3.eth.accounts[index];
     var refill_element = document.getElementById("user_address_"+index);
-    refill_element.innerHTML = web3.eth.accounts[index];
+    refill_element.innerHTML = (user_address.substring(0,6) + "...." + user_address.substring(38,42)).toString();
 
     var refill_element = document.getElementById("user_balance_"+index);
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), "ether");
