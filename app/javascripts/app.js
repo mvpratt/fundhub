@@ -2,7 +2,8 @@
 
 var fundhub;   // Main contract
 const gasLimit = 4500000;
- 
+const max_projects_displayed = 3; 
+
 
 function setStatus(message) {
   var status = document.getElementById("status");
@@ -192,8 +193,16 @@ function refreshProjectTableAll() {
   fundhub.num_projects.call()
   .then(function(value) {
     var promises = [];
+    var num;
+    
+    if (value > 3) {
+      num = 3;
+    }
+    else {
+      num = value
+    }
 
-    for (i = 1; i <= value; i++) { 
+    for (i = 1; i <= num; i++) { 
       promises.push(refreshProjectTableByIndex(i));
     }
     return Promise.all(promises);
@@ -272,19 +281,19 @@ function contribute() {
       return;
   }) 
   .then(function(){
-    if (error == true){
-      setStatus("Error funding project, contribute() exception.")
-    }
-    else {
-      setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
-    }
+      if (error == true){
+        setStatus("Error funding project, contribute() exception.")
+      }
+      else {
+        setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
+      }
       return Project.at(myProject.address);
-    })
-    .then( function(value) {
+  })
+  .then( function(value) {
       myProject.instance = value;      
       return myProject.instance.info.call();
-    })
-    .then(function(value){
+  })
+  .then(function(value){
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
       myProject.amount_goal = info.amount_goal;
