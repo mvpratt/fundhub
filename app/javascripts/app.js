@@ -155,14 +155,11 @@ function refreshProjectTableByIndex(index){
       project_state = "FULLY FUNDED!";
     }
     else if(current_time > myProject.deadline) {
-      project_state = "EXPIRED. REQUEST REFUND";
+      project_state = "EXPIRED. REQUEST A REFUND";
     }
     else {
       project_state = "ACCEPTING FUNDS";
     }
-
-//paid out
-//error
 
     refill_element = document.getElementById("state_"+myProject.index);
     refill_element.innerHTML = project_state;
@@ -235,6 +232,7 @@ function contribute() {
 
   var myProject = {};
   var info;
+  var error = false;
 
   var amount_contribute = document.getElementById("contrib_amount").value;
   var user_index = Number(document.getElementById("i_user").value);
@@ -256,8 +254,18 @@ function contribute() {
     myProject.address = value;
     return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
    }) 
+  .catch(function(error){
+      console.log("contribute() exception");
+      error = true;
+      return;
+  }) 
   .then(function(){
-    setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
+    if (error == true){
+      setStatus("Error funding project, contribute() exception.")
+    }
+    else {
+      setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
+    }
       return Project.at(myProject.address);
     })
     .then( function(value) {
@@ -290,6 +298,7 @@ function contribute() {
 function requestPayout() {
 
   var proj;
+  var error = false;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
@@ -302,8 +311,18 @@ function requestPayout() {
     proj = instance;  
     return proj.payout({from: user_addr})
   })
+  .catch(function(error){
+      console.log("payout() exception");
+      error = true;
+      return;
+  }) 
   .then(function(){
-    setStatus("Payout sent!");
+    if (error == true){
+      setStatus("payout() exception!");
+    }
+    else {
+      setStatus("Payout sent!");
+    }
     return refreshProjectTableAll(); 
   })
   .then(function(){
@@ -322,6 +341,7 @@ function requestPayout() {
 function requestRefund() {
 
   var proj;
+  var error = false;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
@@ -334,8 +354,18 @@ function requestRefund() {
     proj = instance;  
     return proj.refund({from: user_addr})
   })
+  .catch(function(error){
+      console.log("refund() exception");
+      error = true;
+      return;
+  })   
   .then(function(){
-    setStatus("Refund sent!");
+    if (error == true){
+      setStatus("Error requesting refund, refund() exception.")
+    }
+    else {
+      setStatus("Refund sent!");
+    }
     return refreshProjectTableAll(); 
   })
   .then(function(){
