@@ -129,12 +129,10 @@ function refreshProjectTableByIndex(index){
     })
     .then(function(value) {
       myProject.instance = value;      
-      //return myProject.instance.paid_out.call();
-      return;
+      return myProject.instance.paid_out.call();
     })
     .then(function(value) {
-      //myProject.paid_out = value; 
-      //myProject.instance = value;     
+      myProject.paid_out = value;      
       return myProject.instance.info.call();
     })    
     .then(function(value){
@@ -157,7 +155,7 @@ function refreshProjectTableByIndex(index){
 
       refill_element = document.getElementById("deadline_"+myProject.index);
       refill_element.innerHTML = myProject.deadline - current_time;
-/*
+
     if(myProject.paid_out == true) {
       project_state = "PAID OUT!";
     }
@@ -173,7 +171,7 @@ function refreshProjectTableByIndex(index){
     else {
       project_state = "Accepting Funds";
     }
-*/
+
     refill_element = document.getElementById("state_"+myProject.index);
     refill_element.innerHTML = project_state;
 
@@ -289,7 +287,7 @@ function contribute() {
       }
       return Project.at(myProject.address);
   })
-  .then( function(value) {
+  .then(function(value) {
       myProject.instance = value;      
       return myProject.instance.info.call();
   })
