@@ -70,7 +70,7 @@ Project is the contract that stores all the data of each project. Project has a 
 A simple web interface allows users to browse active projects, create their own project, and dontribute to a project
 
 ### Installation
-1. `testrpc -i 42`
+1. `testrpc -i 42 -b 1`
 2. `truffle migrate --reset` 
 3. `truffle build`
 4. `cd /build; python -m SimpleHTTPServer 8000`

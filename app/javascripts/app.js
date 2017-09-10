@@ -64,15 +64,15 @@ function createProject () {
   .then(function(){
     return fundhub.num_projects.call();
   })
-    .then( function(value) {
+    .then(function(value) {
       myProject.index = value;
       return getProjectAddress(myProject.index);
     })
-    .then( function(value) {    
+    .then(function(value) {    
       myProject.address = value;
       return Project.at(myProject.address);
     })
-    .then( function(value) {
+    .then(function(value) {
       myProject.instance = value;      
       return myProject.instance.info.call();
     })
@@ -122,14 +122,20 @@ function refreshProjectTableByIndex(index){
   myProject.index = index;
 
   getProjectAddress(myProject.index)
-    .then( function(value) {
+    .then(function(value) {
       myProject.address = value;
       return Project.at(myProject.address.toString());
     })
-    .then( function(value) {
+    .then(function(value) {
       myProject.instance = value;      
-      return myProject.instance.info.call();
+      //return myProject.instance.paid_out.call();
+      return;
     })
+    .then(function(value) {
+      //myProject.paid_out = value; 
+      //myProject.instance = value;     
+      return myProject.instance.info.call();
+    })    
     .then(function(value){
       info = new ProjectInfo(value);
       myProject.owner = info.owner;
@@ -150,17 +156,23 @@ function refreshProjectTableByIndex(index){
 
       refill_element = document.getElementById("deadline_"+myProject.index);
       refill_element.innerHTML = myProject.deadline - current_time;
-
-    if(project_balance == myProject.amount_goal) {
-      project_state = "FULLY FUNDED!";
+/*
+    if(myProject.paid_out == true) {
+      project_state = "PAID OUT!";
     }
-    else if(current_time > myProject.deadline) {
-      project_state = "EXPIRED. REQUEST A REFUND";
+    else if(project_balance == myProject.amount_goal) {
+      project_state = "Fully Funded! (Request your payout)";
+    }
+    else if(current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() > 0) {
+      project_state = "Deadline Expired (Request your refund)";
+    }
+    else if(current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() == 0) {
+      project_state = "All refunds issued";
     }
     else {
-      project_state = "ACCEPTING FUNDS";
+      project_state = "Accepting Funds";
     }
-
+*/
     refill_element = document.getElementById("state_"+myProject.index);
     refill_element.innerHTML = project_state;
 
@@ -379,6 +391,7 @@ function requestRefund() {
     setStatus("Error getting refund; see log.");
   });
 }
+
 
 
 /*

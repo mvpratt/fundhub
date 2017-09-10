@@ -12,6 +12,8 @@ contract Project {
 
     Info public info;
     mapping(address => uint) public balances;  // Funding contributions
+    bool public paid_out = false; // true if project was fully funded and paid out
+
     event Fund(uint _timestamp, address _contrib, uint _amount);
 
     //access control
@@ -56,7 +58,13 @@ contract Project {
     function payout() public onlyOwner() {
 
         require(this.balance == info.amount_goal);
-        if (!info.owner.send(this.balance)) revert();
+
+        if (info.owner.send(this.balance)) {
+            paid_out = true;
+        }
+        else {
+            revert();
+        }
     }
 
     // Only refund if:
