@@ -2,11 +2,19 @@
 
 var fundhub;   // Main contract
 const gasLimit = 4500000;
-const max_projects_displayed = 3; 
+const max_projects_displayed = 4; 
+const max_users = 3;
+
+const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
 
 
 function setStatus(message) {
   var status = document.getElementById("status");
+  status.innerHTML = message;
+}
+
+function refreshNumProjectsNotShown(message) {
+  var status = document.getElementById("num_projects_not_shown");
   status.innerHTML = message;
 }
 
@@ -15,8 +23,8 @@ function logTimestamp(message) {
 }
 
 function showUserBalances() {
-  console.log("Coinbase : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether") + " ETH");  
-  console.log("Alice    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]), "ether") + " ETH");
+  console.log("Coinbase : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]), "ether") + " ETH");  
+  console.log("Alice    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether") + " ETH");
   console.log("Bob      : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[2]), "ether") + " ETH");
   console.log("Carol    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[3]), "ether") + " ETH");
 }
@@ -38,6 +46,8 @@ function getProjectAddress(index) {
 
 
 function createProject () {
+
+  return new Promise(function(resolve,reject){
 
   var myProject = {};
   var info;
@@ -105,6 +115,9 @@ function createProject () {
     console.log(e);
     setStatus("Error creating project; see log.");
   });
+
+    resolve(true);
+  });
 }
 
 
@@ -143,7 +156,10 @@ function refreshProjectTableByIndex(index){
 
       project_balance = web3.eth.getBalance(myProject.address.toString()).valueOf();
       current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
-  
+
+      refill_element = document.getElementById("owner_address_"+myProject.index);
+      refill_element.innerHTML = getUserName(myProject.owner);
+
       state_element = document.getElementById("project_address_"+myProject.index);
       state_element.innerHTML = (myProject.address.substring(0,6) + "...." + myProject.address.substring(38,42)).toString();
 
@@ -157,7 +173,7 @@ function refreshProjectTableByIndex(index){
       refill_element.innerHTML = myProject.deadline - current_time;
 
     if(myProject.paid_out == true) {
-      project_state = "PAID OUT!";
+      project_state = "Paid out!";
     }
     else if(project_balance == myProject.amount_goal) {
       project_state = "Fully Funded! (Request your payout)";
@@ -174,15 +190,21 @@ function refreshProjectTableByIndex(index){
 
     refill_element = document.getElementById("state_"+myProject.index);
     refill_element.innerHTML = project_state;
-
     return;
   })
-
   resolve(true);
-
   });
 }
 
+function getUserName(user_address) {
+
+for (var i = 0; i <= user_names.length; i++) {
+  if (user_address == web3.eth.accounts[i]) {
+    return user_names[i];
+  }
+}
+  return;
+}
 
 function refreshProjectTableAll() {
 
@@ -191,16 +213,21 @@ function refreshProjectTableAll() {
   fundhub.num_projects.call()
   .then(function(value) {
     var promises = [];
-    var num;
+    var num_projects_displayed;
+    //var num_projects_not_shown;
     
-    if (value > 3) {
-      num = 3;
+    //refreshNumProjectsNotShown(num_projects_not_shown);
+
+    if (value > max_projects_displayed) {
+      num_projects_displayed = max_projects_displayed;
+      //num_projects_not_shown = value - max_projects_displayed;
     }
     else {
-      num = value
+      num_projects_displayed = value;
+      //num_projects_not_shown = 0;
     }
 
-    for (i = 1; i <= num; i++) { 
+    for (i = 1; i <= num_projects_displayed; i++) { 
       promises.push(refreshProjectTableByIndex(i));
     }
     return Promise.all(promises);
@@ -208,7 +235,6 @@ function refreshProjectTableAll() {
   .then(function(){
     resolve(true);
   })
-
   });
 }
 
@@ -225,7 +251,6 @@ function refreshUserTableByIndex(index){
     refill_element.innerHTML = web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), "ether");
 
     resolve(true);
-
   })
 }
 
@@ -244,7 +269,6 @@ function refreshUserTable(){
   .then(function(){
     resolve(true);
   })
-
 }
 
 function contribute() {
@@ -400,7 +424,6 @@ function requestRefund() {
 }
 
 
-
 /*
 function LogContribute() {  
   fundhub.Contribute()
@@ -414,6 +437,7 @@ function LogContribute() {
 */
 
 window.onload = function() {
+
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       alert("There was an error fetching your accounts.");
@@ -440,7 +464,6 @@ window.onload = function() {
   .then(function(){
     return;
   })
-
   })
 }
 

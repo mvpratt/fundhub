@@ -115,6 +115,7 @@ A simple web interface allows users to browse active projects, create their own 
 
 ### Errata
 
+* A default project owned by the coinbase account is created during migration (truffle).  This project is provided as an example only.
 * When contribution puts over the goal amount, the excess funds are returned to the contributer
 * Project creator MUST be an external account (not another contract).  Only the creator can receive `payout()`
 * Project creator may also contribute to the project
