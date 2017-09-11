@@ -13,10 +13,10 @@ function setStatus(message) {
   status.innerHTML = message;
 }
 
-function refreshNumProjectsNotShown(message) {
-  var status = document.getElementById("num_projects_not_shown");
-  status.innerHTML = message;
-}
+//function refreshNumProjectsNotShown(message) {
+ // var status = document.getElementById("num_projects_not_shown");
+//  status.innerHTML = message;
+//}
 
 function logTimestamp(message) {
     console.log("Log Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
@@ -73,14 +73,13 @@ function createProject () {
 
   fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
   .then(function(){
-    return fundhub.num_projects.call();
-  })
+    return fundhub.num_projects.callre  })
     .then(function(value) {
       myProject.index = value;
       return getProjectAddress(myProject.index);
     })
     .then(function(value) {    
-      myProject.address = value;
+      myProject.address = value.toString();
       return Project.at(myProject.address);
     })
     .then(function(value) {
@@ -102,9 +101,11 @@ function createProject () {
       console.log("-----------------------------");
   })
   .then(function(){   
+    console.log("refreshing project table");
     return refreshProjectTableAll();
   })
   .then(function(){
+        console.log("refreshing user table");
     return refreshUserTable();    
   }) 
   .then(function(){
@@ -114,9 +115,10 @@ function createProject () {
   .catch(function(e) {
     console.log(e);
     setStatus("Error creating project; see log.");
-  });
-
+  })
+  .then(function(){
     resolve(true);
+  })
   });
 }
 
@@ -137,8 +139,8 @@ function refreshProjectTableByIndex(index){
 
   getProjectAddress(myProject.index)
     .then(function(value) {
-      myProject.address = value;
-      return Project.at(myProject.address.toString());
+      myProject.address = value.toString();
+      return Project.at(myProject.address);
     })
     .then(function(value) {
       myProject.instance = value;      
@@ -154,14 +156,14 @@ function refreshProjectTableByIndex(index){
       myProject.amount_goal = info.amount_goal;
       myProject.deadline = info.deadline;
 
-      project_balance = web3.eth.getBalance(myProject.address.toString()).valueOf();
+      project_balance = web3.eth.getBalance(myProject.address).valueOf();
       current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
 
       refill_element = document.getElementById("owner_address_"+myProject.index);
       refill_element.innerHTML = getUserName(myProject.owner);
 
       state_element = document.getElementById("project_address_"+myProject.index);
-      state_element.innerHTML = (myProject.address.substring(0,6) + "...." + myProject.address.substring(38,42)).toString();
+      state_element.innerHTML = (myProject.address.substring(0,6) + "...." + myProject.address.substring(38,42));
 
       refill_element = document.getElementById("amount_goal_"+myProject.index);
       refill_element.innerHTML = web3.fromWei(myProject.amount_goal, "ether");
@@ -172,28 +174,30 @@ function refreshProjectTableByIndex(index){
       refill_element = document.getElementById("deadline_"+myProject.index);
       refill_element.innerHTML = myProject.deadline - current_time;
 
-    if(myProject.paid_out == true) {
-      project_state = "Paid out!";
-    }
-    else if(project_balance == myProject.amount_goal) {
-      project_state = "Fully Funded! (Request your payout)";
-    }
-    else if(current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() > 0) {
-      project_state = "Deadline Expired (Request your refund)";
-    }
-    else if(current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() == 0) {
-      project_state = "All refunds issued";
-    }
-    else {
-      project_state = "Accepting Funds";
-    }
+      if(myProject.paid_out == true) {
+        project_state = "Paid out!";
+      }
+      else if(project_balance == myProject.amount_goal) {
+        project_state = "Fully Funded! (Request your payout)";
+      }
+      else if(current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() > 0) {
+        project_state = "Deadline Expired (Request your refund)";
+      }
+      else if(current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() == 0) {
+        project_state = "All refunds issued";
+      }
+      else {
+        project_state = "Accepting Funds";
+      }
 
-    refill_element = document.getElementById("state_"+myProject.index);
-    refill_element.innerHTML = project_state;
-    return;
+      refill_element = document.getElementById("state_"+myProject.index);
+      refill_element.innerHTML = project_state;
+      return;
   })
-  resolve(true);
-  });
+  .then(function(){  
+    resolve(true);
+  })
+  })
 }
 
 function getUserName(user_address) {
@@ -212,19 +216,15 @@ function refreshProjectTableAll() {
 
   fundhub.num_projects.call()
   .then(function(value) {
+
     var promises = [];
     var num_projects_displayed;
-    //var num_projects_not_shown;
-    
-    //refreshNumProjectsNotShown(num_projects_not_shown);
 
-    if (value > max_projects_displayed) {
-      num_projects_displayed = max_projects_displayed;
-      //num_projects_not_shown = value - max_projects_displayed;
+    if (value > 4) {
+      num_projects_displayed = 4;
     }
     else {
       num_projects_displayed = value;
-      //num_projects_not_shown = 0;
     }
 
     for (i = 1; i <= num_projects_displayed; i++) { 
@@ -232,7 +232,30 @@ function refreshProjectTableAll() {
     }
     return Promise.all(promises);
   })
+
+/*
+  fundhub.num_projects.call()
+  .then(function(value) {
+
+    var promises = [];
+    var num_projects_displayed;
+
+    if (value > max_projects_displayed) {
+      num_projects_displayed = max_projects_displayed;
+    }
+    else {
+      num_projects_displayed = value;
+    }
+
+    for (i = 1; i <= num_projects_displayed; i++) { 
+      promises.push(refreshProjectTableByIndex(i));
+    }
+    return Promise.all(promises);
+  })*/
+
+
   .then(function(){
+    console.log("finished updating project table");
     resolve(true);
   })
   });
@@ -256,22 +279,24 @@ function refreshUserTableByIndex(index){
 
 function refreshUserTable(){
 
+  return new Promise(function(resolve,reject){
+
   var num_users = 3;
   var promises = [];
-
-  return new Promise(function(resolve,reject){
 
     for (i = 1; i <= num_users; i++) { 
       promises.push(refreshUserTableByIndex(i));
     }
-    return Promise.all(promises);
-  })
-  .then(function(){
-    resolve(true);
+
+    Promise.all(promises).then(function(){
+      resolve(true);
+    })  
   })
 }
 
 function contribute() {
+
+  return new Promise(function(resolve,reject){
 
   var myProject = {};
   var info;
@@ -294,21 +319,21 @@ function contribute() {
   
   getProjectAddress(myProject.index)
   .then(function(value){
-    myProject.address = value;
+    myProject.address = value.toString();
     return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
    }) 
   .catch(function(error){
       console.log("contribute() exception");
-      error = true;
+      //error = true;
       return;
   }) 
   .then(function(){
-      if (error == true){
-        setStatus("Error funding project, contribute() exception.")
-      }
-      else {
+      //if (error == true){
+      //  setStatus("Error funding project, contribute() exception.")
+      //}
+      //else {
         setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
-      }
+      //}
       return Project.at(myProject.address);
   })
   .then(function(value) {
@@ -323,9 +348,11 @@ function contribute() {
       return;
   })
   .then(function(){   
+    console.log("refreshing project table");
     return refreshProjectTableAll();
   })
   .then(function(){
+    console.log("refreshing user table");
     return refreshUserTable();    
   })
   .then(function(){
@@ -334,11 +361,17 @@ function contribute() {
   .catch(function(e) {
     console.log(e);
     setStatus("Error funding project; see log.");
-  });
+  })
+  .then(function(){
+    resolve(true);
+  })
+  })
 }
 
 
 function requestPayout() {
+
+  return new Promise(function(resolve,reject){
 
   var proj;
   var error = false;
@@ -356,16 +389,16 @@ function requestPayout() {
   })
   .catch(function(error){
       console.log("payout() exception");
-      error = true;
+      //error = true;
       return;
   }) 
   .then(function(){
-    if (error == true){
-      setStatus("payout() exception!");
-    }
-    else {
+    //if (error == true){
+     // setStatus("payout() exception!");
+    //}
+    //else {
       setStatus("Payout sent!");
-    }
+    //}
     return refreshProjectTableAll(); 
   })
   .then(function(){
@@ -377,11 +410,17 @@ function requestPayout() {
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting payout; see log.");
-  });
+  })
+  .then(function(){
+    resolve(true);
+  })  
+  })
 }
 
 
 function requestRefund() {
+
+  return new Promise(function(resolve,reject){
 
   var proj;
   var error = false;
@@ -399,16 +438,16 @@ function requestRefund() {
   })
   .catch(function(error){
       console.log("refund() exception");
-      error = true;
+    //  error = true;
       return;
   })   
   .then(function(){
-    if (error == true){
-      setStatus("Error requesting refund, refund() exception.")
-    }
-    else {
+    //if (error == true){
+     // setStatus("Error requesting refund, refund() exception.")
+    //}
+    //else {
       setStatus("Refund sent!");
-    }
+    //}
     return refreshProjectTableAll(); 
   })
   .then(function(){
@@ -420,7 +459,11 @@ function requestRefund() {
   .catch(function(e) {
     console.log(e);
     setStatus("Error getting refund; see log.");
-  });
+  })
+  .then(function(){
+    resolve(true);
+  })  
+  })
 }
 
 

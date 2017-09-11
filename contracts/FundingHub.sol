@@ -29,21 +29,3 @@ contract FundingHub {
     Contribute(now, msg.sender, msg.value);
   }
 }
-
-
-/*
-9/6/17
-FundingHub size: 2995 bytes
-Transaction cost: 841337 gas. 
-Execution cost: 597029 gas.
-
-9/7/17
-Removed getProjectAddress()
-FundingHub size: 2791 bytes
-Transaction cost: 786827 gas
-Execution cost: 556391 gas
-
-9/8/17
-Moved Project to local variable
-
-*/

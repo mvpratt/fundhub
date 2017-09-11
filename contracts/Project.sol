@@ -82,23 +82,3 @@ contract Project {
         if (!msg.sender.send(bal)) revert();
     }
 }
-
-/*
-9/6/17
-Contract size: 1612 bytes
-Transaction cost: 481282 gas. 
-Execution cost: 324426 gas.
-
-9/7/17
-Changes:
-- Made "bal" a local variable
-- use OnlyOwner() modifier
-- use "require statements" in fund(), payout(), refund()
-Contract size: 1499 bytes
-Transaction cost: 450718 gas. 
-Execution cost: 301802 gas.
-
-9/8/17
-Changes:
-- added overfund checks
-*/

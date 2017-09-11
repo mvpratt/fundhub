@@ -9,164 +9,181 @@
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <script src="./app.js"></script>
-</head>
-<body>
-<header id="header" class="sixteen columns">
+ </head>
+
+ <body>
+ <header id="header" class="sixteen columns">
+  <div class="container">
+   <div class="row">
+    <h2>Funding Hub </h2>
+   </div>
+  </div>
+ </header>
  <div class="container">
   <div class="row">
-   <h2>Funding Hub </h2>
-  </div>
- </div>
-</header>
-
-<!--
-  <h3>More projects not shown:</h3>
-  <span id="num_projects_not_shown"></span>
--->
-<div class="container">
- <div class="row">
-  <h4>Status:</h4>
-  <span id="status"></span>
- </div>
-</div>
-
-<div class="container">
- <div class="row">
-  <h3>Projects </h3>
-   <table class="u-full-width">
-   <thead>
-    <tr>
-      <th>Name</th>
-      <th>Owner</th>
-      <th>Address</th>
-      <th>Goal (ETH)</th>
-      <th>Balance (ETH)</th>
-      <th>Time Left (s)</th>
-      <th>State</th>      
-    </tr>
-   </thead>
-  <tbody>
-    <tr>
-      <td>Project 1</td>      
-      <td><span class="black"><span id="owner_address_1"></td>
-      <td><span class="black"><span id="project_address_1"></td>
-      <td><span class="black"><span id="amount_goal_1"></td>
-      <td><span class="black"><span id="amount_raised_1"></td>
-      <td><span class="black"><span id="deadline_1"></td>
-      <td><span class="black"><span id="state_1"></td>
-    </tr>
-    <tr>
-      <td>Project 2</td>
-      <td><span class="black"><span id="owner_address_2"></td>
-      <td><span class="black"><span id="project_address_2"></td>
-      <td><span class="black"><span id="amount_goal_2"></td>
-      <td><span class="black"><span id="amount_raised_2"></td>
-      <td><span class="black"><span id="deadline_2"></td>      
-      <td><span class="black"><span id="state_2"></td>
-    </tr>
-    <tr>
-      <td>Project 3</td>
-      <td><span class="black"><span id="owner_address_3"></td> 
-      <td><span class="black"><span id="project_address_3"></td>     
-      <td><span class="black"><span id="amount_goal_3"></td>
-      <td><span class="black"><span id="amount_raised_3"></td>
-      <td><span class="black"><span id="deadline_3"></td>
-      <td><span class="black"><span id="state_3"></td>
-    </tr>
-    <tr>
-      <td>Project 4</td>
-      <td><span class="black"><span id="owner_address_4"></td> 
-      <td><span class="black"><span id="project_address_4"></td>     
-      <td><span class="black"><span id="amount_goal_4"></td>
-      <td><span class="black"><span id="amount_raised_4"></td>
-      <td><span class="black"><span id="deadline_4"></td>
-      <td><span class="black"><span id="state_4"></td>
-    </tr>
-  </tbody>
-
-
-</table>
-<h3>Users</h3>
-<table class="u-full-width">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Address</th>
-      <th>Balance (ETH)</th>     
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Alice</td>
-      <td><span class="black"><span id="user_address_1"></td>
-      <td><span class="black"><span id="user_balance_1"></td>
-    </tr>
-    <tr>
-      <td>Bob</td>
-      <td><span class="black"><span id="user_address_2"></td>
-      <td><span class="black"><span id="user_balance_2"></td>
-    </tr>
-    <tr>
-      <td>Carol</td>
-      <td><span class="black"><span id="user_address_3"></td>
-      <td><span class="black"><span id="user_balance_3"></td>
-    </tr>    
-  </tbody>
-</table>
-<h3>Select User</h3>
-<form>
-  <div class="row">
-    <div class="four columns">
-      <label for="i_user">Select User</label>
-      <select class="u-full-width" id="i_user">
+   <h3>Select User</h3>
+    <form>
+     <div class="row">
+      <div class="four columns">
+       <label for="i_user">Select User</label>
+       <select class="u-full-width" id="i_user">
         <option value="1">Alice</option>
         <option value="2">Bob</option>
         <option value="3">Carol</option>
-      </select>
-    </div>
-  </div>  
-</form>
-<h3>Create a Project</h3>
-<form>
-  <div class="row">
-    <!--
-    <div class="four columns">
-      <label for="project_name">Project Name</label>
-      <input class="u-full-width" type="number" placeholder="My Project" id="project_name">
-    </div>
-    -->
-    <div class="four columns">
-      <label for="i_amount_goal">Fundraise Goal (ETH)</label>
-      <input class="u-full-width" type="number" placeholder="10" id="i_amount_goal">
-    </div>
-     <div class="four columns">
-      <label for="i_duration">Duration</label>
-      <input class="u-full-width" type="number" placeholder="200" id="i_duration">
-    </div> 
+       </select>
+      </div>
+     </div>  
+    </form>
   </div>
-</form>
-<br><button id="send" class="button button-primary" onclick="createProject()">Create project</button>
-<br><button id="send" class="button" onclick="requestPayout()">Request payout</button>
-<h3>Contribute to a Project</h3>
- <form>
+ </div>
+ <div class="container">
   <div class="row">
-    <div class="four columns">
+   <h3>Create a Project</h3>
+    <form>
+     <div class="row">
+      <div class="three columns">
+       <label for="i_amount_goal">Fundraise Goal (ETH)</label>
+       <input class="u-full-width" type="number" placeholder="10" id="i_amount_goal">
+      </div>
+      <div class="three columns">
+       <label for="i_duration">Duration (s)</label>
+       <input class="u-full-width" type="number" placeholder="200" id="i_duration">
+      </div> 
+      <div class="three columns">
+       <label for="send_create"></label>
+       <button id="send_create" class="button button-primary" onclick="createProject()">Create project</button>
+      </div>
+       <div class="three columns">
+        <label for="send_payout"></label>
+        <button id="send_payout" class="button" onclick="requestPayout()">Request payout</button>
+       </div> 
+      </div>
+    </form>
+  </div>
+ </div>
+ <div class="container">
+  <div class="row">
+   <h3>Contribute to a Project</h3>
+   <form>
+    <div class="row">
+     <div class="three columns">
       <label for="i_project_num">Select Project</label>
       <select class="u-full-width" id="i_project_num">
         <option value="1">Project 1</option>
         <option value="2">Project 2</option>
         <option value="3">Project 3</option>
       </select>
-    </div> 
-    <div class="four columns">
+     </div> 
+     <div class="three columns">
       <label for="contrib_amount">Contribution Amount (ETH)</label>
       <input class="u-full-width" type="number" placeholder="1" id="contrib_amount">
+     </div>
+     <div class="three columns">
+      <label for="send1"></label>
+      <br><button id="send1" class="button button-primary" onclick="contribute()">Contribute</button>
+     </div>
+     <div class="three columns">
+      <label for="send2"></label>
+      <br><button id="send2" class="button" onclick="requestRefund()">Request Refund</button>
+     </div>
     </div>
+   </form>
   </div>
- </form>
-    <br><button id="send" class="button button-primary" onclick="contribute()">Contribute</button>
-    <br><button id="send" class="button" onclick="requestRefund()">Request Refund</button>
+  </div>
+  <div class="container">
+   <div class="row">
+    <h3>Projects </h3>
+    <table class="u-full-width">
+     <thead>
+      <tr>
+       <th>Name</th>
+       <th>Owner</th>
+       <th>Address</th>
+       <th>Goal (ETH)</th>
+       <th>Balance (ETH)</th>
+       <th>Time Left (s)</th>
+       <th>State</th>      
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>Project 1</td>      
+       <td><span class="black"><span id="owner_address_1"></td>
+       <td><span class="black"><span id="project_address_1"></td>
+       <td><span class="black"><span id="amount_goal_1"></td>
+       <td><span class="black"><span id="amount_raised_1"></td>
+       <td><span class="black"><span id="deadline_1"></td>
+       <td><span class="black"><span id="state_1"></td>
+      </tr>
+      <tr>
+       <td>Project 2</td>
+       <td><span class="black"><span id="owner_address_2"></td>
+       <td><span class="black"><span id="project_address_2"></td>
+       <td><span class="black"><span id="amount_goal_2"></td>
+       <td><span class="black"><span id="amount_raised_2"></td>
+       <td><span class="black"><span id="deadline_2"></td>      
+       <td><span class="black"><span id="state_2"></td>
+      </tr>
+      <tr>
+       <td>Project 3</td>
+       <td><span class="black"><span id="owner_address_3"></td> 
+       <td><span class="black"><span id="project_address_3"></td>     
+       <td><span class="black"><span id="amount_goal_3"></td>
+       <td><span class="black"><span id="amount_raised_3"></td>
+       <td><span class="black"><span id="deadline_3"></td>
+       <td><span class="black"><span id="state_3"></td>
+      </tr>
+      <tr>
+       <td>Project 4</td>
+       <td><span class="black"><span id="owner_address_4"></td> 
+       <td><span class="black"><span id="project_address_4"></td>     
+       <td><span class="black"><span id="amount_goal_4"></td>
+       <td><span class="black"><span id="amount_raised_4"></td>
+       <td><span class="black"><span id="deadline_4"></td>
+       <td><span class="black"><span id="state_4"></td>
+      </tr>
+     </tbody>
+    </table>
    </div>
-  </div>  
+   </div>
+   <div class="container">
+    <div class="row">
+    <h3>Users</h3>
+    <table class="u-full-width">
+     <thead>
+      <tr>
+       <th>Name</th>
+       <th>Address</th>
+       <th>Balance (ETH)</th>     
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>Alice</td>
+       <td><span class="black"><span id="user_address_1"></td>
+       <td><span class="black"><span id="user_balance_1"></td>
+      </tr>
+      <tr>
+       <td>Bob</td>
+       <td><span class="black"><span id="user_address_2"></td>
+       <td><span class="black"><span id="user_balance_2"></td>
+      </tr>
+      <tr>
+       <td>Carol</td>
+       <td><span class="black"><span id="user_address_3"></td>
+       <td><span class="black"><span id="user_balance_3"></td>
+      </tr>    
+     </tbody>
+    </table>
+   </div>
+   </div>
+     <div class="container">
+      <div class="row">
+       <h3>Status</h3>
+       <form>
+        <span id="status"></span>
+       </form>
+      </div>
+     </div> 
  </body>
 </html>
