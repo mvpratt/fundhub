@@ -297,48 +297,35 @@ function contribute() {
 
   //return new Promise(function(resolve,reject){
 
+  const default_amount_contribute = web3.toWei(1, "ether");
+
   var myProject = {};
   var info;
   var error = false;
-
   var amount_contribute = document.getElementById("contrib_amount").value;
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
 
-  const default_amount_contribute = web3.toWei(1, "ether");
   myProject.index = Number(document.getElementById("i_project_num").value);
 
-  //if (amount_contribute === undefined || amount_contribute === null || amount_contribute === ""){
-  //  amount_contribute = default_amount_contribute;
- // }
- // else {
- //   amount_contribute = web3.toWei(amount_contribute, "ether");
- // }
+  if (amount_contribute === undefined || amount_contribute === null || amount_contribute === ""){
+    amount_contribute = default_amount_contribute;
+  }
+  else {
+    amount_contribute = web3.toWei(amount_contribute, "ether");
+  }
 
-
-  getProjectAddress(1)//myProject.index)
+  getProjectAddress(myProject.index)
   .then(function(value){
     console.log("project address "+value);
     setStatus("sending contribution");
-    //myProject.address = value.toString();
-    //return fundhub.contribute(/*myProject.address*/value, {from: /*user_addr*/web3.eth.accounts[1], value: /*amount_contribute*/6000000000000, gas: gasLimit});
-    return fundhub.contribute(value,{from:web3.eth.accounts[1],value: 10000000000000000})
+    myProject.address = value.toString();
+    return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
+    //return fundhub.contribute(value,{from:web3.eth.accounts[1],value: 10000000000000000})
    }) 
   .catch(function(){
         console.log("contrib exception ");
   })
-  //.catch(function(error){
-  //    console.log("contribute() exception");
-  //    console.log("contribute to project");
-//console.log("index "+myProject.index);
-//console.log("amount "+amount_contribute);
-//console.log("user addr "+user_addr);
-//console.log("user index "+user_index);
-
-  
-      //error = true;
-  //    return;
-  //}) 
   .then(function(){
       //if (error == true){
       //  setStatus("Error funding project, contribute() exception.")

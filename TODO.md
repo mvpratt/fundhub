@@ -3,10 +3,8 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-
-
 *****
-Bug - contribute() fails at the solidity level ... catch statement activated. 
+Bug - contribute() fails - invalid project address error 
 Bug - early refund and early payout dont print error, seem to take a long time to refresh
 *****
 
