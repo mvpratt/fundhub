@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   <script src="./app.js"></script>
  </head>
-
  <body>
  <header id="header" class="sixteen columns">
   <div class="container">
@@ -51,11 +50,11 @@
       </div> 
       <div class="three columns">
        <label for="send_create"></label>
-       <button id="send_create" class="button button-primary" onclick="createProject()">Create project</button>
+       <br><button id="send_create" class="button button-primary u-full-width" onclick="createProject()">Create project</button>
       </div>
        <div class="three columns">
         <label for="send_payout"></label>
-        <button id="send_payout" class="button" onclick="requestPayout()">Request payout</button>
+        <br><button id="send_payout" class="button u-full-width" onclick="requestPayout()">Request payout</button>
        </div> 
       </div>
     </form>
@@ -79,12 +78,12 @@
       <input class="u-full-width" type="number" placeholder="1" id="contrib_amount">
      </div>
      <div class="three columns">
-      <label for="send1"></label>
-      <br><button id="send1" class="button button-primary" onclick="contribute()">Contribute</button>
+      <label for="send_contribute"></label>
+      <br><button id="send_contribute" class="button button-primary u-full-width" onclick="contribute()">Contribute</button>
      </div>
      <div class="three columns">
-      <label for="send2"></label>
-      <br><button id="send2" class="button" onclick="requestRefund()">Request Refund</button>
+      <label for="send_refund"></label>
+      <br><button id="send_refund" class="button u-full-width" onclick="requestRefund()">Request Refund</button>
      </div>
     </div>
    </form>
@@ -108,39 +107,39 @@
      <tbody>
       <tr>
        <td>Project 1</td>      
-       <td><span class="black"><span id="owner_address_1"></td>
-       <td><span class="black"><span id="project_address_1"></td>
-       <td><span class="black"><span id="amount_goal_1"></td>
-       <td><span class="black"><span id="amount_raised_1"></td>
-       <td><span class="black"><span id="deadline_1"></td>
-       <td><span class="black"><span id="state_1"></td>
+       <td><span class="black" id="owner_address_1"></span></td>
+       <td><span class="black" id="project_address_1"></span></td>
+       <td><span class="black" id="amount_goal_1"></span></td>
+       <td><span class="black" id="amount_raised_1"></span></td>
+       <td><span class="black" id="deadline_1"></span></td>
+       <td><span class="black" id="state_1"></span></td>
       </tr>
       <tr>
        <td>Project 2</td>
-       <td><span class="black"><span id="owner_address_2"></td>
-       <td><span class="black"><span id="project_address_2"></td>
-       <td><span class="black"><span id="amount_goal_2"></td>
-       <td><span class="black"><span id="amount_raised_2"></td>
-       <td><span class="black"><span id="deadline_2"></td>      
-       <td><span class="black"><span id="state_2"></td>
+       <td><span class="black" id="owner_address_2"></span></td>
+       <td><span class="black" id="project_address_2"></span></td>
+       <td><span class="black" id="amount_goal_2"></span></td>
+       <td><span class="black" id="amount_raised_2"></span></td>
+       <td><span class="black" id="deadline_2"></span></td>      
+       <td><span class="black" id="state_2"></span></td>
       </tr>
       <tr>
        <td>Project 3</td>
-       <td><span class="black"><span id="owner_address_3"></td> 
-       <td><span class="black"><span id="project_address_3"></td>     
-       <td><span class="black"><span id="amount_goal_3"></td>
-       <td><span class="black"><span id="amount_raised_3"></td>
-       <td><span class="black"><span id="deadline_3"></td>
-       <td><span class="black"><span id="state_3"></td>
+       <td><span class="black" id="owner_address_3"></span></td> 
+       <td><span class="black" id="project_address_3"></span></td>     
+       <td><span class="black" id="amount_goal_3"></span></td>
+       <td><span class="black" id="amount_raised_3"></span></td>
+       <td><span class="black" id="deadline_3"></span></td>
+       <td><span class="black" id="state_3"></span></td>
       </tr>
       <tr>
        <td>Project 4</td>
-       <td><span class="black"><span id="owner_address_4"></td> 
-       <td><span class="black"><span id="project_address_4"></td>     
-       <td><span class="black"><span id="amount_goal_4"></td>
-       <td><span class="black"><span id="amount_raised_4"></td>
-       <td><span class="black"><span id="deadline_4"></td>
-       <td><span class="black"><span id="state_4"></td>
+       <td><span class="black" id="owner_address_4"></span></td> 
+       <td><span class="black" id="project_address_4"></span></td>     
+       <td><span class="black" id="amount_goal_4"></span></td>
+       <td><span class="black" id="amount_raised_4"></span></td>
+       <td><span class="black" id="deadline_4"></span></td>
+       <td><span class="black" id="state_4"></span></td>
       </tr>
      </tbody>
     </table>
@@ -160,30 +159,24 @@
      <tbody>
       <tr>
        <td>Alice</td>
-       <td><span class="black"><span id="user_address_1"></td>
-       <td><span class="black"><span id="user_balance_1"></td>
+       <td><span class="black" id="user_address_1"></span></td>
+       <td><span class="black" id="user_balance_1"></span></td>
       </tr>
       <tr>
        <td>Bob</td>
-       <td><span class="black"><span id="user_address_2"></td>
-       <td><span class="black"><span id="user_balance_2"></td>
+       <td><span class="black" id="user_address_2"></span></td>
+       <td><span class="black" id="user_balance_2"></span></td>
       </tr>
       <tr>
        <td>Carol</td>
-       <td><span class="black"><span id="user_address_3"></td>
-       <td><span class="black"><span id="user_balance_3"></td>
+       <td><span class="black" id="user_address_3"></span></td>
+       <td><span class="black" id="user_balance_3"></span></td>
       </tr>    
      </tbody>
     </table>
    </div>
    </div>
-     <div class="container">
-      <div class="row">
-       <h3>Status</h3>
-       <form>
-        <span id="status"></span>
-       </form>
-      </div>
-     </div> 
+  <h3>Status</h3>
+  <span id="status"></span>
  </body>
 </html>

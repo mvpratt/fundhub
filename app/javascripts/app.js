@@ -13,10 +13,6 @@ function setStatus(message) {
   status.innerHTML = message;
 }
 
-//function refreshNumProjectsNotShown(message) {
- // var status = document.getElementById("num_projects_not_shown");
-//  status.innerHTML = message;
-//}
 
 function logTimestamp(message) {
     console.log("Log Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
@@ -72,8 +68,9 @@ function createProject () {
   var user_addr = web3.eth.accounts[user_index];
 
   fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
-  .then(function(){
-    return fundhub.num_projects.callre  })
+    .then(function(){
+      return fundhub.num_projects.call();
+    })
     .then(function(value) {
       myProject.index = value;
       return getProjectAddress(myProject.index);
@@ -296,7 +293,7 @@ function refreshUserTable(){
 
 function contribute() {
 
-  return new Promise(function(resolve,reject){
+  //return new Promise(function(resolve,reject){
 
   var myProject = {};
   var info;
@@ -307,26 +304,39 @@ function contribute() {
   var user_addr = web3.eth.accounts[user_index];
 
   const default_amount_contribute = web3.toWei(1, "ether");
-
-  if (amount_contribute === undefined || amount_contribute === null || amount_contribute === ""){
-    amount_contribute = default_amount_contribute;
-  }
-  else {
-    amount_contribute = web3.toWei(amount_contribute, "ether");
-  }
-
   myProject.index = Number(document.getElementById("i_project_num").value);
-  
-  getProjectAddress(myProject.index)
+
+  //if (amount_contribute === undefined || amount_contribute === null || amount_contribute === ""){
+  //  amount_contribute = default_amount_contribute;
+ // }
+ // else {
+ //   amount_contribute = web3.toWei(amount_contribute, "ether");
+ // }
+
+
+  getProjectAddress(1)//myProject.index)
   .then(function(value){
-    myProject.address = value.toString();
-    return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
+    console.log("project address "+value);
+    setStatus("sending contribution");
+    //myProject.address = value.toString();
+    //return fundhub.contribute(/*myProject.address*/value, {from: /*user_addr*/web3.eth.accounts[1], value: /*amount_contribute*/6000000000000, gas: gasLimit});
+    return fundhub.contribute(value,{from:web3.eth.accounts[1],value: 10000000000000000})
    }) 
-  .catch(function(error){
-      console.log("contribute() exception");
+  .catch(function(){
+        console.log("contrib exception ");
+  })
+  //.catch(function(error){
+  //    console.log("contribute() exception");
+  //    console.log("contribute to project");
+//console.log("index "+myProject.index);
+//console.log("amount "+amount_contribute);
+//console.log("user addr "+user_addr);
+//console.log("user index "+user_index);
+
+  
       //error = true;
-      return;
-  }) 
+  //    return;
+  //}) 
   .then(function(){
       //if (error == true){
       //  setStatus("Error funding project, contribute() exception.")
@@ -362,10 +372,10 @@ function contribute() {
     console.log(e);
     setStatus("Error funding project; see log.");
   })
-  .then(function(){
-    resolve(true);
-  })
-  })
+  //.then(function(){
+ //   resolve(true);
+ // })
+ // })
 }
 
 
