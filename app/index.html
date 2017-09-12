@@ -23,7 +23,7 @@
    <h3>Select User</h3>
     <form>
      <div class="row">
-      <div class="four columns">
+      <div class="three columns">
        <label for="i_user">Select User</label>
        <select class="u-full-width" id="i_user">
         <option value="1">Alice</option>
@@ -48,16 +48,16 @@
        <label for="i_duration">Duration (s)</label>
        <input class="u-full-width" type="number" placeholder="200" id="i_duration">
       </div> 
-      <div class="three columns">
-       <label for="send_create"></label>
-       <br><button id="send_create" class="button button-primary u-full-width" onclick="createProject()">Create project</button>
-      </div>
-       <div class="three columns">
-        <label for="send_payout"></label>
-        <br><button id="send_payout" class="button u-full-width" onclick="requestPayout()">Request payout</button>
-       </div> 
-      </div>
+     </div>
     </form>
+     <div class="three columns">
+      <label for="send_create"></label>
+      <br><button id="send_create" class="button button-primary u-full-width" onclick="createProject()">Create project</button>
+     </div>
+     <div class="three columns">
+      <label for="send_payout"></label>
+      <br><button id="send_payout" class="button u-full-width" onclick="requestPayout()">Request payout</button>
+     </div> 
   </div>
  </div>
  <div class="container">
@@ -77,16 +77,16 @@
       <label for="contrib_amount">Contribution Amount (ETH)</label>
       <input class="u-full-width" type="number" placeholder="1" id="contrib_amount">
      </div>
+    </div>
+   </form>
      <div class="three columns">
       <label for="send_contribute"></label>
-      <br><button id="send_contribute" class="button button-primary u-full-width" onclick="contribute()">Contribute</button>
+     <br><button id="send_contribute" class="button button-primary u-full-width" onclick="contribute()">Contribute</button>
      </div>
      <div class="three columns">
       <label for="send_refund"></label>
       <br><button id="send_refund" class="button u-full-width" onclick="requestRefund()">Request Refund</button>
      </div>
-    </div>
-   </form>
   </div>
   </div>
   <div class="container">

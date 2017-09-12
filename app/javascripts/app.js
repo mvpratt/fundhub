@@ -41,9 +41,9 @@ function getProjectAddress(index) {
 }
 
 
-function createProject () {
+function createProject() {
 
-  return new Promise(function(resolve,reject){
+  //return new Promise(function(resolve,reject){
 
   var myProject = {};
   var info;
@@ -108,15 +108,17 @@ function createProject () {
   .then(function(){
     setStatus("Finished creating project");
     logTimestamp("Project creation finished");
+    //resolve(true);
   })
   .catch(function(e) {
     console.log(e);
     setStatus("Error creating project; see log.");
+    //reject();
   })
-  .then(function(){
-    resolve(true);
-  })
-  });
+  //.then(function(){
+  //  resolve(true);
+  //})
+  //});
 }
 
 
@@ -514,9 +516,9 @@ window.onload = function() {
   .then(function(){
     return refreshUserTable();
   })
-  .then(function(){
-    return;
-  })
+  //.then(function(){
+  //  return;
+  //})
   })
 }
 
