@@ -3,13 +3,9 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-*****
-Bug - early refund and early payout dont print error, seem to take a long time to refresh
-*****
-
 
 UI improvements:
-Fix buttons
+  0. Fix buttons
   1. Cleanup setStatus() messages 
   2. Error message when try to create too many projects
 
@@ -17,9 +13,10 @@ Fix buttons
   Add scrollable table for projects
   Change format so can view all status in one page
 
-  Should payout do a self destruct???
+  Should payout do a self destruct?
   Install scripts (using npm)
 
+Clean up createProject(), returns index of created project, break into sub functions
 
 UI Testing:
 
