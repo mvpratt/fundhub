@@ -1,18 +1,16 @@
-
+// AUTHOR: <mvpratt>
 
 var fundhub;   // Main contract
+
 const gasLimit = 4500000;
 const max_projects_displayed = 4; 
 const max_users = 3;
-
 const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
-
 
 function setStatus(message) {
   var status = document.getElementById("status");
   status.innerHTML = message;
 }
-
 
 function logTimestamp(message) {
     console.log("Log Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
@@ -40,10 +38,9 @@ function getProjectAddress(index) {
   });
 }
 
-
 function createProject() {
 
-  //return new Promise(function(resolve,reject){
+  return new Promise(function(resolve,reject){
 
   var myProject = {};
   var info;
@@ -98,27 +95,22 @@ function createProject() {
       console.log("-----------------------------");
   })
   .then(function(){   
-    console.log("refreshing project table");
     return refreshProjectTableAll();
   })
   .then(function(){
-        console.log("refreshing user table");
     return refreshUserTable();    
   }) 
   .then(function(){
     setStatus("Finished creating project");
     logTimestamp("Project creation finished");
-    //resolve(true);
+    resolve(true);
   })
   .catch(function(e) {
     console.log(e);
     setStatus("Error creating project; see log.");
-    //reject();
+    reject();
   })
-  //.then(function(){
-  //  resolve(true);
-  //})
-  //});
+  })
 }
 
 
@@ -219,26 +211,6 @@ function refreshProjectTableAll() {
     var promises = [];
     var num_projects_displayed;
 
-    if (value > 4) {
-      num_projects_displayed = 4;
-    }
-    else {
-      num_projects_displayed = value;
-    }
-
-    for (i = 1; i <= num_projects_displayed; i++) { 
-      promises.push(refreshProjectTableByIndex(i));
-    }
-    return Promise.all(promises);
-  })
-
-/*
-  fundhub.num_projects.call()
-  .then(function(value) {
-
-    var promises = [];
-    var num_projects_displayed;
-
     if (value > max_projects_displayed) {
       num_projects_displayed = max_projects_displayed;
     }
@@ -250,14 +222,11 @@ function refreshProjectTableAll() {
       promises.push(refreshProjectTableByIndex(i));
     }
     return Promise.all(promises);
-  })*/
-
-
+  })
   .then(function(){
-    console.log("finished updating project table");
     resolve(true);
   })
-  });
+  })
 }
 
 
@@ -295,7 +264,7 @@ function refreshUserTable(){
 
 function contribute() {
 
-  //return new Promise(function(resolve,reject){
+  return new Promise(function(resolve,reject){
 
   const default_amount_contribute = web3.toWei(1, "ether");
 
@@ -317,14 +286,13 @@ function contribute() {
 
   getProjectAddress(myProject.index)
   .then(function(value){
-    console.log("project address "+value);
-    setStatus("sending contribution");
+    //console.log("project address "+value);
+    //setStatus("sending contribution");
     myProject.address = value.toString();
     return fundhub.contribute(myProject.address, {from: user_addr, value: amount_contribute, gas: gasLimit});
-    //return fundhub.contribute(value,{from:web3.eth.accounts[1],value: 10000000000000000})
    }) 
   .catch(function(){
-        console.log("contrib exception ");
+    console.log("contrib exception ");
   })
   .then(function(){
       //if (error == true){
@@ -347,24 +315,21 @@ function contribute() {
       return;
   })
   .then(function(){   
-    console.log("refreshing project table");
     return refreshProjectTableAll();
   })
   .then(function(){
-    console.log("refreshing user table");
     return refreshUserTable();    
   })
   .then(function(){
     logTimestamp("Contribution finished");
+    resolve(true);
   })  
   .catch(function(e) {
     console.log(e);
     setStatus("Error funding project; see log.");
+    reject();
   })
-  //.then(function(){
- //   resolve(true);
- // })
- // })
+  })
 }
 
 

@@ -4,13 +4,13 @@ AUTHOR: <mvpratt>
 IN PROGRESS:
 
 *****
-Bug - contribute() fails - invalid project address error 
 Bug - early refund and early payout dont print error, seem to take a long time to refresh
 *****
 
 
 UI improvements:
-  1. Cleanup setStatus() messages or remove
+Fix buttons
+  1. Cleanup setStatus() messages 
   2. Error message when try to create too many projects
 
   Project name is user configurable variable --- stored in contract??  /// maybe switch to project id??
