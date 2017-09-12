@@ -5,33 +5,32 @@ IN PROGRESS:
 
 
 UI improvements:
-  0. Fix buttons
-  1. Cleanup setStatus() messages 
-  2. Error message when try to create too many projects
+  Read up on error handling promises and how to use .catch
+  Error message when try to create too many projects
+  When contribute, show the user name that contributed in the status window
+  Clean up createProject(), returns index of created project, break into sub functions
 
+Bonus:
   Project name is user configurable variable --- stored in contract??  /// maybe switch to project id??
   Add scrollable table for projects
-  Change format so can view all status in one page
-
-  Should payout do a self destruct?
+  self destruct after payout.
   Install scripts (using npm)
 
-Clean up createProject(), returns index of created project, break into sub functions
 
 UI Testing:
 
   Verify invalid transactions are reverted
     Overfund 
-    Fund after deadline
-    Refund request early
+    y Fund after deadline
+    y Refund request early
     Refund request from non-contributer
     Payout request from non-owner
 
   Verify nominal transactions pass
-    Create project
-    Contribute
-    Payout after fully funded
-    Refund after deadline
+    y Create project
+    y Contribute
+    y Payout after fully funded
+    y Refund after deadline
 
 =============================================
 

@@ -116,7 +116,7 @@ function createProject() {
   .then(refreshUserTable)
   .then(function(){
     if(success) {
-      setStatus("New project created");
+      setStatus("New project, Project " + myProject.index + " created by " + user_names[user_index] + "!");
     }
     resolve();
   })
@@ -304,7 +304,7 @@ function contribute() {
   .then(refreshUserTable)
   .then(function(){
     if(success) {
-      setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
+      setStatus(user_names[user_index] + " contributed " + web3.fromWei(amount_contribute, "ether") + " ETH to Project " + myProject.index + "!" );
     }
     resolve();
   })  
@@ -340,7 +340,7 @@ function requestPayout() {
   .then(refreshUserTable)
   .then(function(){
     if(success) {
-      setStatus("Payout sent!");
+      setStatus("Payout sent to " + user_names[user_index] + "!");
     }
     resolve();
   })       
@@ -376,7 +376,7 @@ function requestRefund() {
   .then(refreshUserTable)
   .then(function(){
     if(success) {
-      setStatus("Refund sent!");
+      setStatus("Refund sent to " + user_names[user_index] + "!");
     }
     resolve();
   })     
