@@ -31,6 +31,18 @@ function ProjectInfo(i) {
    return result;
 };
 
+
+// myProject struct / function
+
+/*
+var errorHandler = function (error,result) {
+    console.log("payout() exception");
+    console.log(error);
+    setStatus("Error getting payout; see log.");
+    return;
+}
+*/
+
 function getProjectAddress(index) {
 
   return new Promise(function(resolve,reject){
@@ -45,6 +57,7 @@ function createProject() {
   const default_amount_goal = web3.toWei(10, "ether");
   const default_duration = 200;
 
+  var success = true;
   var myProject = {};
   var info;
   var user_index = Number(document.getElementById("i_user").value);
@@ -66,6 +79,12 @@ function createProject() {
   fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
     .then(function(){
       return fundhub.num_projects.call();
+    })
+    .catch(function(e) {
+      success = false;
+      console.log("createProject() exception");
+      console.log(e);
+      setStatus("Error creating project; see log.");
     })
     .then(function(value) {
       myProject.index = value;
@@ -96,14 +115,10 @@ function createProject() {
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
   .then(function(){
-    setStatus("Finished creating project");
-    logTimestamp("Project creation finished");
+    if(success) {
+      setStatus("New project created");
+    }
     resolve();
-  })
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error creating project; see log.");
-    reject();
   })
   })
 }
@@ -258,6 +273,7 @@ function contribute() {
 
   const default_amount_contribute = web3.toWei(1, "ether");
 
+  var success = true;
   var myProject = {};
   var info;
   var amount_contribute = document.getElementById("contrib_amount").value;
@@ -277,29 +293,31 @@ function contribute() {
   .then(function(value){
     return fundhub.contribute(value.toString(), {from: user_addr, value: amount_contribute, gas: gasLimit});
   }) 
-  .catch(function(){
-    console.log("contrib exception ");
+  .catch(function(error){
+    success = false;
+    console.log("contribute() exception");
+    console.log(error);
+    setStatus("Error funding project; see log.");
+    return;
   })
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
   .then(function(){
-    setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
-    logTimestamp("Contribution finished");
+    if(success) {
+      setStatus("Contributed " + web3.fromWei(amount_contribute, "ether") + " ETH from user " + user_index + "!" );
+    }
     resolve();
   })  
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error funding project; see log.");
-    reject();
-  })
   })
 }
+
+
 
 function requestPayout() {
 
   return new Promise(function(resolve,reject){
 
-  var proj;
+  var success = true;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
@@ -309,28 +327,23 @@ function requestPayout() {
     return Project.at(addr);
   })
   .then(function(instance){
-    proj = instance;  
-    return proj.payout({from: user_addr})
+    return instance.payout({from: user_addr});//, errorHandler);
   })
   .catch(function(error){
+    success = false;
     console.log("payout() exception");
+    console.log(error);
+    setStatus("Error getting payout; see log.");
     return;
   }) 
-  .then(function(){
-    setStatus("Payout sent!");
-    return;
-  })
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
   .then(function(){
-    logTimestamp("Payout request finished");
+    if(success) {
+      setStatus("Payout sent!");
+    }
     resolve();
   })       
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting payout; see log.");
-    reject();
-  })
   })
 }
 
@@ -338,6 +351,7 @@ function requestRefund() {
 
   return new Promise(function(resolve,reject){
 
+  var success = true;
   var proj;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
@@ -352,24 +366,20 @@ function requestRefund() {
     return proj.refund({from: user_addr})
   })
   .catch(function(error){
+    success = false;
     console.log("refund() exception");
+    console.log(error);
+    setStatus("Error getting refund; see log.");
     return;
   })   
-  .then(function(){
-    setStatus("Refund sent!");
-    return;
-  })
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
   .then(function(){
-    logTimestamp("Request refund finished");
+    if(success) {
+      setStatus("Refund sent!");
+    }
     resolve();
   })     
-  .catch(function(e) {
-    console.log(e);
-    setStatus("Error getting refund; see log.");
-    reject();
-  })
   })
 }
 
@@ -397,7 +407,15 @@ window.onload = function() {
   .then(refreshUserTable)
   })
 }
+/*
+window.addEventListener('unhandledrejection', event => {
+    // Can prevent error output on the console:
+    event.preventDefault();
 
+    // Send error to log server
+    log('Reason: ' + event.reason);
+});
+*/
 
 /*
 function LogContribute() {  
