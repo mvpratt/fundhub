@@ -3,7 +3,6 @@ Automated Test status 9/13/2017:
 
   Project Creation:
   PASS - Project created, constructor loads default values
-  - On terminate, funds returned to owner
 
   Project Contributions:
   N/A - Test in UI - Contribute from multiple accounts
@@ -45,7 +44,6 @@ function increaseTime(seconds){
 
     web3.currentProvider.sendAsync({jsonrpc: "2.0", method: "evm_increaseTime", params: [seconds], id: 0 },
       function(err, result) {
-        //console.log("evm_increaseTime() callback");
         resolve(true);
     }
     );
@@ -58,7 +56,6 @@ function mineBlock(){
 
     web3.currentProvider.sendAsync({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0 },
       function(err, result) {
-        //console.log("evm_mine() callback");
         resolve(true);
     }
     );
@@ -89,22 +86,27 @@ function createProject(fundhub, owner, amount_goal, duration){
 
   return new Promise(function(resolve,reject){
 
-    fundhub.createProject(amount_goal, duration, {from: owner, gas: gasLimit}).then(function() {
+    fundhub.createProject(amount_goal, duration, {from: owner, gas: gasLimit})
+    //.then(function(value) {
+    //  console.log("index: "+value)
+    .then(function(){
+      //myProject.index = value;
       return fundhub.num_projects.call();
+    //  return;
     })
-    .catch(function(error){
-      console.log("fundhub.createProject() exception");
-      return;
-    })
-    .then( function(value) {
+    //.catch(function(error){
+    //  console.log("fundhub.createProject() exception");
+    //  return;
+    //})
+    .then(function(value) {
       myProject.index = value;
       return getProjectAddress(fundhub, myProject.index);
     })
-    .then( function(value) {
+    .then(function(value) {
       myProject.address = value;
       return Project.at(myProject.address);
     })
-    .then( function(value) {
+    .then(function(value) {
       myProject.instance = value;      
       return myProject.instance.info.call();
     })
@@ -126,11 +128,9 @@ function createProject(fundhub, owner, amount_goal, duration){
   .catch(function(e) {
     console.log(e);
     console.log("Error creating project; see log.");
-  });
-
-  });
+  })
+  })
 }
-
 
 
 it("Create Project, verify constructor", function(done) {
@@ -159,6 +159,8 @@ var testParams = {
   })
   .catch(done);
 });
+
+
 
 
 it("Project can receive a contribution", function(done) {
