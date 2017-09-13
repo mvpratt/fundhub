@@ -15,6 +15,8 @@ contract Project {
     bool public paid_out = false; // true if project was fully funded and paid out
 
     event Fund(uint _timestamp, address _contrib, uint _amount);
+    event Refund(uint _timestamp, address _contrib, uint _amount);
+
 
     //access control
     modifier onlyOwner { 
@@ -78,7 +80,13 @@ contract Project {
 
         // zero out balance before sending funds - to prevent re-entrancy attack
         bal = balances[msg.sender];
+        require(bal > 0);
         balances[msg.sender] = 0;  
         if (!msg.sender.send(bal)) revert();
+        Refund(now, msg.sender, bal);
+    }
+
+    function terminate() onlyOwner external {
+        selfdestruct(info.owner);
     }
 }

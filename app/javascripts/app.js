@@ -77,14 +77,15 @@ function createProject() {
   }
 
   fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
-    .then(function(){
-      return fundhub.num_projects.call();
-    })
     .catch(function(e) {
       success = false;
       console.log("createProject() exception");
       console.log(e);
       setStatus("Error creating project; see log.");
+      return;
+    })
+    .then(function(){
+      return fundhub.num_projects.call();
     })
     .then(function(value) {
       myProject.index = value;
@@ -352,7 +353,6 @@ function requestRefund() {
   return new Promise(function(resolve,reject){
 
   var success = true;
-  var proj;
   var proj_index = Number(document.getElementById("i_project_num").value);
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];
@@ -361,9 +361,8 @@ function requestRefund() {
   .then(function(addr){
     return Project.at(addr);
   })
-  .then(function(instance){
-    proj = instance;  
-    return proj.refund({from: user_addr})
+  .then(function(instance){   
+    return instance.refund({from: user_addr});
   })
   .catch(function(error){
     success = false;

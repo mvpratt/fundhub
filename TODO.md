@@ -4,27 +4,37 @@ AUTHOR: <mvpratt>
 IN PROGRESS:
 
 
-UI improvements:
+Solidity:
+  Test terminate() after payout. -- automated testing
+  Createproject returns index (id) of created project, 
+
+
+
+Javascript:
+  Process events
+  Manual refresh error:
+  Unhandled rejection Error: Invalid JSON RPC response: ""
+  myProject function
+  Warning message when try to create too many projects
+  Clean up createProject(), break into sub functions
   Read up on error handling promises and how to use .catch
-  Error message when try to create too many projects
-  When contribute, show the user name that contributed in the status window
-  Clean up createProject(), returns index of created project, break into sub functions
+
+
 
 Bonus:
-  Project name is user configurable variable --- stored in contract??  /// maybe switch to project id??
+  Project name is user configurable - stored in contract?
   Add scrollable table for projects
-  self destruct after payout.
   Install scripts (using npm)
-
+  Bug - looks like crashing testrpc when click too fast on next thing during a refresh - add spinning wheel?
 
 UI Testing:
 
-  Verify invalid transactions are reverted
-    Overfund 
+    y Overfund 
     y Fund after deadline
     y Refund request early
     Refund request from non-contributer
     Payout request from non-owner
+    Call projects that dont exist
 
   Verify nominal transactions pass
     y Create project
@@ -39,8 +49,8 @@ BACKLOG:
     
   Error handling:
     Catch all revert() and require() errors in tests --- verify that they can be triggered
-    Detect attempt to create project by non external account??
-    Error message When transaction fails for another reason
+    Error message when attempt to create project by non external account
+    Error message when transaction fails for another reason
 
   Automated testing features:
     Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 

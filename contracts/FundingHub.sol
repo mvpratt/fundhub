@@ -14,11 +14,12 @@ contract FundingHub {
 	function FundingHub() {}
 
   // project owner can be an account other than the creator
-  function createProject(uint _funding_goal, uint _duration) {
+  function createProject(uint _funding_goal, uint _duration) { //returns uint {
 
     num_projects = num_projects + 1;
     myProjects[num_projects] = new Project(_funding_goal, _duration);
     CreateProject(now, myProjects[num_projects]);
+    //return num_projects;
   }
 
   // Contributer is an account (external account, or contract account)
