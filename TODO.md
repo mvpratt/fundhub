@@ -7,18 +7,16 @@ IN PROGRESS:
 Solidity:
   Test terminate() after payout. -- automated testing
   Createproject returns index (id) of created project, 
-
-
+  Error message when try to interact with non existant project
+  Clean up createProject(), break into sub functions
+  myProject struct
 
 Javascript:
-  Process events
+  Process solidty events
   Manual refresh error:
-  Unhandled rejection Error: Invalid JSON RPC response: ""
-  myProject function
+    Unhandled rejection Error: Invalid JSON RPC response: ""
   Warning message when try to create too many projects
-  Clean up createProject(), break into sub functions
   Read up on error handling promises and how to use .catch
-
 
 
 Bonus:

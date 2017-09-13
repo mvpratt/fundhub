@@ -1,11 +1,12 @@
 /*
-Automated Test status 9/5/2017:
+Automated Test status 9/13/2017:
 
   Project Creation:
   PASS - Project created, constructor loads default values
+  - On terminate, funds returned to owner
 
   Project Contributions:
-       - Contribute from multiple accounts
+  N/A - Test in UI - Contribute from multiple accounts
 
   Project Refunds:
   PASS - Refund request denied when deadline not reached yet
@@ -16,10 +17,11 @@ Automated Test status 9/5/2017:
   Project Payouts:
   PASS - Payout request fullfilled when fundraising goal reached
   PASS - Payout request denied when project not fully funded
-       - Payout request from non-owner is denied -- WILL CAUSE REVERT() exceptiin
+  PASS - Payout request from non-owner is denied 
 
   FundHub:
-       - Create multiple projects
+  N/A - Test in UI - Create multiple projects
+
 */
 
 

@@ -16,12 +16,13 @@ function logTimestamp(message) {
     console.log("Log Timestamp: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp + "  Log: " + message);
 }
 
+
 function showUserBalances() {
-  console.log("Coinbase : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]), "ether") + " ETH");  
-  console.log("Alice    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[1]), "ether") + " ETH");
-  console.log("Bob      : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[2]), "ether") + " ETH");
-  console.log("Carol    : balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[3]), "ether") + " ETH");
+  for (var i = 0; i < user_names.length; i++) {
+    console.log(user_names[i] + "\t: balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[i]), "ether") + " ETH");  
+  }
 }
+
 
 function ProjectInfo(i) {
    var result = {};
@@ -33,6 +34,18 @@ function ProjectInfo(i) {
 
 
 // myProject struct / function
+/*
+function myProject() {
+  var myProject = {
+    owner: '',
+    address: '', 
+    amount_goal: 0,
+    deadline: 0,
+    instance: 0,
+    index: 0
+  }
+}
+*/
 
 /*
 var errorHandler = function (error,result) {
