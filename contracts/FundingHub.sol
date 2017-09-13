@@ -14,19 +14,21 @@ contract FundingHub {
 	function FundingHub() {}
 
   // project owner can be an account other than the creator
-  function createProject(uint _funding_goal, uint _duration) { //returns uint {
+  function createProject(uint _funding_goal, uint _duration) {
+
+    require(_funding_goal > 0);
+    require(_duration > 0);
 
     num_projects = num_projects + 1;
     myProjects[num_projects] = new Project(_funding_goal, _duration);
-    CreateProject(now, myProjects[num_projects]);
-    //return num_projects;
+    CreateProject(now, myProjects[num_projects]); 
   }
 
   // Contributer is an account (external account, or contract account)
   function contribute(address _project_address) payable {
-
+    
     Project proj = Project(_project_address);
-    proj.fund.value(msg.value)(msg.sender); // note: fund() can cause revert() 
+    proj.fund.value(msg.value)(msg.sender); // note: fund() can cause a revert() 
     Contribute(now, msg.sender, msg.value);
   }
 }

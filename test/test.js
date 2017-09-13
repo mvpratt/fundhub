@@ -87,12 +87,8 @@ function createProject(fundhub, owner, amount_goal, duration){
   return new Promise(function(resolve,reject){
 
     fundhub.createProject(amount_goal, duration, {from: owner, gas: gasLimit})
-    //.then(function(value) {
-    //  console.log("index: "+value)
     .then(function(){
-      //myProject.index = value;
       return fundhub.num_projects.call();
-    //  return;
     })
     //.catch(function(error){
     //  console.log("fundhub.createProject() exception");
@@ -165,13 +161,13 @@ var testParams = {
 
 it("Project can receive a contribution", function(done) {
 
-var testParams = {
-  owner: alice,
-  amount_goal: web3.toWei(10, "ether"),
-  duration: 5,
-  user_addr: bob,
-  amount_contribute: web3.toWei(1, "ether")
-};
+  var testParams = {
+    owner: alice,
+    amount_goal: web3.toWei(10, "ether"),
+    duration: 5,
+    user_addr: bob,
+    amount_contribute: web3.toWei(1, "ether")
+  };
 
   var myProject = {};
   var myFundHub; 
@@ -201,7 +197,7 @@ var testParams = {
   })
   .catch(done);
   
-  });
+});
 
 
   it("Payout requested, denied when project not fully funded", function(done) {

@@ -1,15 +1,29 @@
 AUTHOR: <mvpratt>
+===================================================================
 
 
 IN PROGRESS:
+Bug --- Project allows contributions after payout complete!!!!
+
+  Createproject returns index (id) of created project, --- broken.  invalid number of arguments.
+  contribute -- require that project address is in the index
+      Non contributer --- what happens when access mapping with no entry for this address?
+  Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
+  Add scrollable table for projects
+  Check account balances for required funds at the beginning of each test
+
+Truffle seems not to regenerate build/contracts/Project.json every time
+  workaround: delete /build directory and recompile
+
+  
+Tests:
+nominal.js
+exceptions.js
+attacks.js
 
 
 Solidity:
-  Test terminate() after payout. -- automated testing
-  Createproject returns index (id) of created project, 
   Error message when try to interact with non existant project
-  Clean up createProject(), break into sub functions
-  myProject struct
 
 Javascript:
   Process solidty events
@@ -19,45 +33,18 @@ Javascript:
   Read up on error handling promises and how to use .catch
 
 
-Bonus:
-  Project name is user configurable - stored in contract?
-  Add scrollable table for projects
-  Install scripts (using npm)
-  Bug - looks like crashing testrpc when click too fast on next thing during a refresh - add spinning wheel?
+===================================================================
 
-UI Testing:
+FUTURE IMPROVEMENTS: 
 
-    y Overfund 
-    y Fund after deadline
-    y Refund request early
-    Refund request from non-contributer
-    Payout request from non-owner
-    Call projects that dont exist
-
-  Verify nominal transactions pass
-    y Create project
-    y Contribute
-    y Payout after fully funded
-    y Refund after deadline
-
-=============================================
-
-BACKLOG: 
-    autopayout
-    
   Error handling:
     Catch all revert() and require() errors in tests --- verify that they can be triggered
     Error message when attempt to create project by non external account
-    Error message when transaction fails for another reason
-
-  Automated testing features:
-    Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
-    Check account balances for required funds at the beginning of each test
-    Make tests more modular
-    Make app more modular
 
   Contract improvements:
-    choose size of struct elements to stack and save space
+    Choose size of struct elements to stack and save space
+    Add a terminate function that calls selfdestruct() -- good steward of the ecosystem - remove old code - only fundhub can call selfdestruct?
 
-    autorefund()
-    selfdestruct()
+  Project name is user configurable - stored in contract?
+  Install scripts (using npm)
+  Bug - looks like crashing testrpc when click too fast on next thing during a refresh - add spinning wheel?

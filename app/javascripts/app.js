@@ -1,5 +1,23 @@
 // AUTHOR: <mvpratt>
 
+/*
+UI Testing status 9/13/2017:
+    PASS - Overfund 
+    PASS - Fund after deadline
+    PASS - Refund request early
+    PASS - Refund request from non-contributer
+    PASS - Payout request from non-owner
+    PASS - Call projects that dont exist
+
+  Verify nominal transactions pass
+    PASS - Create project
+    PASS - Contribute
+    PASS - Payout after fully funded
+    PASS - Refund after deadline
+*/
+
+
+
 var fundhub;   // Main contract
 
 const gasLimit = 4500000;
@@ -35,7 +53,7 @@ function ProjectInfo(i) {
 
 // myProject struct / function
 /*
-function myProject() {
+function ProjectTemplate() {
   var myProject = {
     owner: '',
     address: '', 
@@ -45,7 +63,16 @@ function myProject() {
     index: 0
   }
 }
-*/
+*//*
+function ProjectInfo(i) {
+   var result = {};
+   result.owner = i[0];
+   result.amount_goal = parseInt(i[1]);
+   result.deadline = parseInt(i[2]);
+   return result;
+};*/
+
+
 
 /*
 var errorHandler = function (error,result) {
