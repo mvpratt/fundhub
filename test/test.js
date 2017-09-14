@@ -32,7 +32,7 @@ contract('Test: Project contract', function(accounts) {
 
   const gasLimit = 4500000;
   const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
-  const required_user_balance = [100,100,400,100];
+  const required_user_balance = [1,1,4,1]; // units of ETH
 
   const coinbase  = accounts[0]; 
   const alice     = accounts[1];
@@ -64,7 +64,6 @@ function checkForLowBalances() {
 }
 
 
-
 function increaseTime(seconds){
 
   return new Promise(function(resolve,reject){
@@ -89,13 +88,33 @@ function mineBlock(){
   });    
 }
 
-function ProjectInfo(i) {
-   var result = {};
-   result.owner = i[0];
-   result.amount_goal = parseInt(i[1]);
-   result.deadline = parseInt(i[2]);
-   return result;
-};
+
+// Project "struct"
+function ProjectTemplate() {
+  var project = {}
+    project.owner = '';
+    project.address = ''; 
+    project.amount_goal = 0;
+    project.deadline = 0;
+    project.instance = 0;
+    project.index = 0;
+    return project;
+}
+
+
+function logProjectDetails(project) {
+
+    console.log("-----------------------------");
+    console.log("New project created:");
+    console.log("project owner: " + project.owner);
+    console.log("project address: " + project.address);
+    console.log("project goal: " + project.amount_goal);
+    console.log("project deadline: " + project.deadline);
+    console.log("project index: " + project.index);
+    console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+    console.log("-----------------------------");
+    return;
+}
 
 
 function getProjectAddress(fundhub,index) {
@@ -108,7 +127,7 @@ function getProjectAddress(fundhub,index) {
 
 function createProject(fundhub, owner, amount_goal, duration){
 
-  var myProject = {};
+  myProject = new ProjectTemplate();
   var info;
 
   return new Promise(function(resolve,reject){
@@ -134,18 +153,10 @@ function createProject(fundhub, owner, amount_goal, duration){
       return myProject.instance.info.call();
     })
     .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.deadline = info.deadline;
-      console.log("-----------------------------");
-      console.log("New project created:");
-      console.log("project owner: " + myProject.owner);
-      console.log("project address: " + myProject.address);
-      console.log("project goal: " + myProject.amount_goal);
-      console.log("project deadline: " + myProject.deadline);
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-      console.log("-----------------------------");
+      myProject.owner = value[0];
+      myProject.amount_goal = parseInt(value[1]);
+      myProject.deadline = parseInt(value[2]);
+      logProjectDetails(myProject);
       resolve(myProject);
   })
   .catch(function(e) {
@@ -199,7 +210,7 @@ it("Project can receive a contribution", function(done) {
   var myProject = {};
   var myFundHub; 
 
-  FundingHub.new().then( function(value) {
+  FundingHub.new().then(function(value) {
     myFundHub = value;
     return createProject(myFundHub, testParams.owner, testParams.amount_goal, testParams.duration);
   })
@@ -207,7 +218,7 @@ it("Project can receive a contribution", function(done) {
       console.log("createProject() exception");
       return;
   })
-  .then( function(value) {
+  .then(function(value) {
     myProject = value;
     return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
   })

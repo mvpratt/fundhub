@@ -4,19 +4,15 @@ AUTHOR: <mvpratt>
 
 IN PROGRESS:
 
-Bug -- when goal is 1000 ETH, prints as: 0.000000000000000001
+  Bug -- when goal is 1000 ETH, prints as: 0.000000000000000001
+  Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
 
-Checkout and verify project in fresh directory (release)
-
-verify package.json scripts
-add node version to requirements
 
   Createproject returns index (id) of created project, --- broken.  invalid number of arguments.
-  contribute -- require that project address is in the index
-      Non contributer --- what happens when access mapping with no entry for this address?
-  Verify amounts of payouts, refunds, contributions, etc (minus gas cost) 
+  Non contributer --- what happens when access mapping with no entry for this address?
+
   Add scrollable table for projects
-  Check account balances for required funds at the beginning of each test
+
 
 Truffle seems not to regenerate build/contracts/Project.json every time
   workaround: delete /build directory and truffle compile --reset; truffle migrate --reset; truffle build
@@ -45,6 +41,7 @@ FUTURE IMPROVEMENTS:
   Error handling:
     Catch all revert() and require() errors in tests --- verify that they can be triggered
     Error message when attempt to create project by non external account
+    contribute -- require that project address is in the index
 
   Contract improvements:
     Choose size of struct elements to stack and save space

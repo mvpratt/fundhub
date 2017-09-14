@@ -19,7 +19,6 @@ UI Testing status 9/13/2017:
 */
 
 
-
 var fundhub;   // Main contract
 
 const gasLimit = 4500000;
@@ -42,6 +41,7 @@ function showUserBalances() {
     console.log(user_names[i] + "\t: balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[i]), "ether") + " ETH");  
   }
 }
+
 
 
 function ProjectInfo(i) {
