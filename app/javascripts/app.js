@@ -2,14 +2,16 @@
 
 /*
 UI Testing status 9/13/2017:
+  Verify exceptions
     PASS - Overfund 
     PASS - Fund after deadline
     PASS - Refund request early
     PASS - Refund request from non-contributer
     PASS - Payout request from non-owner
     PASS - Call projects that dont exist
+    PASS - Try to fund a project that has already paid out
 
-  Verify nominal transactions pass
+  Verify nominal transactions 
     PASS - Create project
     PASS - Contribute
     PASS - Payout after fully funded

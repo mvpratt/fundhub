@@ -27,15 +27,42 @@ Automated Test status 9/13/2017:
 var FundingHub = artifacts.require("./FundingHub.sol");
 var Project = artifacts.require("./Project.sol");
 
-var gasLimit = 4500000;
-
 
 contract('Test: Project contract', function(accounts) {
 
-var coinbase  = accounts[0]; 
-var alice     = accounts[1];
-var bob       = accounts[2];
-var carol     = accounts[3];
+  const gasLimit = 4500000;
+  const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
+  const required_user_balance = [100,100,400,100];
+
+  const coinbase  = accounts[0]; 
+  const alice     = accounts[1];
+  const bob       = accounts[2];
+  const carol     = accounts[3];
+
+
+  checkForLowBalances();
+
+
+
+function showUserBalances() {
+  for (var i = 0; i < user_names.length; i++) {
+    console.log(user_names[i] + ": balance : " + web3.fromWei(web3.eth.getBalance(web3.eth.accounts[i]), "ether") + " ETH");  
+  }
+}
+
+function checkForLowBalances() {
+
+  var balance;
+
+  for (var i = 0; i < user_names.length; i++) {
+    balance = web3.fromWei(web3.eth.getBalance(web3.eth.accounts[i]));
+    
+    if (balance < required_user_balance[i]) {
+          console.log("WARNING: " + user_names[i] + "'s balance is below required minimum for this test : " + required_user_balance[i] + " ETH");
+    }
+  }
+}
+
 
 
 function increaseTime(seconds){

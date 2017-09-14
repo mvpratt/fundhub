@@ -35,8 +35,6 @@ https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
 * Other
  *   Updated to truffle 3.4.9 and solidity 0.4.15
 
-
-
 ## FUNDINGHUB 
 
 FundingHub is the registry of all Projects to be funded. FundingHub should have a constructor and the following functions:
@@ -70,11 +68,10 @@ Project is the contract that stores all the data of each project. Project has a 
 A simple web interface allows users to browse active projects, create their own project, and dontribute to a project
 
 ### Installation
-1. `testrpc -i 42 -b 1`
-2. `truffle migrate --reset` 
-3. `truffle build`
-4. `cd /build; python -m SimpleHTTPServer 8000`
-5. Open `localhost:8000` in Google Chrome
+1. `npm run rpc`
+2. `npm run build`
+3. `npm run web`
+4. Open `localhost:8000` in Google Chrome
 
 ### Guidelines
 * Deadline and duration are in units of  seconds
@@ -99,33 +96,29 @@ A simple web interface allows users to browse active projects, create their own 
 
 
 ## AUTOMATED TESTS
-1. `testrpc -i 42 -b 1`  (network 42, automatic mining 1 block/sec)
-2. `truffle test test/fund_refund.js` - Tests createProject(), contribute(), refund(), payout()
+1. `npm run rpc`  (network 42, automatic mining 1 block/sec)
+2. `npm run test` - Tests createProject(), contribute(), fund(), refund(), payout()
 
 
 ## Tool Versions 
-
  * Tuffle 3.4.9
  * Node.js 6.11.2
+ * npm 3.10.10
  * Solidity 0.4.15
  * TestRPC 4.1.1
  * geth 1.5.8-stable-f58fb322
  * Google Chrome 
 
-
 ### Errata
-
 * A default project owned by the coinbase account is created during migration (truffle).  This project is provided as an example only.
 * When contribution puts over the goal amount, the excess funds are returned to the contributer
 * Project creator MUST be an external account (not another contract).  Only the creator can receive `payout()`
 * Project creator may also contribute to the project
 
 ### Author:
-
 mvpratt
 
 ### Screenshot:
-
 https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/blob/master/Screenshot.png
 
 

@@ -1,0 +1,16 @@
+{
+  "name": "FundingHub",
+  "version": "1.0.0",
+  "description": "Fundraising platform",
+  "scripts": {
+    "rpc": "testrpc -i 42 -b 1",
+    "web": "cd build; python -m SimpleHTTPServer 8000",
+    "build": "truffle compile --reset; truffle migrate --reset; truffle build",
+    "test": "truffle test test/test.js"
+  },
+  "author": "mvpratt",
+  "license": "MIT",
+  "dependencies": {
+    "truffle-default-builder": "^2.0.0"
+  }
+}
