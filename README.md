@@ -68,6 +68,7 @@ Project is the contract that stores all the data of each project. Project has a 
 A simple web interface allows users to browse active projects, create their own project, and dontribute to a project
 
 ### Installation
+0. `npm install`
 1. `npm run rpc`
 2. `npm run build`
 3. `npm run web`
