@@ -1,4 +1,11 @@
 
+
+Checkout and verify project in fresh directory (release)
+ - verify tests
+ - verify app
+ - verify npm scripts
+
+
 Contract Metrics
 
 FundingHub.sol:

@@ -43,37 +43,31 @@ function showUserBalances() {
 }
 
 
-
-function ProjectInfo(i) {
-   var result = {};
-   result.owner = i[0];
-   result.amount_goal = parseInt(i[1]);
-   result.deadline = parseInt(i[2]);
-   return result;
-};
-
-
-// myProject struct / function
-/*
+// Project "struct"
 function ProjectTemplate() {
-  var myProject = {
-    owner: '',
-    address: '', 
-    amount_goal: 0,
-    deadline: 0,
-    instance: 0,
-    index: 0
-  }
+  var project = {}
+    project.owner = '';
+    project.address = ''; 
+    project.amount_goal = 0;
+    project.deadline = 0;
+    project.instance = 0;
+    project.index = 0;
+    return project;
 }
-*//*
-function ProjectInfo(i) {
-   var result = {};
-   result.owner = i[0];
-   result.amount_goal = parseInt(i[1]);
-   result.deadline = parseInt(i[2]);
-   return result;
-};*/
 
+function logProjectDetails(project) {
+
+    console.log("-----------------------------");
+    console.log("New project created:");
+    console.log("project owner: " + project.owner);
+    console.log("project address: " + project.address);
+    console.log("project goal: " + project.amount_goal);
+    console.log("project deadline: " + project.deadline);
+    console.log("project index: " + project.index);
+    console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+    console.log("-----------------------------");
+    return;
+}
 
 
 /*
@@ -100,8 +94,7 @@ function createProject() {
   const default_duration = 200;
 
   var success = true;
-  var myProject = {};
-  var info;
+  var myProject = new ProjectTemplate();
   var user_index = Number(document.getElementById("i_user").value);
   var user_addr = web3.eth.accounts[user_index];  
   var amount_goal = document.getElementById("i_amount_goal").value;
@@ -111,11 +104,14 @@ function createProject() {
     amount_goal = default_amount_goal;
   }
   else {
-    amount_goal = web3.toWei(amount_goal, "ether");
+    amount_goal = web3.toWei(web3.toBigNumber(amount_goal), "ether");
   }
 
   if (duration === undefined || duration === null || duration === ""){
     duration = default_duration;
+  }
+  else {
+    duration = Number(duration);
   }
 
   fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
@@ -142,18 +138,10 @@ function createProject() {
       return myProject.instance.info.call();
     })
     .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.deadline = info.deadline;
-      console.log("-----------------------------");
-      console.log("New project created:");
-      console.log("project owner: " + myProject.owner);
-      console.log("project address: " + myProject.address);
-      console.log("project goal: " + myProject.amount_goal);
-      console.log("project deadline: " + myProject.deadline);
-      console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-      console.log("-----------------------------");
+      myProject.owner = value[0];
+      myProject.amount_goal = web3.toBigNumber(value[1]);
+      myProject.deadline = parseInt(value[2]);
+      logProjectDetails(myProject);
   })
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
@@ -170,8 +158,7 @@ function refreshProjectTableByIndex(index){
 
   return new Promise(function(resolve,reject){
 
-  var myProject = {};
-  var info;
+  var myProject = new ProjectTemplate();
   var project_state;
   var project_balance;
   var current_time;
@@ -194,10 +181,9 @@ function refreshProjectTableByIndex(index){
       return myProject.instance.info.call();
     })    
     .then(function(value){
-      info = new ProjectInfo(value);
-      myProject.owner = info.owner;
-      myProject.amount_goal = info.amount_goal;
-      myProject.deadline = info.deadline;
+      myProject.owner = value[0];
+      myProject.amount_goal = web3.toBigNumber(value[1]);
+      myProject.deadline = parseInt(value[2]);
 
       project_balance = web3.eth.getBalance(myProject.address).valueOf();
       current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;

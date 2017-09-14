@@ -127,8 +127,7 @@ function getProjectAddress(fundhub,index) {
 
 function createProject(fundhub, owner, amount_goal, duration){
 
-  myProject = new ProjectTemplate();
-  var info;
+  var myProject = new ProjectTemplate();
 
   return new Promise(function(resolve,reject){
 
@@ -136,10 +135,10 @@ function createProject(fundhub, owner, amount_goal, duration){
     .then(function(){
       return fundhub.num_projects.call();
     })
-    //.catch(function(error){
-    //  console.log("fundhub.createProject() exception");
-    //  return;
-    //})
+    .catch(function(error){
+      console.log("fundhub.createProject() exception");
+      return;
+    })
     .then(function(value) {
       myProject.index = value;
       return getProjectAddress(fundhub, myProject.index);
@@ -179,7 +178,6 @@ var testParams = {
 
   var myProject = {};
   var myFundHub; 
-  var my_deadline;
 
   FundingHub.new().then(function(value) {
     myFundHub = value;
@@ -203,12 +201,14 @@ it("Project can receive a contribution", function(done) {
     owner: alice,
     amount_goal: web3.toWei(10, "ether"),
     duration: 5,
-    user_addr: bob,
+    contributer: bob,
     amount_contribute: web3.toWei(1, "ether")
   };
 
   var myProject = {};
-  var myFundHub; 
+  var myFundHub;
+
+  var gasUsed; 
 
   FundingHub.new().then(function(value) {
     myFundHub = value;
@@ -220,7 +220,7 @@ it("Project can receive a contribution", function(done) {
   })
   .then(function(value) {
     myProject = value;
-    return myFundHub.contribute(myProject.address, {from: testParams.user_addr, value: testParams.amount_contribute, gas: gasLimit});
+    return myFundHub.contribute(myProject.address, {from: testParams.contributer, value: testParams.amount_contribute, gas: gasLimit});
   })
   .catch(function(error){
       console.log("contribute() exception");
@@ -229,7 +229,7 @@ it("Project can receive a contribution", function(done) {
   .then(function(value){    
     return web3.eth.getBalance(myProject.address.toString());
   })          
-  .then( function(amount) {
+  .then(function(amount) {
     assert.equal(amount.valueOf(), testParams.amount_contribute, "Amount doesn't match!"); 
     done();
   })
