@@ -47,3 +47,58 @@ Tests:
   Install scripts (using npm)
 
   Bug - looks like crashing testrpc when click too fast on next thing during a refresh - add spinning wheel?
+
+Code to process events
+/*
+window.addEventListener('unhandledrejection', event => {
+    // Can prevent error output on the console:
+    event.preventDefault();
+
+    // Send error to log server
+    log('Reason: ' + event.reason);
+});
+
+
+function LogContribute() {  
+  fundhub.Contribute()
+    .watch(function(e, value) {
+      if (e)
+        console.error(e);
+      else
+        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
+    });
+}    
+
+
+var errorHandler = function (error,result) {
+    console.log("payout() exception");
+    console.log(error);
+    setStatus("Error getting payout; see log.");
+    return;
+}
+
+
+
+
+// DEBUG Event Logs --- Automated testing
+/*
+function LogFund(myProject) {  
+  myProject.instance.Fund()
+    .watch(function(e, value) {
+      if (e)
+        console.error(e);
+      else
+        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
+    });
+} 
+
+function LogContribute(fundhub) {  
+  fundhub.Contribute()
+    .watch(function(e, value) {
+      if (e)
+        console.error(e);
+      else
+        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
+    });
+}  
+*/

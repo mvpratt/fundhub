@@ -70,14 +70,6 @@ function logProjectDetails(project) {
 }
 
 
-/*
-var errorHandler = function (error,result) {
-    console.log("payout() exception");
-    console.log(error);
-    setStatus("Error getting payout; see log.");
-    return;
-}
-*/
 
 function getProjectAddress(index) {
 
@@ -434,24 +426,5 @@ window.onload = function() {
   .then(refreshUserTable)
   })
 }
-/*
-window.addEventListener('unhandledrejection', event => {
-    // Can prevent error output on the console:
-    event.preventDefault();
 
-    // Send error to log server
-    log('Reason: ' + event.reason);
-});
-*/
 
-/*
-function LogContribute() {  
-  fundhub.Contribute()
-    .watch(function(e, value) {
-      if (e)
-        console.error(e);
-      else
-        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
-    });
-}    
-*/

@@ -1,11 +1,11 @@
 /*
-Automated Test status 9/13/2017:
+Automated Test status 9/15/2017:
 
   Project Creation:
   PASS - Project created, constructor loads default values
 
   Project Contributions:
-  N/A - Test in UI - Contribute from multiple accounts
+  PASS - Contribute from user account
 
   Project Refunds:
   PASS - Refund request denied when deadline not reached yet
@@ -18,9 +18,10 @@ Automated Test status 9/13/2017:
   PASS - Payout request denied when project not fully funded
   PASS - Payout request from non-owner is denied 
 
-  FundHub:
+  Other:
   N/A - Test in UI - Create multiple projects
-
+  N/A - Test in UI - Contribute from multiple accounts
+  
 */
 
 
@@ -576,31 +577,5 @@ it("Project can receive a contribution", function(done) {
     .catch(done);
 
   });
-
-
-
-
-// DEBUG Event Logs
-/*
-function LogFund(myProject) {  
-  myProject.instance.Fund()
-    .watch(function(e, value) {
-      if (e)
-        console.error(e);
-      else
-        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
-    });
-} 
-
-function LogContribute(fundhub) {  
-  fundhub.Contribute()
-    .watch(function(e, value) {
-      if (e)
-        console.error(e);
-      else
-        console.log("@Timestamp: " + value.args.timestamp + "," + web3.fromWei(value.args.amount, "ether") + " ether contributed from " + value.args.contrib);
-    });
-}  
-*/
 
 }); // contract
