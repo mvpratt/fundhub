@@ -18,8 +18,7 @@ module.exports = {
     ],    
     "custom.css": [
       "stylesheets/custom.css"
-    ], 
-    "images/": "images/"
+    ]
   }),
   networks: {
     development: {
