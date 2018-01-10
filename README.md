@@ -2,10 +2,6 @@
 
 FundingHub is a crowdfunding platform that allows users to browse, create and contribute to projects.  There are two Solidity smart contracts named FundingHub.sol and Project.sol 
 
-Git Repository:
-https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/tree/master
-
-
 ## CHANGES SINCE LAST SUBMITAL
 
 * FundingHub contract
