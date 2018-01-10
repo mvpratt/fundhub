@@ -1,0 +1,6 @@
+not_version_controlled/
+node_modules/
+build/
+*.sol.js
+*.DS_Store
+.node*
