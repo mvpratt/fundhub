@@ -62,11 +62,11 @@ function logProjectDetails(project) {
   console.log('-----------------------------');
 }
 
+
 function getProjectAddress(index) {
-  return new Promise(((resolve, reject) => {
-    resolve(fundhub.myProjects.call(index));
-  }));
+  return fundhub.myProjects.call(index);
 }
+
 
 function scrubAmountGoal(amount_goal) {
   return new Promise(((resolve, reject) => {
@@ -96,7 +96,7 @@ function scrubDuration(duration) {
 
 
 function createProject() {
-  return new Promise(((resolve, reject) => {
+
     const success = true;
     const myProject = new ProjectTemplate();
     const user_index = Number(document.getElementById('i_user').value);
@@ -104,7 +104,7 @@ function createProject() {
     let amount_goal = document.getElementById('i_amount_goal').value;
     let duration = document.getElementById('i_duration').value;
 
-    scrubAmountGoal(amount_goal)
+    return scrubAmountGoal(amount_goal)
       .then((value) => {
         amount_goal = value;
         return scrubDuration(duration);
@@ -144,11 +144,18 @@ function createProject() {
           setStatus(`New project, Project ${myProject.index} created by ${user_names[user_index]}!`);
         }
       });
-  }));
+}
+
+function getUserName(user_address) {
+  for (let i = 0; i <= user_names.length; i += 1) {
+    if (user_address === web3.eth.accounts[i]) {
+      return user_names[i];
+    }
+  }
+  return false;
 }
 
 function refreshProjectTableByIndex(index) {
-  return new Promise(((resolve, reject) => {
     const myProject = new ProjectTemplate();
     let project_state;
     let project_balance;
@@ -158,7 +165,7 @@ function refreshProjectTableByIndex(index) {
 
     myProject.index = index;
 
-    getProjectAddress(myProject.index)
+    return getProjectAddress(myProject.index)
       .then((value) => {
         myProject.address = value.toString();
         return Project.at(myProject.address);
@@ -208,23 +215,11 @@ function refreshProjectTableByIndex(index) {
 
         refill_element = document.getElementById(`state_${myProject.index}`);
         refill_element.innerHTML = project_state;
-        resolve();
       });
-  }));
-}
-
-function getUserName(user_address) {
-  for (let i = 0; i <= user_names.length; i += 1) {
-    if (user_address === web3.eth.accounts[i]) {
-      return user_names[i];
-    }
-  }
-  return false;
 }
 
 function refreshProjectTableAll() {
-  return new Promise(((resolve, reject) => {
-    fundhub.num_projects.call()
+    return fundhub.num_projects.call()
       .then((value) => {
         const promises = [];
         let num_projects_displayed;
@@ -240,10 +235,6 @@ function refreshProjectTableAll() {
         }
         return Promise.all(promises);
       })
-      .then(() => {
-        resolve();
-      });
-  }));
 }
 
 function refreshUserTableByIndex(index) {
@@ -311,17 +302,14 @@ function contribute() {
 
 
 function requestPayout() {
-  return new Promise(((resolve, reject) => {
     let success = true;
     const proj_index = Number(document.getElementById('i_project_num').value);
     const user_index = Number(document.getElementById('i_user').value);
     const user_addr = web3.eth.accounts[user_index];
 
-    getProjectAddress(proj_index)
+    return getProjectAddress(proj_index)
       .then(addr => Project.at(addr))
-      .then(instance =>
-        instance.payout({ from: user_addr }), // , errorHandler);
-      )
+      .then(instance => instance.payout({ from: user_addr }) )
       .catch((error) => {
         success = false;
         console.log('payout() exception');
@@ -335,9 +323,7 @@ function requestPayout() {
         if (success) {
           setStatus(`Payout sent to ${user_names[user_index]}!`);
         }
-        resolve();
       });
-  }));
 }
 
 function requestRefund() {
@@ -349,7 +335,7 @@ function requestRefund() {
 
     getProjectAddress(proj_index)
       .then(addr => Project.at(addr))
-      .then(instance => instance.refund({ from: user_addr }))
+      .then(instance => instance.refund({ from: user_addr }) )
       .catch((error) => {
         success = false;
         console.log('refund() exception');
