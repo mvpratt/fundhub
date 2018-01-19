@@ -1,5 +1,3 @@
-
-
 pragma solidity ^0.4.15;
 
 contract Project {
@@ -25,10 +23,10 @@ contract Project {
     } 
 
     // constructor
-    function Project(uint _fundingGoal, uint _duration) {
+    function Project(address _owner, uint _fundingGoal, uint _duration) {
 
         info = Info({ 
-            owner: tx.origin, 
+            owner: _owner, 
             amountGoal: _fundingGoal, 
             deadline: (now + _duration)
         });
