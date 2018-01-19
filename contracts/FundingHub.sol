@@ -1,5 +1,4 @@
 
-
 pragma solidity ^0.4.15;
 
 import "./Project.sol";
@@ -8,8 +7,8 @@ contract FundingHub {
       
   uint public num_projects = 0;
   mapping(uint => address) public myProjects;  
-  event Contribute(uint _timestamp, address _contrib, uint _amount);
-  event CreateProject(uint _timestamp, address _project_address);
+  event LogContribute(uint _timestamp, address _contrib, uint _amount);
+  event LogCreateProject(uint _timestamp, address _project_address);
 
 	function FundingHub() {}
 
@@ -21,7 +20,7 @@ contract FundingHub {
 
     num_projects = num_projects + 1;
     myProjects[num_projects] = new Project(_funding_goal, _duration);
-    CreateProject(now, myProjects[num_projects]); 
+    LogCreateProject(now, myProjects[num_projects]); 
   }
 
   // Contributer is an account (external account, or contract account)
@@ -29,6 +28,6 @@ contract FundingHub {
     
     Project proj = Project(_project_address);
     proj.fund.value(msg.value)(msg.sender); // note: fund() can cause a revert() 
-    Contribute(now, msg.sender, msg.value);
+    LogContribute(now, msg.sender, msg.value);
   }
 }

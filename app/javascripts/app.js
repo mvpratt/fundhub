@@ -166,7 +166,7 @@ function refreshProjectTableByIndex(index){
     })
     .then(function(value) {
       myProject.instance = value;      
-      return myProject.instance.paid_out.call();
+      return myProject.instance.paidOut.call();
     })
     .then(function(value) {
       myProject.paid_out = value;      

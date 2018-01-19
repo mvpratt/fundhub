@@ -6,16 +6,16 @@ contract Project {
 
     struct Info {
       address owner; 
-      uint amount_goal;  // in Wei
+      uint amountGoal;  // in Wei
       uint deadline;     // in seconds
     }
 
     Info public info;
     mapping(address => uint) public balances;  // Funding contributions
-    bool public paid_out; // true if project is fully funded and paid out
+    bool public paidOut; // true if project is fully funded and paid out
 
-    event Fund(uint _timestamp, address _contrib, uint _amount);
-    event Refund(uint _timestamp, address _contrib, uint _amount);
+    event LogFund(uint _timestamp, address _contrib, uint _amount);
+    event LogRefund(uint _timestamp, address _contrib, uint _amount);
 
 
     //access control
@@ -25,15 +25,15 @@ contract Project {
     } 
 
     // constructor
-    function Project(uint _funding_goal, uint _duration) {
+    function Project(uint _fundingGoal, uint _duration) {
 
         info = Info({ 
             owner: tx.origin, 
-            amount_goal: _funding_goal, 
+            amountGoal: _fundingGoal, 
             deadline: (now + _duration)
         });
 
-        paid_out = false;
+        paidOut = false;
     }
 
     // Only fund if: deadline not reached AND not already paid out
@@ -44,32 +44,28 @@ contract Project {
         uint contribution;
 
         require(now < info.deadline);
-        require(paid_out == false);
+        require(paidOut == false);
 
-        if (this.balance > info.amount_goal) {
-          overfunded = this.balance - info.amount_goal;
+        if (this.balance > info.amountGoal) {
+          overfunded = this.balance - info.amountGoal;
           contribution = msg.value - overfunded;
+          balances[_contributer] += contribution;
           if (!_contributer.send(overfunded)) revert();
         }
         else {
           contribution = msg.value;
+          balances[_contributer] += contribution; 
         }
 
-        balances[_contributer] += contribution;
-        Fund(now, _contributer, contribution);
+        LogFund(now, _contributer, contribution);
     }
 
     // Only pays out to the owner
     function payout() public onlyOwner() {
 
-        require(this.balance == info.amount_goal);
-
-        if (info.owner.send(this.balance)) {
-            paid_out = true;
-        }
-        else {
-            revert();
-        }
+        require(this.balance >= info.amountGoal);
+        paidOut = true;
+        if (!info.owner.send(this.balance)) revert();
     }
 
     // Only refund if:
@@ -78,13 +74,13 @@ contract Project {
 
         uint bal;
         require(now >= info.deadline);                  
-        require(this.balance < info.amount_goal);       
+        require(this.balance < info.amountGoal);       
 
         // zero out balance before sending funds - to prevent re-entrancy attack
         bal = balances[msg.sender];
         require(bal > 0);
         balances[msg.sender] = 0;  
         if (!msg.sender.send(bal)) revert();
-        Refund(now, msg.sender, bal);
+        LogRefund(now, msg.sender, bal);
     }
 }
