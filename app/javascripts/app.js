@@ -55,6 +55,13 @@ function ProjectTemplate() {
     return project;
 }
 
+function logFundhubDetails() {
+    FundingHub.deployed().then(function(instance) {
+      console.log("Fundhub address: " + instance.address);
+    })
+  //.catch
+}
+
 function logProjectDetails(project) {
 
     console.log("-----------------------------");
@@ -70,16 +77,13 @@ function logProjectDetails(project) {
 }
 
 
-
 function getProjectAddress(index) {
-
   return new Promise(function(resolve,reject){
     resolve(fundhub.myProjects.call(index));
   });
 }
 
 function createProject() {
-
   return new Promise(function(resolve,reject){
 
   const default_amount_goal = web3.toWei(10, "ether");
@@ -420,6 +424,7 @@ window.onload = function() {
     fundhub = value;
     showUserBalances();
     console.log("FundingHub deployed!");
+    console.log("Fundhub address: " + fundhub.address);
     return;  
   })
   .then(refreshProjectTableAll)
