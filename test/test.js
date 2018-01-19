@@ -28,8 +28,8 @@ Automated Test status 9/15/2017:
 const FundingHub = artifacts.require('./FundingHub.sol');
 const Project = artifacts.require('./Project.sol');
 
-
 contract('Test: Project contract', (accounts) => {
+
   const gasLimit = 4500000;
   const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
   const required_user_balance = [1, 1, 4, 1]; // units of ETH
@@ -39,15 +39,13 @@ contract('Test: Project contract', (accounts) => {
   const bob = accounts[2];
   const carol = accounts[3];
 
-
   checkForLowBalances();
 
-
-  function showUserBalances() {
-    for (let i = 0; i < user_names.length; i++) {
-      console.log(`${user_names[i]}: balance : ${web3.fromWei(web3.eth.getBalance(web3.eth.accounts[i]), 'ether')} ETH`);
-    }
-  }
+  //function showUserBalances() {
+  //  for (let i = 0; i < user_names.length; i++) {
+  //    console.log(`${user_names[i]}: balance : ${web3.fromWei(web3.eth.getBalance(web3.eth.accounts[i]), 'ether')} ETH`);
+  //  }
+  //}
 
   function checkForLowBalances() {
     let balance;
@@ -60,7 +58,6 @@ contract('Test: Project contract', (accounts) => {
       }
     }
   }
-
 
   function increaseTime(seconds) {
     return new Promise(((resolve, reject) => {
@@ -88,7 +85,6 @@ contract('Test: Project contract', (accounts) => {
     }));
   }
 
-
   // Project "struct"
   function ProjectTemplate() {
     const project = {};
@@ -100,7 +96,6 @@ contract('Test: Project contract', (accounts) => {
     project.index = 0;
     return project;
   }
-
 
   function logProjectDetails(project) {
     console.log('-----------------------------');
@@ -114,13 +109,11 @@ contract('Test: Project contract', (accounts) => {
     console.log('-----------------------------');
   }
 
-
   function getProjectAddress(fundhub, index) {
     return new Promise(((resolve, reject) => {
       resolve(fundhub.myProjects.call(index));
     }));
   }
-
 
   function createProject(fundhub, owner, amount_goal, duration) {
     const myProject = new ProjectTemplate();

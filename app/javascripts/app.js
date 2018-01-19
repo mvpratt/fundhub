@@ -73,7 +73,7 @@ function logProjectDetails(project) {
     console.log("project index: " + project.index);
     console.log("current time: " + web3.eth.getBlock(web3.eth.blockNumber).timestamp);
     console.log("-----------------------------");
-    return;
+    //return;
 }
 
 
@@ -83,40 +83,59 @@ function getProjectAddress(index) {
   });
 }
 
+function scrubAmountGoal(amount_goal) {
+  return new Promise(function(resolve,reject){
+    const default_amount_goal = web3.toWei(10, "ether");
+
+    if (amount_goal === undefined || amount_goal === null || amount_goal === ""){
+      amount_goal = default_amount_goal;
+    }
+    else {
+      amount_goal = web3.toWei(web3.toBigNumber(amount_goal), "ether");
+    }
+    resolve(amount_goal);
+  });
+}
+
+
+function scrubDuration(duration) {
+  return new Promise(function(resolve,reject){
+    const default_duration = 200;
+    if (duration === undefined || duration === null || duration === ""){
+      duration = default_duration;
+    }
+    else {
+      duration = Number(duration);
+    }   
+    resolve(duration);
+  });
+}
+
+
 function createProject() {
   return new Promise(function(resolve,reject){
 
-  const default_amount_goal = web3.toWei(10, "ether");
-  const default_duration = 200;
+    var success = true;
+    var myProject = new ProjectTemplate();
+    var user_index = Number(document.getElementById("i_user").value);
+    var user_addr = web3.eth.accounts[user_index];  
+    var amount_goal = document.getElementById("i_amount_goal").value;
+    var duration = document.getElementById("i_duration").value;
 
-  var success = true;
-  var myProject = new ProjectTemplate();
-  var user_index = Number(document.getElementById("i_user").value);
-  var user_addr = web3.eth.accounts[user_index];  
-  var amount_goal = document.getElementById("i_amount_goal").value;
-  var duration = document.getElementById("i_duration").value;
-
-  if (amount_goal === undefined || amount_goal === null || amount_goal === ""){
-    amount_goal = default_amount_goal;
-  }
-  else {
-    amount_goal = web3.toWei(web3.toBigNumber(amount_goal), "ether");
-  }
-
-  if (duration === undefined || duration === null || duration === ""){
-    duration = default_duration;
-  }
-  else {
-    duration = Number(duration);
-  }
-
-  fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit})
-    .catch(function(e) {
-      success = false;
-      console.log("createProject() exception");
-      console.log(e);
-      setStatus("Error creating project; see log.");
-      return;
+    scrubAmountGoal(amount_goal)
+    .then(function(value){
+      amount_goal = value;
+      return scrubDuration(duration);
+    })
+    .then(function(value){
+      duration = value;
+      return fundhub.createProject(amount_goal, duration, {from: user_addr, gas: gasLimit});
+    //.catch(function(e) {
+    //  success = false;
+    //  console.log("createProject() exception");
+    //  console.log(e);
+    //  setStatus("Error creating project; see log.");
+    //return;
     })
     .then(function(){
       return fundhub.num_projects.call();
@@ -138,15 +157,15 @@ function createProject() {
       myProject.amount_goal = web3.toBigNumber(value[1]);
       myProject.deadline = parseInt(value[2]);
       logProjectDetails(myProject);
-  })
-  .then(refreshProjectTableAll)
-  .then(refreshUserTable)
-  .then(function(){
-    if(success) {
-      setStatus("New project, Project " + myProject.index + " created by " + user_names[user_index] + "!");
-    }
-    resolve();
-  })
+    })
+    .then(refreshProjectTableAll)
+    .then(refreshUserTable)
+    .then(function(){
+      if(success) {
+        setStatus("New project, Project " + myProject.index + " created by " + user_names[user_index] + "!");
+      }
+      //resolve();
+    })
   })
 }
 
@@ -323,7 +342,7 @@ function contribute() {
     console.log("contribute() exception");
     console.log(error);
     setStatus("Error funding project; see log.");
-    return;
+    //return;
   })
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
@@ -359,7 +378,7 @@ function requestPayout() {
     console.log("payout() exception");
     console.log(error);
     setStatus("Error getting payout; see log.");
-    return;
+    //return;
   }) 
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
@@ -393,7 +412,7 @@ function requestRefund() {
     console.log("refund() exception");
     console.log(error);
     setStatus("Error getting refund; see log.");
-    return;
+    //return;
   })   
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
@@ -412,12 +431,12 @@ window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       alert("There was an error fetching your accounts.");
-      return;
+      //return;
     }
 
     if (accs.length == 0) {
       alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
-      return;
+      //return;
     }   
 
   FundingHub.deployed().then(function(value) {
@@ -425,7 +444,7 @@ window.onload = function() {
     showUserBalances();
     console.log("FundingHub deployed!");
     console.log("Fundhub address: " + fundhub.address);
-    return;  
+    //return;  
   })
   .then(refreshProjectTableAll)
   .then(refreshUserTable)
