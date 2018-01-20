@@ -6,12 +6,15 @@ contract FundingHub {
   uint public num_projects = 0;  // valid project numbers: (1..numProjects)
   mapping(uint => address) public myProjects; 
 
-  event LogContribute(uint _timestamp, address _contrib, uint _amount);
-  event LogCreateProject(uint _timestamp, address _projectAddress);
+  event LogContribute(address _contrib, uint _amount);
+  event LogCreateProject(address _projectAddress);
 
 	function FundingHub() {}
 
-  // project owner can be an account other than the creator
+  /// @notice project owner can be an account other than the creator
+  /// @param _fundingGoal - goal in wei
+  /// @param _duration - duration in seconds
+  /// @return nada
   function createProject(uint _fundingGoal, uint _duration) {
 
     require(_fundingGoal > 0);
@@ -19,7 +22,7 @@ contract FundingHub {
 
     num_projects = num_projects + 1;
     myProjects[num_projects] = new Project(msg.sender, _fundingGoal, _duration); // owner is the account that created the project
-    LogCreateProject(now, myProjects[num_projects]); 
+    LogCreateProject(myProjects[num_projects]); 
   }
 
   // Contributer is an account (external account, or contract account)
@@ -35,6 +38,6 @@ contract FundingHub {
     require(_projectExists);
 
     proj.fund.value(msg.value)(msg.sender); // note: fund() can cause a revert() 
-    LogContribute(now, msg.sender, msg.value);
+    LogContribute(msg.sender, msg.value);
   }
 }

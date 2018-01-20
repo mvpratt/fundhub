@@ -23,6 +23,8 @@ const gasLimit = 4500000;
 const max_projects_displayed = 4;
 const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
 
+
+
 function setStatus(message) {
   const status = document.getElementById('status');
   status.innerHTML = message;
@@ -57,7 +59,7 @@ function logProjectDetails(project) {
   console.log(`project address: ${project.address}`);
   console.log(`project goal: ${project.amount_goal}`);
   console.log(`project deadline: ${project.deadline}`);
-  console.log(`project index: ${project.index}`);
+  //console.log(`project index: ${project.index}`);
   console.log(`current time: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}`);
   console.log('-----------------------------');
 }
@@ -118,15 +120,28 @@ function createProject() {
         //  console.log(e);
         //  setStatus("Error creating project; see log.");
       })
-      .then(() => fundhub.num_projects.call())
-      .then((value) => {
-        myProject.index = value;
-        return getProjectAddress(myProject.index);
-      })
-      .then((value) => {
-        myProject.address = value.toString();
+      // get project address from event
+      .then((result) => {
+      // result is an object with the following values:
+      // result.tx      => transaction hash, string
+      // result.logs    => array of decoded events that were triggered within this transaction
+      // result.receipt => transaction receipt object, which includes gas used
+
+        // loop through result.logs to see if we triggered the  event.
+        for (let i = 0; i < result.logs.length; i++) {
+          let log = result.logs[i];
+
+          if (log.event == "LogCreateProject") {
+            console.log("Event: FundingHub.LogCreateProject()");
+            myProject.address = log.args._projectAddress;
+            break;
+          }
+        }
         return Project.at(myProject.address);
       })
+      //.catch(function(err) {
+        //console.log(err)
+      //})
       .then((value) => {
         myProject.instance = value;
         return myProject.instance.info.call();
@@ -265,7 +280,6 @@ function refreshUserTable() {
 }
 
 function contribute() {
-  return new Promise(((resolve, reject) => {
     const myProject = {};
     const default_amount_contribute = web3.toWei(1, 'ether');
     const user_index = Number(document.getElementById('i_user').value);
@@ -281,7 +295,7 @@ function contribute() {
       amount_contribute = web3.toWei(amount_contribute, 'ether');
     }
 
-    getProjectAddress(myProject.index)
+    return getProjectAddress(myProject.index)
       .then(value => fundhub.contribute(value.toString(), { from: user_addr, value: amount_contribute, gas: gasLimit }))
       .catch((error) => {
         success = false;
@@ -295,9 +309,7 @@ function contribute() {
         if (success) {
           setStatus(`${user_names[user_index]} contributed ${web3.fromWei(amount_contribute, 'ether')} ETH to Project ${myProject.index}!`);
         }
-        resolve();
       });
-  }));
 }
 
 
@@ -309,13 +321,14 @@ function requestPayout() {
 
     return getProjectAddress(proj_index)
       .then(addr => Project.at(addr))
-      .then(instance => instance.payout({ from: user_addr }) )
+      .then(instance => {
+        return instance.payout({ from: user_addr })
+      })
       .catch((error) => {
         success = false;
         console.log('payout() exception');
         console.log(error);
         setStatus('Error getting payout; see log.');
-        reject();
       })
       .then(refreshProjectTableAll)
       .then(refreshUserTable)
@@ -327,15 +340,16 @@ function requestPayout() {
 }
 
 function requestRefund() {
-  return new Promise(((resolve, reject) => {
     let success = true;
     const proj_index = Number(document.getElementById('i_project_num').value);
     const user_index = Number(document.getElementById('i_user').value);
     const user_addr = web3.eth.accounts[user_index];
 
-    getProjectAddress(proj_index)
+    return getProjectAddress(proj_index)
       .then(addr => Project.at(addr))
-      .then(instance => instance.refund({ from: user_addr }) )
+      .then(instance => {
+        return instance.refund({ from: user_addr })
+      })
       .catch((error) => {
         success = false;
         console.log('refund() exception');
@@ -348,11 +362,8 @@ function requestRefund() {
         if (success) {
           setStatus(`Refund sent to ${user_names[user_index]}!`);
         }
-        resolve();
       });
-  }));
 }
-
 
 window.onload = function () {
   web3.eth.getAccounts((err, accs) => {
@@ -364,14 +375,14 @@ window.onload = function () {
       alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
     }
 
-    FundingHub.deployed().then((value) => {
+    FundingHub.deployed()
+    .then((value) => {
       fundhub = value;
       showUserBalances();
       console.log('FundingHub deployed!');
       console.log(`Fundhub address: ${fundhub.address}`);
     })
-      .then(refreshProjectTableAll)
-      .then(refreshUserTable);
+    .then(refreshProjectTableAll)
+    .then(refreshUserTable);
   });
 };
-
