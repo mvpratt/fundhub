@@ -2,34 +2,9 @@
 
 FundingHub is a crowdfunding platform that allows users to browse, create and contribute to projects.  There are two Solidity smart contracts named FundingHub.sol and Project.sol 
 
-## CHANGES SINCE LAST SUBMITAL
+## CHANGES SINCE LAST RELEASE
 
-* FundingHub contract
- *   contribute() should take a project address, not index
- *   Removed getProjectAddress() and other custom get functions
- *   Moved variables from global scope to local scope when possible
-
-* Project contract
- *   Got rid of getAmountRaised() and other custom get functions
- *   Removed redundant state variables
- *   Use require() to check conditions in fund(), payout(), refund()
- *   Detect overfunding, return excess funds to contributer
- *   Moved variables from global scope to local scope when possible
-
-* Tests
- *   Automated testing of deadline feature
- *   Made dedicated function for project creation and other recurring tasks
- *   Truffle migration script that creates a project after FundingHub deployed
-
-* UI updates:
- *  Use project creation defaults if user doesnt specify
- *  Show state in project table
- *  Show partial project address
- *  Show time left instead of duration / deadline
- *  Refresh project table and user table after every transaction
-
-* Other
- *   Updated to truffle 3.4.9 and solidity 0.4.15
+* 
 
 ## FUNDINGHUB 
 
@@ -68,7 +43,7 @@ A simple web interface allows users to browse active projects, create their own 
 1. `npm run rpc`
 2. `npm run build`
 3. `npm run web`
-4. Open `localhost:8000` in Google Chrome
+4. Open `localhost:8000` in browser
 
 ### Guidelines
 * Deadline and duration are in units of  seconds
@@ -94,17 +69,14 @@ A simple web interface allows users to browse active projects, create their own 
 
 ## AUTOMATED TESTS
 1. `npm run rpc`  (network 42, automatic mining 1 block/sec)
-2. `npm run test` - Tests createProject(), contribute(), fund(), refund(), payout()
+2. `npm run test` 
 
-
-## Tool Versions 
+## DEPENDENCIES
  * Tuffle 3.4.9
  * Node.js 6.11.2
- * npm 3.10.10
  * Solidity 0.4.15
  * TestRPC 4.1.1
  * geth 1.5.8-stable-f58fb322
- * Google Chrome 
 
 ### Errata
 * A default project owned by the coinbase account is created during migration (truffle).  This project is provided as an example only.
@@ -117,6 +89,3 @@ mvpratt
 
 ### Screenshot:
 https://git.academy.b9lab.com/ETH-8-exam-projects/mvpratt/blob/master/Screenshot.png
-
-
-
