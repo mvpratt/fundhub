@@ -4,7 +4,7 @@ FundingHub is a crowdfunding platform that allows users to browse, create and co
 
 ## CHANGES SINCE LAST RELEASE
 
-* 
+* TBD
 
 ## FUNDINGHUB 
 
