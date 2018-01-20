@@ -23,8 +23,6 @@ const gasLimit = 4500000;
 const max_projects_displayed = 4;
 const user_names = ['Coinbase', 'Alice', 'Bob', 'Carol'];
 
-
-
 function setStatus(message) {
   const status = document.getElementById('status');
   status.innerHTML = message;
@@ -49,6 +47,7 @@ function ProjectTemplate() {
   project.deadline = 0;
   project.instance = 0;
   project.index = 0;
+  project.balance = 0;
   return project;
 }
 
@@ -69,9 +68,20 @@ function getProjectAddress(index) {
   return fundhub.myProjects.call(index);
 }
 
+function getBalance(address) {
+  return new Promise( (resolve, reject) => {
+    resolve(web3.eth.getBalance(address).valueOf());
+  });
+}
+
+function getCurrentTime() {
+  return new Promise( (resolve, reject) => {
+    resolve(web3.eth.getBlock(web3.eth.blockNumber).timestamp);
+  });
+}
 
 function scrubAmountGoal(amount_goal) {
-  return new Promise(((resolve, reject) => {
+  return new Promise( (resolve, reject) => {
     const default_amount_goal = web3.toWei(10, 'ether');
 
     if (amount_goal === undefined || amount_goal === null || amount_goal === '') {
@@ -80,12 +90,12 @@ function scrubAmountGoal(amount_goal) {
       amount_goal = web3.toWei(web3.toBigNumber(amount_goal), 'ether');
     }
     resolve(amount_goal);
-  }));
+  });
 }
 
 
 function scrubDuration(duration) {
-  return new Promise(((resolve, reject) => {
+  return new Promise( (resolve, reject) => {
     const default_duration = 200;
     if (duration === undefined || duration === null || duration === '') {
       duration = default_duration;
@@ -93,7 +103,7 @@ function scrubDuration(duration) {
       duration = Number(duration);
     }
     resolve(duration);
-  }));
+  });
 }
 
 
@@ -120,13 +130,11 @@ function createProject() {
         //  console.log(e);
         //  setStatus("Error creating project; see log.");
       })
-      // get project address from event
       .then((result) => {
-      // result is an object with the following values:
-      // result.tx      => transaction hash, string
-      // result.logs    => array of decoded events that were triggered within this transaction
-      // result.receipt => transaction receipt object, which includes gas used
-
+        // result is an object with the following values:
+        // result.tx      => transaction hash, string
+        // result.logs    => array of decoded events that were triggered within this transaction
+        // result.receipt => transaction receipt object, which includes gas used
         // loop through result.logs to see if we triggered the  event.
         for (let i = 0; i < result.logs.length; i++) {
           let log = result.logs[i];
@@ -173,7 +181,6 @@ function getUserName(user_address) {
 function refreshProjectTableByIndex(index) {
     const myProject = new ProjectTemplate();
     let project_state;
-    let project_balance;
     let current_time;
     let refill_element;
     let state_element;
@@ -191,6 +198,14 @@ function refreshProjectTableByIndex(index) {
       })
       .then((value) => {
         myProject.paid_out = value;
+        return getBalance(myProject.address);
+      })
+      .then((value) => {
+        myProject.balance = value;
+        return getCurrentTime();
+      })              
+      .then((value) => {
+        current_time = value;
         return myProject.instance.info.call();
       })
       .then((value) => {
@@ -198,38 +213,35 @@ function refreshProjectTableByIndex(index) {
         myProject.amount_goal = web3.toBigNumber(value[1]);
         myProject.deadline = parseInt(value[2]);
 
-        project_balance = web3.eth.getBalance(myProject.address).valueOf();
-        current_time = web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+        owner_element = document.getElementById(`owner_address_${myProject.index}`);
+        address_element = document.getElementById(`project_address_${myProject.index}`);
+        goal_element = document.getElementById(`amount_goal_${myProject.index}`);
+        raised_element = document.getElementById(`amount_raised_${myProject.index}`);
+        deadline_element = document.getElementById(`deadline_${myProject.index}`);
 
-        refill_element = document.getElementById(`owner_address_${myProject.index}`);
-        refill_element.innerHTML = getUserName(myProject.owner);
-
-        state_element = document.getElementById(`project_address_${myProject.index}`);
-        state_element.innerHTML = (`${myProject.address.substring(0, 6)}....${myProject.address.substring(38, 42)}`);
-
-        refill_element = document.getElementById(`amount_goal_${myProject.index}`);
-        refill_element.innerHTML = web3.fromWei(myProject.amount_goal, 'ether');
-
-        refill_element = document.getElementById(`amount_raised_${myProject.index}`);
-        refill_element.innerHTML = web3.fromWei(project_balance, 'ether');
-
-        refill_element = document.getElementById(`deadline_${myProject.index}`);
-        refill_element.innerHTML = myProject.deadline - current_time;
+        owner_element.innerHTML = getUserName(myProject.owner);
+        address_element.innerHTML = (`${myProject.address.substring(0, 6)}....${myProject.address.substring(38, 42)}`);
+        goal_element.innerHTML = web3.fromWei(myProject.amount_goal, 'ether');
+        raised_element.innerHTML = web3.fromWei(myProject.balance, 'ether');
+        deadline_element.innerHTML = myProject.deadline - current_time;
 
         if (myProject.paid_out === true) {
           project_state = 'Paid out!';
-        } else if (project_balance === myProject.amount_goal) {
+        } 
+        else if (myProject.balance === myProject.amount_goal) {
           project_state = 'Fully Funded! (Request your payout)';
-        } else if (current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() > 0) {
+        } 
+        else if (current_time > myProject.deadline && myProject.balance > 0) {
           project_state = 'Deadline Expired (Request your refund)';
-        } else if (current_time > myProject.deadline && web3.eth.getBalance(myProject.address).valueOf() === 0) {
+        } 
+        else if (current_time > myProject.deadline && myProject.balance === 0) {
           project_state = 'All refunds issued';
-        } else {
+        } 
+        else {
           project_state = 'Accepting Funds';
         }
-
-        refill_element = document.getElementById(`state_${myProject.index}`);
-        refill_element.innerHTML = project_state;
+        state_element = document.getElementById(`state_${myProject.index}`);        
+        state_element.innerHTML = project_state;
       });
 }
 
@@ -296,7 +308,13 @@ function contribute() {
     }
 
     return getProjectAddress(myProject.index)
-      .then(value => fundhub.contribute(value.toString(), { from: user_addr, value: amount_contribute, gas: gasLimit }))
+      .then(value => {
+        return fundhub.contribute(value.toString(), 
+          { from: user_addr, 
+            value: amount_contribute, 
+            gas: gasLimit 
+          })
+      })
       .catch((error) => {
         success = false;
         console.log('contribute() exception');
