@@ -58,7 +58,7 @@ function logProjectDetails(project) {
   console.log(`project address: ${project.address}`);
   console.log(`project goal: ${project.amount_goal}`);
   console.log(`project deadline: ${project.deadline}`);
-  //console.log(`project index: ${project.index}`);
+  console.log(`project index: ${project.index}`);
   console.log(`current time: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}`);
   console.log('-----------------------------');
 }
@@ -142,6 +142,7 @@ function createProject() {
           if (log.event == "LogCreateProject") {
             console.log("Event: FundingHub.LogCreateProject()");
             myProject.address = log.args._projectAddress;
+            myProject.index = log.args._index;
             break;
           }
         }
@@ -182,9 +183,6 @@ function refreshProjectTableByIndex(index) {
     const myProject = new ProjectTemplate();
     let project_state;
     let current_time;
-    let refill_element;
-    let state_element;
-
     myProject.index = index;
 
     return getProjectAddress(myProject.index)
@@ -213,11 +211,11 @@ function refreshProjectTableByIndex(index) {
         myProject.amount_goal = web3.toBigNumber(value[1]);
         myProject.deadline = parseInt(value[2]);
 
-        owner_element = document.getElementById(`owner_address_${myProject.index}`);
-        address_element = document.getElementById(`project_address_${myProject.index}`);
-        goal_element = document.getElementById(`amount_goal_${myProject.index}`);
-        raised_element = document.getElementById(`amount_raised_${myProject.index}`);
-        deadline_element = document.getElementById(`deadline_${myProject.index}`);
+        let owner_element = document.getElementById(`owner_address_${myProject.index}`);
+        let address_element = document.getElementById(`project_address_${myProject.index}`);
+        let goal_element = document.getElementById(`amount_goal_${myProject.index}`);
+        let raised_element = document.getElementById(`amount_raised_${myProject.index}`);
+        let deadline_element = document.getElementById(`deadline_${myProject.index}`);
 
         owner_element.innerHTML = getUserName(myProject.owner);
         address_element.innerHTML = (`${myProject.address.substring(0, 6)}....${myProject.address.substring(38, 42)}`);
@@ -267,11 +265,14 @@ function refreshProjectTableAll() {
 function refreshUserTableByIndex(index) {
   return new Promise(((resolve, reject) => {
     const user_address = web3.eth.accounts[index];
-    const refill_element_address = document.getElementById(`user_address_${index}`);
-    const refill_element_balance = document.getElementById(`user_balance_${index}`);
+    const element_address = document.getElementById(`user_address_${index}`);
+    const element_balance = document.getElementById(`user_balance_${index}`);
 
-    refill_element_address.innerHTML = (`${user_address.substring(0, 6)}....${user_address.substring(38, 42)}`).toString();
-    refill_element_balance.innerHTML = web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), 'ether');
+    // get user balance
+    //getBalance(web3.eth.accounts[index])  --use promise rather than synchronous
+
+    element_address.innerHTML = (`${user_address.substring(0, 6)}....${user_address.substring(38, 42)}`).toString();
+    element_balance.innerHTML = web3.fromWei(web3.eth.getBalance(user_address), 'ether');
     resolve();
   }));
 }
@@ -292,14 +293,12 @@ function refreshUserTable() {
 }
 
 function contribute() {
-    const myProject = {};
+    let success = true;
+    let amount_contribute = document.getElementById('contrib_amount').value;
     const default_amount_contribute = web3.toWei(1, 'ether');
     const user_index = Number(document.getElementById('i_user').value);
     const user_addr = web3.eth.accounts[user_index];
-    let success = true;
-    let amount_contribute = document.getElementById('contrib_amount').value;
-
-    myProject.index = Number(document.getElementById('i_project_num').value);
+    const proj_index = Number(document.getElementById('i_project_num').value);
 
     if (amount_contribute === undefined || amount_contribute === null || amount_contribute === '') {
       amount_contribute = default_amount_contribute;
@@ -307,7 +306,7 @@ function contribute() {
       amount_contribute = web3.toWei(amount_contribute, 'ether');
     }
 
-    return getProjectAddress(myProject.index)
+    return getProjectAddress(proj_index)
       .then(value => {
         return fundhub.contribute(value.toString(), 
           { from: user_addr, 
@@ -325,7 +324,7 @@ function contribute() {
       .then(refreshUserTable)
       .then(() => {
         if (success) {
-          setStatus(`${user_names[user_index]} contributed ${web3.fromWei(amount_contribute, 'ether')} ETH to Project ${myProject.index}!`);
+          setStatus(`${user_names[user_index]} contributed ${web3.fromWei(amount_contribute, 'ether')} ETH to Project ${proj_index}!`);
         }
       });
 }
@@ -388,7 +387,6 @@ window.onload = function () {
     if (err != null) {
       alert('There was an error fetching your accounts.');
     }
-
     if (accs.length === 0) {
       alert("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
     }
@@ -397,8 +395,7 @@ window.onload = function () {
     .then((value) => {
       fundhub = value;
       showUserBalances();
-      console.log('FundingHub deployed!');
-      console.log(`Fundhub address: ${fundhub.address}`);
+      console.log(`Fundhub deployed at address: ${fundhub.address}`);
     })
     .then(refreshProjectTableAll)
     .then(refreshUserTable);

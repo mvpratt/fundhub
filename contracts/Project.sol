@@ -12,9 +12,8 @@ contract Project {
     mapping(address => uint) public balances;  // Funding contributions
     bool public paidOut; // true if project is fully funded and paid out
 
-    event LogFund(uint _timestamp, address _contrib, uint _amount);
-    event LogRefund(uint _timestamp, address _contrib, uint _amount);
-
+    event LogFund(address _contrib, uint _amount);
+    event LogRefund(address _contrib, uint _amount);
 
     //access control
     modifier onlyOwner { 
@@ -55,7 +54,7 @@ contract Project {
           balances[_contributer] += contribution; 
         }
 
-        LogFund(now, _contributer, contribution);
+        LogFund(_contributer, contribution);
     }
 
     // Only pays out to the owner
@@ -79,6 +78,6 @@ contract Project {
         require(bal > 0);
         balances[msg.sender] = 0;  
         if (!msg.sender.send(bal)) revert();
-        LogRefund(now, msg.sender, bal);
+        LogRefund(msg.sender, bal);
     }
 }

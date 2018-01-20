@@ -7,7 +7,7 @@ contract FundingHub {
   mapping(uint => address) public myProjects; 
 
   event LogContribute(address _contrib, uint _amount);
-  event LogCreateProject(address _projectAddress);
+  event LogCreateProject(address _projectAddress, uint _index);
 
 	function FundingHub() {}
 
@@ -22,7 +22,7 @@ contract FundingHub {
 
     num_projects = num_projects + 1;
     myProjects[num_projects] = new Project(msg.sender, _fundingGoal, _duration); // owner is the account that created the project
-    LogCreateProject(myProjects[num_projects]); 
+    LogCreateProject(myProjects[num_projects], num_projects); 
   }
 
   // Contributer is an account (external account, or contract account)
