@@ -16,6 +16,29 @@ UI Testing status 9/13/2017:
     PASS - Contribute
     PASS - Payout after fully funded
     PASS - Refund after deadline
+
+Common functions
+Print error
+Print status
+Create project
+Request payout
+Request  refund
+Contribute
+Refresh user table
+Refresh project table
+
+Update myproject info
+Set project info
+Set project address
+Get project info
+Get project address
+
+Get balance(addr)
+Get current time
+
+Front end
+Get
+
 */
 
 let fundhub; // Main contract
@@ -28,9 +51,9 @@ function setStatus(message) {
   status.innerHTML = message;
 }
 
-// function logTimestamp(message) {
+//function logTimestamp(message) {
 //  console.log(`Log Timestamp: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}  Log: ${message}`);
-// }
+//}
 
 function showUserBalances() {
   for (let i = 0; i < user_names.length; i += 1) {
@@ -60,19 +83,19 @@ function logProjectDetails(project) {
     console.log(`project goal: ${project.amount_goal}`);
     console.log(`project deadline: ${project.deadline}`);
     console.log(`project index: ${project.index}`);
-    console.log(`current time: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}`);
+    console.log(`current time: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}`);  // todo use promise, not sync
     console.log('-----------------------------');
     resolve();
   })
 }
 
-function getProjectInfo(myProject, instance) {
-  return instance.info.call()
+function getProjectInfo(project) {
+  return project.instance.info.call()
   .then(info => {
-    myProject.owner = info[0];
-    myProject.amount_goal = web3.toBigNumber(info[1]);
-    myProject.deadline = parseInt(info[2]);
-    return myProject;
+    project.owner = info[0];
+    project.amount_goal = web3.toBigNumber(info[1]);
+    project.deadline = parseInt(info[2]);
+    return project;
   })  
 }
 
@@ -80,8 +103,7 @@ function getProjectAddress(index) {
   return fundhub.myProjects.call(index);
 }
 
-function setProjectAddress(myProject, result) {
-  return new Promise( (resolve, reject) => {
+function setProjectAddress(project, result) {
       // result is an object with the following values:
       // result.tx      => transaction hash, string
       // result.logs    => array of decoded events that were triggered within this transaction
@@ -92,16 +114,23 @@ function setProjectAddress(myProject, result) {
          log = result.logs[i];
          if (log.event == "LogCreateProject") {
           console.log("Event: FundingHub.LogCreateProject()");
-          myProject.address = log.args._projectAddress;
-          myProject.index = log.args._index;
+          project.address = log.args._projectAddress;
+          project.index = log.args._index;
           break;
         }
       }
-      resolve(Project.at(myProject.address));    
-  })
+      return project;
   //.catch(function(err) {
     //console.log(err)
   //})  
+}
+
+function setProjectInstance(project) {
+  return Project.at(project.address)
+  .then((instance) => {
+    project.instance = instance;
+    return project;
+  })
 }
 
 function getBalance(address) {
@@ -116,42 +145,69 @@ function getCurrentTime() {
   })
 }
 
-function scrubAmountGoal(amount_goal) {
+function setAmountGoal(project, amount_goal) {
   return new Promise( (resolve, reject) => {
     const default_amount_goal = web3.toWei(10, 'ether');
 
     if (amount_goal === undefined || amount_goal === null || amount_goal === '') {
-      amount_goal = default_amount_goal;
+      project.amount_goal = default_amount_goal;
     } else {
-      amount_goal = web3.toWei(web3.toBigNumber(amount_goal), 'ether');
+      project.amount_goal = web3.toWei(web3.toBigNumber(amount_goal), 'ether');
     }
-    resolve(amount_goal);
+    resolve(project);
   })
 }
 
 
-function scrubDuration(duration) {
+function setDuration(project, duration) {
   return new Promise( (resolve, reject) => {
     const default_duration = 200;
     if (duration === undefined || duration === null || duration === '') {
-      duration = default_duration;
+      project.duration = default_duration;
     } else {
-      duration = Number(duration);
+      project.duration = Number(duration);
     }
-    resolve(duration);
+    resolve(project);
   })
 }
 
 
 function createProject() {
 
-    const success = true;
-    const myProject = new ProjectTemplate();
+    let myProject = new ProjectTemplate();
     const user_index = Number(document.getElementById('i_user').value);
     const user_addr = web3.eth.accounts[user_index];
+
     let amount_goal = document.getElementById('i_amount_goal').value;
     let duration = document.getElementById('i_duration').value;
 
+    return setAmountGoal(myProject, duration)
+      .then((project) => setDuration(project, amount_goal))
+      .then((project) => {
+        myProject = project;
+        return fundhub.createProject(
+          myProject.amount_goal, 
+          myProject.duration, 
+          {from: user_addr, gas: gasLimit} 
+          );
+      })
+      .then((txReceipt) => setProjectAddress(myProject, txReceipt))
+      .then((project) => setProjectInstance(project))
+      .then((project) => getProjectInfo(project))
+      .then((project) => {
+        myProject = project;
+        return logProjectDetails(project);
+      })
+      .then(refreshProjectTable)
+      .then(refreshUserTable)
+      .then(() => setStatus(`New project, Project ${myProject.index} created by ${user_names[user_index]}!`))        
+        // .catch(function(e) {
+        //  success = false;
+        //  console.log("createProject() exception");
+        //  console.log(e);
+        //  setStatus("Error creating project; see log.");      
+}      
+/*
     return scrubAmountGoal(amount_goal)
       .then((value) => {
         amount_goal = value;
@@ -176,7 +232,8 @@ function createProject() {
           setStatus(`New project, Project ${myProject.index} created by ${user_names[user_index]}!`);
         }
       });
-}
+      */
+//}
 
 function getUserName(user_address) {
   for (let i = 0; i <= user_names.length; i += 1) {
