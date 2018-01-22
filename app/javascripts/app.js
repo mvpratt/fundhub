@@ -52,32 +52,68 @@ function ProjectTemplate() {
 }
 
 function logProjectDetails(project) {
-  console.log('-----------------------------');
-  console.log('New project created:');
-  console.log(`project owner: ${project.owner}`);
-  console.log(`project address: ${project.address}`);
-  console.log(`project goal: ${project.amount_goal}`);
-  console.log(`project deadline: ${project.deadline}`);
-  console.log(`project index: ${project.index}`);
-  console.log(`current time: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}`);
-  console.log('-----------------------------');
+  return new Promise((resolve, reject) => {
+    console.log('-----------------------------');
+    console.log('New project created:');
+    console.log(`project owner: ${project.owner}`);
+    console.log(`project address: ${project.address}`);
+    console.log(`project goal: ${project.amount_goal}`);
+    console.log(`project deadline: ${project.deadline}`);
+    console.log(`project index: ${project.index}`);
+    console.log(`current time: ${web3.eth.getBlock(web3.eth.blockNumber).timestamp}`);
+    console.log('-----------------------------');
+    resolve();
+  })
 }
 
+function getProjectInfo(myProject, instance) {
+  return instance.info.call()
+  .then(info => {
+    myProject.owner = info[0];
+    myProject.amount_goal = web3.toBigNumber(info[1]);
+    myProject.deadline = parseInt(info[2]);
+    return myProject;
+  })  
+}
 
 function getProjectAddress(index) {
   return fundhub.myProjects.call(index);
 }
 
+function setProjectAddress(myProject, result) {
+  return new Promise( (resolve, reject) => {
+      // result is an object with the following values:
+      // result.tx      => transaction hash, string
+      // result.logs    => array of decoded events that were triggered within this transaction
+      // result.receipt => transaction receipt object, which includes gas used
+      // loop through result.logs to see if we triggered the  event.
+      let log;
+      for (let i = 0; i < result.logs.length; i++) {
+         log = result.logs[i];
+         if (log.event == "LogCreateProject") {
+          console.log("Event: FundingHub.LogCreateProject()");
+          myProject.address = log.args._projectAddress;
+          myProject.index = log.args._index;
+          break;
+        }
+      }
+      resolve(Project.at(myProject.address));    
+  })
+  //.catch(function(err) {
+    //console.log(err)
+  //})  
+}
+
 function getBalance(address) {
   return new Promise( (resolve, reject) => {
     resolve(web3.eth.getBalance(address).valueOf());
-  });
+  })
 }
 
 function getCurrentTime() {
   return new Promise( (resolve, reject) => {
     resolve(web3.eth.getBlock(web3.eth.blockNumber).timestamp);
-  });
+  })
 }
 
 function scrubAmountGoal(amount_goal) {
@@ -90,7 +126,7 @@ function scrubAmountGoal(amount_goal) {
       amount_goal = web3.toWei(web3.toBigNumber(amount_goal), 'ether');
     }
     resolve(amount_goal);
-  });
+  })
 }
 
 
@@ -103,7 +139,7 @@ function scrubDuration(duration) {
       duration = Number(duration);
     }
     resolve(duration);
-  });
+  })
 }
 
 
@@ -124,44 +160,16 @@ function createProject() {
       .then((value) => {
         duration = value;
         return fundhub.createProject(amount_goal, duration, { from: user_addr, gas: gasLimit });
+      })
         // .catch(function(e) {
         //  success = false;
         //  console.log("createProject() exception");
         //  console.log(e);
         //  setStatus("Error creating project; see log.");
-      })
-      .then((result) => {
-        // result is an object with the following values:
-        // result.tx      => transaction hash, string
-        // result.logs    => array of decoded events that were triggered within this transaction
-        // result.receipt => transaction receipt object, which includes gas used
-        // loop through result.logs to see if we triggered the  event.
-        for (let i = 0; i < result.logs.length; i++) {
-          let log = result.logs[i];
-
-          if (log.event == "LogCreateProject") {
-            console.log("Event: FundingHub.LogCreateProject()");
-            myProject.address = log.args._projectAddress;
-            myProject.index = log.args._index;
-            break;
-          }
-        }
-        return Project.at(myProject.address);
-      })
-      //.catch(function(err) {
-        //console.log(err)
-      //})
-      .then((value) => {
-        myProject.instance = value;
-        return myProject.instance.info.call();
-      })
-      .then((value) => {
-        myProject.owner = value[0];
-        myProject.amount_goal = web3.toBigNumber(value[1]);
-        myProject.deadline = parseInt(value[2]);
-        logProjectDetails(myProject);
-      })
-      .then(refreshProjectTableAll)
+      .then((result) => setProjectAddress(myProject, result))
+      .then((instance) => getProjectInfo(myProject, instance))
+      .then((myProject) => logProjectDetails(myProject))
+      .then(refreshProjectTable)
       .then(refreshUserTable)
       .then(() => {
         if (success) {
@@ -243,7 +251,7 @@ function refreshProjectTableByIndex(index) {
       });
 }
 
-function refreshProjectTableAll() {
+function refreshProjectTable() {
     return fundhub.num_projects.call()
       .then((value) => {
         const promises = [];
@@ -263,33 +271,28 @@ function refreshProjectTableAll() {
 }
 
 function refreshUserTableByIndex(index) {
-  return new Promise(((resolve, reject) => {
     const user_address = web3.eth.accounts[index];
     const element_address = document.getElementById(`user_address_${index}`);
     const element_balance = document.getElementById(`user_balance_${index}`);
 
-    // get user balance
-    //getBalance(web3.eth.accounts[index])  --use promise rather than synchronous
-
-    element_address.innerHTML = (`${user_address.substring(0, 6)}....${user_address.substring(38, 42)}`).toString();
-    element_balance.innerHTML = web3.fromWei(web3.eth.getBalance(user_address), 'ether');
-    resolve();
-  }));
+    return getBalance(user_address)
+    .then((value) => {
+      element_address.innerHTML = (`${user_address.substring(0, 6)}....${user_address.substring(38, 42)}`).toString();
+      element_balance.innerHTML = web3.fromWei(value, 'ether');      
+    })
 }
 
 function refreshUserTable() {
-  return new Promise(((resolve, reject) => {
-    const num_users = 3;
+  return new Promise((resolve, reject) => {
+    const num_users = user_names.length - 1;
     const promises = [];
 
     for (let i = 1; i <= num_users; i += 1) {
       promises.push(refreshUserTableByIndex(i));
     }
 
-    Promise.all(promises).then(() => {
-      resolve();
-    });
-  }));
+    Promise.all(promises).then(resolve);
+  });
 }
 
 function contribute() {
@@ -320,7 +323,7 @@ function contribute() {
         console.log(error);
         setStatus('Error funding project; see log.');
       })
-      .then(refreshProjectTableAll)
+      .then(refreshProjectTable)
       .then(refreshUserTable)
       .then(() => {
         if (success) {
@@ -347,7 +350,7 @@ function requestPayout() {
         console.log(error);
         setStatus('Error getting payout; see log.');
       })
-      .then(refreshProjectTableAll)
+      .then(refreshProjectTable)
       .then(refreshUserTable)
       .then(() => {
         if (success) {
@@ -373,7 +376,7 @@ function requestRefund() {
         console.log(error);
         setStatus('Error getting refund; see log.');
       })
-      .then(refreshProjectTableAll)
+      .then(refreshProjectTable)
       .then(refreshUserTable)
       .then(() => {
         if (success) {
@@ -397,7 +400,7 @@ window.onload = function () {
       showUserBalances();
       console.log(`Fundhub deployed at address: ${fundhub.address}`);
     })
-    .then(refreshProjectTableAll)
+    .then(refreshProjectTable)
     .then(refreshUserTable);
   });
 };
